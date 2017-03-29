@@ -6,7 +6,7 @@ public class Constants
     public const float cGravity = -1030.0f;
     public const float cMaxFallingSpeed = -900.0f;
 
-    public const float cWalkSpeed = 160.0f;
+    public const float cWalkSpeed = 140.0f;
     public const float cJumpSpeed = 410.0f;
 
     public const int cJumpFramesThreshold = 4;
