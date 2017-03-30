@@ -17,7 +17,7 @@ public class Character : MovingObject
     public AudioClip mHitWallSfx;
     public AudioClip mJumpSfx;
     public AudioClip mWalkSfx;
-    public AudioSource mAudioSource;
+    //public AudioSource mAudioSource;
 
     public float mWalkSfxTimer = 0.0f;
     public const float cWalkSfxTime = 0.25f;
@@ -170,7 +170,7 @@ public class Character : MovingObject
             case CharacterState.Stand:
 
                 mWalkSfxTimer = cWalkSfxTime;
-                mAnimator.Play("Stand");
+                //mAnimator.Play("Stand");
 
                 mSpeed = Vector2.zero;
 
@@ -188,7 +188,7 @@ public class Character : MovingObject
                 else if (mInputs[(int)KeyInput.Jump])
                 {
                     mSpeed.y = mJumpSpeed;
-                    mAudioSource.PlayOneShot(mJumpSfx);
+                    //mAudioSource.PlayOneShot(mJumpSfx);
                     mCurrentState = CharacterState.Jump;
                 }
 
@@ -198,14 +198,14 @@ public class Character : MovingObject
                 break;
             case CharacterState.Run:
 
-                mAnimator.Play("Walk");
+                //mAnimator.Play("Walk");
 
                 mWalkSfxTimer += Time.deltaTime;
 
                 if (mWalkSfxTimer > cWalkSfxTime)
                 {
                     mWalkSfxTimer = 0.0f;
-                    mAudioSource.PlayOneShot(mWalkSfx);
+                    //mAudioSource.PlayOneShot(mWalkSfx);
                 }
 
                 //if both or neither left nor right keys are pressed then stop walking and stand
@@ -231,7 +231,7 @@ public class Character : MovingObject
                 {
 
                     mSpeed.y = mJumpSpeed;
-                    mAudioSource.PlayOneShot(mJumpSfx, 1.0f);
+                    //mAudioSource.PlayOneShot(mJumpSfx, 1.0f);
                     mCurrentState = CharacterState.Jump;
                 }
                 else if (!mOnGround)
@@ -252,7 +252,7 @@ public class Character : MovingObject
 
                 mWalkSfxTimer = cWalkSfxTime;
 
-                mAnimator.Play("Jump");
+                //mAnimator.Play("Jump");
 
                 HandleJumping();
 
@@ -279,7 +279,7 @@ public class Character : MovingObject
             || (!mWasAtCeiling && mAtCeiling)
             || (!mPushedLeftWall && mPushesLeftWall)
             || (!mPushedRightWall && mPushesRightWall))
-            mAudioSource.PlayOneShot(mHitWallSfx, 0.5f);
+            //mAudioSource.PlayOneShot(mHitWallSfx, 0.5f);
 
         UpdatePhysics();
 

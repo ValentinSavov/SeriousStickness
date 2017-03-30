@@ -71,7 +71,7 @@ public partial class Map : MonoBehaviour
     public MapRoomData mapRoom;
 
     public Camera gameCamera;
-    public Bot player;
+    public BotMovementController player;
     bool[] inputs;
     bool[] prevInputs;
 
@@ -338,9 +338,8 @@ public partial class Map : MonoBehaviour
             }
         }*/
 
-        player.BotInit(inputs, prevInputs);
-        player.mMap = this;
-        player.mPosition = new Vector2(2 * Map.cTileSize, (mHeight / 2) * Map.cTileSize + player.mAABB.HalfSizeY);
+        //player.BotInit(inputs, prevInputs);
+        //player.mPosition = new Vector2(2 * Map.cTileSize, (mHeight / 2) * Map.cTileSize + player.mAABB.HalfSizeY);
     }
 
     void Update()
@@ -362,6 +361,8 @@ public partial class Map : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
+            Debug.Log(mouseTileX);
+            Debug.Log(mouseTileY);
             player.TappedOnTile(new Vector2i(mouseTileX, mouseTileY));
         }
 
@@ -491,8 +492,4 @@ public partial class Map : MonoBehaviour
 
     public List<Sprite> mDirtSprites;
 
-    void FixedUpdate()
-    {
-        player.BotUpdate();
-    }
 }

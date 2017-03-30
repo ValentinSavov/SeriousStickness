@@ -16,7 +16,7 @@ public class BotControl : MonoBehaviour, IGoap, DamageAcceptor
 
     void Start ()
 	{
-        graph = GameObject.Find("Graph").GetComponentsInChildren<Node>();
+        //graph = GameObject.Find("Graph").GetComponentsInChildren<Node>();
         movement = GetComponent<MovementController>();
         gpParent = GameObject.Find("GeneralPurposeParent");
         stats = GetComponent<StickStats>();
@@ -99,7 +99,7 @@ public class BotControl : MonoBehaviour, IGoap, DamageAcceptor
 
         worldState.Add(new KeyValuePair<string, object>("playerIsDead", false ) );
         worldState.Add(new KeyValuePair<string, object>("hasWeapon", (GetComponentInChildren<Weapon>() != null)) );
-        worldState.Add(new KeyValuePair<string, object>("weaponExists", registry.weapons.IsThereAWeapon()) );
+        //worldState.Add(new KeyValuePair<string, object>("weaponExists", registry.weapons.IsThereAWeapon()) );
 
         return worldState;
 	}
@@ -127,8 +127,12 @@ public class BotControl : MonoBehaviour, IGoap, DamageAcceptor
     TargetReachParams targetParams = new TargetReachParams();
     public bool GoToAction(GoapAction nextAction)
     {
-        targetParams.targetPos = nextAction.target.transform.position;
+        if (targetParams.targetPos == new Vector3(0, 0, 0))
+        {
+            targetParams.targetPos = nextAction.target.transform.position;
 
+            GetComponent<BotMovementController>().MoveTo((Vector2)targetParams.targetPos);
+        }
         /*if ((gameObject.transform.position - nextAction.target.transform.position).magnitude <= nextAction.range)
         {
             nextAction.setInRange(true);
