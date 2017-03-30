@@ -300,10 +300,6 @@ namespace Algorithms
 						var onGround = false;
 						var atCeiling = false;
 
-                        Debug.Log(mGrid.Length);
-                        Debug.Log(mNewLocationX);
-                        Debug.Log(mNewLocationY);
-
                         if (mGrid[mNewLocationX, mNewLocationY] == 0)
                             goto CHILDREN_LOOP_END;
 

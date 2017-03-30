@@ -131,7 +131,7 @@ public class BotControl : MonoBehaviour, IGoap, DamageAcceptor
         {
             targetParams.targetPos = nextAction.target.transform.position;
 
-            GetComponent<BotMovementController>().MoveTo((Vector2)targetParams.targetPos);
+            //GetComponent<BotMovementController>().MoveTo((Vector2)targetParams.targetPos);
         }
         /*if ((gameObject.transform.position - nextAction.target.transform.position).magnitude <= nextAction.range)
         {

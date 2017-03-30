@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Algorithms;
 
-public class BotMovementController : Character
+public class Bot : Character
 {
 	public enum BotAction
 	{
@@ -36,19 +36,13 @@ public class BotMovementController : Character
 
         MoveTo(new Vector2i(mapPos.x, mapPos.y));
     }
-    
-    void Start()
-    {
-        mMap = GameObject.FindObjectOfType<Map>();
-        BotInit(new bool[(int)KeyInput.Count], new bool[(int)KeyInput.Count]);
-    }
 
     public void BotInit(bool[] inputs, bool[] prevInputs)
     {
         mInputs = inputs;
         mPrevInputs = prevInputs;
-        
-        //mAudioSource = GetComponent<AudioSource>();
+
+        mAudioSource = GetComponent<AudioSource>();
         mPosition = transform.position;
 
         //demo1
@@ -62,12 +56,7 @@ public class BotMovementController : Character
         //transform.localScale = new Vector3(mAABB.HalfSizeX / 8.0f, mAABB.HalfSizeY / 8.0f, 1.0f);
     }
 
-    public void MoveTo(Vector2 destination)
-    {
-        MoveTo(mMap.GetMapTileAtPoint(destination));
-    }
-
-    void MoveTo(Vector2i destination)
+    public void MoveTo(Vector2i destination)
     {
         mStuckFrames = 0;
         mNotGettingCloserToNextNodeFrames = 0;
@@ -82,7 +71,7 @@ public class BotMovementController : Character
                     (short)mMaxJumpHeight));
     }
 
-    void OnFoundPath(List<Vector2i> path)
+    public void OnFoundPath(List<Vector2i> path)
     {
         mJumpingUpStairsRight = false;
         mJumpingUpStairsLeft = false;
@@ -112,12 +101,17 @@ public class BotMovementController : Character
         if (!Debug.isDebugBuild)
             DrawPathLines();
     }
-    
-    void ChangeAction(BotAction newAction)
+
+    public void MoveTo(Vector2 destination)
+    {
+        MoveTo(mMap.GetMapTileAtPoint(destination));
+    }
+
+
+    public void ChangeAction(BotAction newAction)
     {
         mCurrentAction = newAction;
     }
-
     int GetJumpFrameCount(int deltaY)
     {
         if (deltaY <= 0)
@@ -142,7 +136,7 @@ public class BotMovementController : Character
         }
     }
 
-    void UpdateDest(out Vector2 prevDest, out Vector2 currentDest, out Vector2 nextDest, out bool destOnGround, out Vector2 pathPosition, out bool reachedY, out bool reachedX, int characterHeight, int prevNodeOffset)
+    public void UpdateDest(out Vector2 prevDest, out Vector2 currentDest, out Vector2 nextDest, out bool destOnGround, out Vector2 pathPosition, out bool reachedY, out bool reachedX, int characterHeight, int prevNodeOffset)
     {
         prevDest = new Vector2(mPath[mCurrentNodeId - prevNodeOffset].x * Map.cTileSize + mMap.transform.position.x,
                                              mPath[mCurrentNodeId - prevNodeOffset].y * Map.cTileSize + mMap.transform.position.y);
@@ -190,12 +184,22 @@ public class BotMovementController : Character
     bool mJumpingUpStairsLeft = false;
     bool mJumpingUpStairsRight = false;
 
-    void FixedUpdate()
+    public void TestJumpValues()
     {
-        BotUpdate();
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+            mFramesOfJumping = GetJumpFrameCount(1);
+        else if (Input.GetKeyDown(KeyCode.Alpha2))
+            mFramesOfJumping = GetJumpFrameCount(2);
+        else if (Input.GetKeyDown(KeyCode.Alpha3))
+            mFramesOfJumping = GetJumpFrameCount(3);
+        else if (Input.GetKeyDown(KeyCode.Alpha4))
+            mFramesOfJumping = GetJumpFrameCount(4);
+        else if (Input.GetKeyDown(KeyCode.Alpha5))
+            mFramesOfJumping = GetJumpFrameCount(5);
+        else if (Input.GetKeyDown(KeyCode.Alpha6))
+            mFramesOfJumping = GetJumpFrameCount(6);
     }
-
-	void BotUpdate()
+	public void BotUpdate()
 	{
 		//get the position of the bottom of the bot's aabb, this will be much more useful than the center of the sprite (mPosition)
 		int tileX, tileY;
@@ -212,6 +216,7 @@ public class BotMovementController : Character
         {
             case BotAction.None:
 
+                TestJumpValues();
 
                 if (mFramesOfJumping > 0)
                 {
