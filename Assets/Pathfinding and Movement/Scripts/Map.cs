@@ -130,6 +130,7 @@ public partial class Map : MonoBehaviour
 
 	public void InitPathFinder()
 	{
+        // test stuff
 		mPathFinder = new PathFinderFast(mGrid, this);
 		
 		mPathFinder.Formula                 = HeuristicFormula.Manhattan;
