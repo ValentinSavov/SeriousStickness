@@ -28,11 +28,6 @@ public partial class Map : MonoBehaviour
 	public SpriteRenderer tilePrefab;
 	
 	/// <summary>
-	/// The path finder.
-	/// </summary>
-	public PathFinderFast mPathFinder;
-	
-	/// <summary>
 	/// The nodes that are fed to pathfinder.
 	/// </summary>
 	[HideInInspector]
@@ -128,24 +123,7 @@ public partial class Map : MonoBehaviour
         return (tiles[x, y] != TileType.Empty);
     }
 
-	public void InitPathFinder()
-	{
-        // test stuff
-		mPathFinder = new PathFinderFast(mGrid, this);
-		
-		mPathFinder.Formula                 = HeuristicFormula.Manhattan;
-		//if false then diagonal movement will be prohibited
-        mPathFinder.Diagonals               = false;
-		//if true then diagonal movement will have higher cost
-        mPathFinder.HeavyDiagonals          = false;
-		//estimate of path length
-        mPathFinder.HeuristicEstimate       = 6;
-        mPathFinder.PunishChangeDirection   = false;
-        mPathFinder.TieBreaker              = false;
-        mPathFinder.SearchLimit             = 10000;
-        mPathFinder.DebugProgress           = false;
-        mPathFinder.DebugFoundPath          = false;
-	}
+	
 	
 	public void GetMapTileAtPoint(Vector2 point, out int tileIndexX, out int tileIndexY)
 	{
@@ -302,7 +280,6 @@ public partial class Map : MonoBehaviour
         tilesSprites = new SpriteRenderer[mapRoom.width, mapRoom.height];
 
         mGrid = new byte[Mathf.NextPowerOfTwo((int)mWidth), Mathf.NextPowerOfTwo((int)mHeight)];
-        InitPathFinder();
 
         Camera.main.orthographicSize = Camera.main.pixelHeight / 2;
 
@@ -339,9 +316,6 @@ public partial class Map : MonoBehaviour
             }
         }*/
 
-        //player.BotInit(inputs, prevInputs);
-        //player.mMap = this;
-        //player.mPosition = new Vector2(2 * Map.cTileSize, (mHeight / 2) * Map.cTileSize + player.mAABB.HalfSizeY);
     }
 
     void Update()
@@ -491,9 +465,4 @@ public partial class Map : MonoBehaviour
     }
 
     public List<Sprite> mDirtSprites;
-
-    //void FixedUpdate()
-    //{
-        //player.BotUpdate();
-    //}
 }
