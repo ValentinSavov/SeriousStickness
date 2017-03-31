@@ -20,7 +20,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4074867679584396}
   - component: {fileID: 114050376029190496}
-  - component: {fileID: 114308087790093278}
   - component: {fileID: 114410904010564180}
   - component: {fileID: 114095350824308812}
   - component: {fileID: 114715943782320432}
@@ -401,20 +400,6 @@ MonoBehaviour:
   cost: 1
   target: {fileID: 0}
   range: 0
---- !u!114 &114308087790093278
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1179591550586340}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8371168c431514045a5e7d2e2c5d3c6a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  grounded: 0
-  wantToJumpDown: 0
-  jumpForce: 15008
 --- !u!114 &114310465843940232
 MonoBehaviour:
   m_ObjectHideFlags: 1

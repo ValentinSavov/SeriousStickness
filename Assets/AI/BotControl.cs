@@ -128,14 +128,14 @@ public class BotControl : MonoBehaviour, IGoap, DamageAcceptor
     public bool GoToAction(GoapAction nextAction)
     {
         Debug.Log("Go to action");
-        if (targetParams.targetPos == new Vector3(0, 0, 0))
+        //if (targetParams.targetPos == new Vector3(0, 0, 0))
         {
-            Debug.Log("first time");
+            //Debug.Log("first time");
             targetParams.targetPos = nextAction.target.transform.position;
 
-            GetComponent<Bot>().MoveTo((Vector2)targetParams.targetPos);
+            //GetComponent<Bot>().MoveTo((Vector2)targetParams.targetPos);
         }
-        if ((gameObject.transform.position - nextAction.target.transform.position).magnitude <= 1)
+        if ((gameObject.transform.position - nextAction.target.transform.position).magnitude <= 20)
         {
             nextAction.setInRange(true);
             targetParams.nextNodePos = new Vector3(0, 0, 0);

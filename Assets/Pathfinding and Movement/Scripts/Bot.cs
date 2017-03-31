@@ -191,20 +191,10 @@ public class Bot : Character
     bool mJumpingUpStairsLeft = false;
     bool mJumpingUpStairsRight = false;
 
-    public void TestJumpValues()
+
+    public void Stop()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-            mFramesOfJumping = GetJumpFrameCount(1);
-        else if (Input.GetKeyDown(KeyCode.Alpha2))
-            mFramesOfJumping = GetJumpFrameCount(2);
-        else if (Input.GetKeyDown(KeyCode.Alpha3))
-            mFramesOfJumping = GetJumpFrameCount(3);
-        else if (Input.GetKeyDown(KeyCode.Alpha4))
-            mFramesOfJumping = GetJumpFrameCount(4);
-        else if (Input.GetKeyDown(KeyCode.Alpha5))
-            mFramesOfJumping = GetJumpFrameCount(5);
-        else if (Input.GetKeyDown(KeyCode.Alpha6))
-            mFramesOfJumping = GetJumpFrameCount(6);
+        ChangeAction(BotAction.None);
     }
     void FixedUpdate()
     {
@@ -232,7 +222,6 @@ public class Bot : Character
         {
             case BotAction.None:
 
-                TestJumpValues();
 
                 if (mFramesOfJumping > 0)
                 {
@@ -457,4 +446,6 @@ public class Bot : Character
         if (gameObject.activeInHierarchy)
 		    CharacterUpdate();
 	}
+
+    
 }
