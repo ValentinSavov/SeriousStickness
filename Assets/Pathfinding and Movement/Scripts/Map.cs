@@ -282,7 +282,7 @@ public partial class Map : MonoBehaviour
         AutoTile(type, x, y + 1, 1, 8, 4, 4, 4, 4);
     }
 
-    public void Start()
+    public void Awake()
     {
         mRandomNumber = new System.Random();
 
@@ -338,9 +338,9 @@ public partial class Map : MonoBehaviour
             }
         }*/
 
-        player.BotInit(inputs, prevInputs);
-        player.mMap = this;
-        player.mPosition = new Vector2(2 * Map.cTileSize, (mHeight / 2) * Map.cTileSize + player.mAABB.HalfSizeY);
+        //player.BotInit(inputs, prevInputs);
+        //player.mMap = this;
+        //player.mPosition = new Vector2(2 * Map.cTileSize, (mHeight / 2) * Map.cTileSize + player.mAABB.HalfSizeY);
     }
 
     void Update()
@@ -491,8 +491,8 @@ public partial class Map : MonoBehaviour
 
     public List<Sprite> mDirtSprites;
 
-    void FixedUpdate()
-    {
-        player.BotUpdate();
-    }
+    //void FixedUpdate()
+    //{
+        //player.BotUpdate();
+    //}
 }

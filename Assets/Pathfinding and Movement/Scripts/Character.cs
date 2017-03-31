@@ -170,7 +170,7 @@ public class Character : MovingObject
             case CharacterState.Stand:
 
                 mWalkSfxTimer = cWalkSfxTime;
-                mAnimator.Play("Stand");
+                //mAnimator.Play("Stand");
 
                 mSpeed = Vector2.zero;
 
@@ -198,7 +198,7 @@ public class Character : MovingObject
                 break;
             case CharacterState.Run:
 
-                mAnimator.Play("Walk");
+                //mAnimator.Play("Walk");
 
                 mWalkSfxTimer += Time.deltaTime;
 
@@ -252,7 +252,7 @@ public class Character : MovingObject
 
                 mWalkSfxTimer = cWalkSfxTime;
 
-                mAnimator.Play("Jump");
+                //mAnimator.Play("Jump");
 
                 HandleJumping();
 

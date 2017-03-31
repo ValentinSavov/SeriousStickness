@@ -105,7 +105,7 @@ public sealed class GoapAgent : MonoBehaviour {
 				fsm.pushState(idleState);
 				return;
 			}
-
+            
 			// get the agent to go to action spot
 			if ( dataProvider.GoToAction(action) ) {
 				fsm.popState();

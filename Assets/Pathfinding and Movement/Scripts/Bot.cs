@@ -37,11 +37,18 @@ public class Bot : Character
         MoveTo(new Vector2i(mapPos.x, mapPos.y));
     }
 
+    void Start()
+    {
+        // this simulates control over Character class just like user inputs
+        BotInit(new bool[(int)KeyInput.Count], new bool[(int)KeyInput.Count]);
+    }
+
     public void BotInit(bool[] inputs, bool[] prevInputs)
     {
         mInputs = inputs;
         mPrevInputs = prevInputs;
 
+        mMap = GameObject.FindObjectOfType<Map>();
         mAudioSource = GetComponent<AudioSource>();
         mPosition = transform.position;
 
@@ -199,10 +206,19 @@ public class Bot : Character
         else if (Input.GetKeyDown(KeyCode.Alpha6))
             mFramesOfJumping = GetJumpFrameCount(6);
     }
+    void FixedUpdate()
+    {
+        BotUpdate();
+    }
 	public void BotUpdate()
 	{
-		//get the position of the bottom of the bot's aabb, this will be much more useful than the center of the sprite (mPosition)
-		int tileX, tileY;
+        mInputs[(int)KeyInput.GoRight] = false;
+        mInputs[(int)KeyInput.GoLeft] = false;
+        mInputs[(int)KeyInput.Jump] = false;
+        mInputs[(int)KeyInput.GoDown] = false;
+
+        //get the position of the bottom of the bot's aabb, this will be much more useful than the center of the sprite (mPosition)
+        int tileX, tileY;
         var position = mAABB.Center;
         position.y -= mAABB.HalfSizeY;
 
