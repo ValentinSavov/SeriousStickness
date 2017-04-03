@@ -5,12 +5,14 @@ using Algorithms;
 
 public class NavMoveAgent : Character
 {
+    
     public enum BotAction
     {
         Idle = 0,
         MoveTo,
     }
 
+    [Header("Navigation and Move Agent")]
     public BotAction mCurrentAction = BotAction.Idle;
 
     Vector2 mDestination;
@@ -30,10 +32,13 @@ public class NavMoveAgent : Character
     bool mJumpingUpStairsLeft = false;
     bool mJumpingUpStairsRight = false;
 
+    const float cBotMaxPositionError = 1.0f;
 
+    StickStats stats;
 
     void Start()
     {
+        stats = GetComponent<StickStats>();
         // this simulates control over Character class just like user inputs
         CharacterInit(new bool[(int)KeyInput.Count], new bool[(int)KeyInput.Count]);
     }
@@ -52,8 +57,8 @@ public class NavMoveAgent : Character
         //demo2
         //mAABB.HalfSize = new Vector2(6.0f, 20.0f);
 
-        mJumpSpeed = Constants.cJumpSpeed;
-        mWalkSpeed = Constants.cWalkSpeed;
+        mJumpSpeed = stats.jumpSpeed;// Constants.cJumpSpeed;
+        mWalkSpeed = stats.moveSpeed;// Constants.cWalkSpeed;
 
         //transform.localScale = new Vector3(mAABB.HalfSizeX / 8.0f, mAABB.HalfSizeY / 8.0f, 1.0f);
     }
@@ -156,9 +161,9 @@ public class NavMoveAgent : Character
 
         reachedX = (prevDest.x <= currentDest.x && pathPosition.x >= currentDest.x)
             || (prevDest.x >= currentDest.x && pathPosition.x <= currentDest.x);
-        reachedX = reachedX || Mathf.Abs(pathPosition.x - currentDest.x) <= Constants.cBotMaxPositionError;
+        reachedX = reachedX || Mathf.Abs(pathPosition.x - currentDest.x) <= cBotMaxPositionError;
 
-        if (reachedX && Mathf.Abs(pathPosition.x - currentDest.x) > Constants.cBotMaxPositionError
+        if (reachedX && Mathf.Abs(pathPosition.x - currentDest.x) > cBotMaxPositionError
             && Mathf.Abs(pathPosition.x - currentDest.x) < Map.cTileSize
             && !mPrevInputs[(int)KeyInput.GoRight] && !mPrevInputs[(int)KeyInput.GoLeft])
         {
@@ -170,7 +175,7 @@ public class NavMoveAgent : Character
 
         reachedY = (prevDest.y <= currentDest.y && pathPosition.y - currentDest.y >= 0.0f && pathPosition.y - currentDest.y <= Map.cTileSize * 2)
             || (prevDest.y >= currentDest.y && pathPosition.y <= currentDest.y);
-        reachedY = reachedY || Mathf.Abs(pathPosition.y - currentDest.y) <= Constants.cBotMaxPositionError;
+        reachedY = reachedY || Mathf.Abs(pathPosition.y - currentDest.y) <= cBotMaxPositionError;
         //bool reachedY = (pathPosition.y >= currentDest.y);
 
         if (destOnGround && !mOnGround)
@@ -230,7 +235,7 @@ public class NavMoveAgent : Character
                 mInputs[(int)KeyInput.Jump] = false;
                 mInputs[(int)KeyInput.GoDown] = false;
 
-                if (pathPosition.y - currentDest.y > Constants.cBotMaxPositionError && mOnOneWayPlatform)
+                if (pathPosition.y - currentDest.y > cBotMaxPositionError && mOnOneWayPlatform)
                     mInputs[(int)KeyInput.GoDown] = true;
 
                 if (reachedX && reachedY)
@@ -371,7 +376,7 @@ public class NavMoveAgent : Character
                         }
 
                         if (mFramesOfJumping == 0
-                            && currentDest.y - pathPosition.y > Constants.cBotMaxPositionError
+                            && currentDest.y - pathPosition.y > cBotMaxPositionError
                             && ((mWasOnGround && !mOnGround)
                                 || tileX == mPath[mCurrentNodeId].x
                                 || mPushesLeftWall

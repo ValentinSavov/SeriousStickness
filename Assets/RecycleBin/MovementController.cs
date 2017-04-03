@@ -66,7 +66,7 @@ public class MovementController : MonoBehaviour
     {
         if (jumpTrigger)
         {
-            rbd.AddForce((stats.jumpStartSpeed / Time.deltaTime) * Vector2.up, ForceMode2D.Force);
+            rbd.AddForce((stats.jumpSpeed / Time.deltaTime) * Vector2.up, ForceMode2D.Force);
             jumpTrigger = false;
         }
     }
@@ -108,7 +108,7 @@ public class MovementController : MonoBehaviour
             StickStats stats = bot.GetComponent<StickStats>();
 
             // so far
-            float vertVelocity = bot.GetComponent<Rigidbody2D>().velocity.y + stats.jumpStartSpeed;
+            float vertVelocity = bot.GetComponent<Rigidbody2D>().velocity.y + stats.jumpSpeed;
             float timeStep = 0.3f;
             Vector2 startPosition = bot.transform.position;
             int i = 0;

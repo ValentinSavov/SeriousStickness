@@ -462,6 +462,7 @@ MonoBehaviour:
   mJumpSfx: {fileID: 8300000, guid: 0675524b9de73754286435cc2b6083ca, type: 3}
   mWalkSfx: {fileID: 8300000, guid: 129cfec52de8a314b809cf8c994139b6, type: 3}
   mAudioSource: {fileID: 450605702}
+  mCharacterGravity: -1030
   mWalkSfxTimer: 0
   mCurrentState: 0
   mAnimator: {fileID: 450605700}
@@ -2913,6 +2914,7 @@ MonoBehaviour:
   mJumpSfx: {fileID: 8300000, guid: 0675524b9de73754286435cc2b6083ca, type: 3}
   mWalkSfx: {fileID: 8300000, guid: 129cfec52de8a314b809cf8c994139b6, type: 3}
   mAudioSource: {fileID: 450605702}
+  mCharacterGravity: -1030
   mWalkSfxTimer: 0
   mCurrentState: 0
   mAnimator: {fileID: 1629910778}
@@ -3061,8 +3063,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackSpeed: 20
-  moveSpeed: 8
-  jumpStartSpeed: 10
+  moveSpeed: 160
+  jumpSpeed: 410
   totalHitPoints: 200
   totalArmorPoints: 0
   currentHitPoints: 0

@@ -5,6 +5,7 @@ using Algorithms;
 
 public class Character : MovingObject
 {
+    
     [System.Serializable]
     public enum CharacterState
     {
@@ -14,11 +15,15 @@ public class Character : MovingObject
         GrabLedge,
     };
 
+    [Header("Character")]
     public AudioClip mHitWallSfx;
     public AudioClip mJumpSfx;
     public AudioClip mWalkSfx;
     public AudioSource mAudioSource;
 
+    public float mCharacterGravity = -1030.0f;
+    public const float cMaxFalingSpeed = -900.0f;
+    public const int cJumpFramesThreshold = 4;
     public float mWalkSfxTimer = 0.0f;
     public const float cWalkSfxTime = 0.25f;
     /// <summary>
@@ -119,9 +124,9 @@ public class Character : MovingObject
         //this should be applied at the beginning of the jump routine
         //because this way we can assure that when we hit the ground 
         //the speed.y will not change after we zero it
-        mSpeed.y += Constants.cGravity * Time.deltaTime;
+        mSpeed.y += mCharacterGravity * Time.deltaTime;
 
-        mSpeed.y = Mathf.Max(mSpeed.y, Constants.cMaxFallingSpeed);
+        mSpeed.y = Mathf.Max(mSpeed.y, cMaxFalingSpeed);
 
         if (!mInputs[(int)KeyInput.Jump] && mSpeed.y > 0.0f)
         {
@@ -159,7 +164,7 @@ public class Character : MovingObject
         }
 
         //if we just started falling and want to jump, then jump anyway
-        if (mInputs[(int)KeyInput.Jump] && (mOnGround || (mSpeed.y < 0.0f && mFramesFromJumpStart < Constants.cJumpFramesThreshold)))
+        if (mInputs[(int)KeyInput.Jump] && (mOnGround || (mSpeed.y < 0.0f && mFramesFromJumpStart < cJumpFramesThreshold)))
             mSpeed.y = mJumpSpeed;
     }
     

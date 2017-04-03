@@ -5,10 +5,11 @@ using System;
 
 public class MovingObject : MonoBehaviour 
 {
-	/// <summary>
-	/// The previous position.
-	/// </summary>
-	public Vector2 mOldPosition;
+    [Header("Moving Object")]
+    /// <summary>
+    /// The previous position.
+    /// </summary>
+    public Vector2 mOldPosition;
 	/// <summary>
 	/// The current position.
 	/// </summary>
