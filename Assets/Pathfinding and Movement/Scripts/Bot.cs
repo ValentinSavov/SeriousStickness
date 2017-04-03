@@ -5,45 +5,40 @@ using Algorithms;
 
 public class Bot : Character
 {
-	public enum BotAction
-	{
-		None = 0,
-		MoveTo,
-	}
-	
-	public BotAction mCurrentAction = BotAction.None;
-	
-	public Vector2 mDestination;
-	
-	public int mCurrentNodeId = -1;
+    public enum BotAction
+    {
+        Idle = 0,
+        MoveTo,
+    }
 
-	public int mFramesOfJumping = 0;
-	public int mStuckFrames = 0;
+    public BotAction mCurrentAction = BotAction.Idle;
+
+    Vector2 mDestination;
+
+    public int mCurrentNodeId = -1;
+
+    public int mFramesOfJumping = 0;
+    public int mStuckFrames = 0;
 
     public int mMaxJumpHeight = 5;
-	
-	
-	public const int cMaxStuckFrames = 20;
+
+
+    public const int cMaxStuckFrames = 20;
     public const int cMaxFramesNotGettingCloserToNextNode = 120;
     public float mPrevDistanceToCurrentDestX, mPrevDistanceToCurrentDestY;
     public int mNotGettingCloserToNextNodeFrames = 0;
-	
-	
-    public void TappedOnTile(Vector2i mapPos)
-    {
-        //while (!(mMap.IsObstacle(mapPos.x, mapPos.y) || mMap.IsOneWayPlatform(mapPos.x, mapPos.y)))
-        //    --mapPos.y;
 
-        MoveTo(new Vector2i(mapPos.x, mapPos.y));
-    }
+    bool mJumpingUpStairsLeft = false;
+    bool mJumpingUpStairsRight = false;
+
+
 
     void Start()
     {
         // this simulates control over Character class just like user inputs
-        BotInit(new bool[(int)KeyInput.Count], new bool[(int)KeyInput.Count]);
+        CharacterInit(new bool[(int)KeyInput.Count], new bool[(int)KeyInput.Count]);
     }
-
-    public void BotInit(bool[] inputs, bool[] prevInputs)
+    void CharacterInit(bool[] inputs, bool[] prevInputs)
     {
         mInputs = inputs;
         mPrevInputs = prevInputs;
@@ -51,6 +46,7 @@ public class Bot : Character
         mMap = GameObject.FindObjectOfType<Map>();
         mAudioSource = GetComponent<AudioSource>();
         mPosition = transform.position;
+        mDestination = mPosition;
 
         //demo1
         mAABB.HalfSize = new Vector2(6.0f, 7.0f);
@@ -62,23 +58,21 @@ public class Bot : Character
 
         //transform.localScale = new Vector3(mAABB.HalfSizeX / 8.0f, mAABB.HalfSizeY / 8.0f, 1.0f);
     }
-
-    public void MoveTo(Vector2i destination)
+    void MoveTo(Vector2i destination)
     {
         mStuckFrames = 0;
         mNotGettingCloserToNextNodeFrames = 0;
         mPrevDistanceToCurrentDestX = 0.0f;
         mPrevDistanceToCurrentDestY = 0.0f;
-
+        PathFinderFast mPathFinder = new PathFinderFast(mMap);
         OnFoundPath(
-            mMap.mPathFinder.FindPath(
-                    mMap.GetMapTileAtPoint(new Vector2(mAABB.Center.x, mAABB.Center.y - mAABB.HalfSizeY + 1.0f)), 
+            mPathFinder.FindPath(
+                    mMap.GetMapTileAtPoint(new Vector2(mAABB.Center.x, mAABB.Center.y - mAABB.HalfSizeY + 1.0f)),
                     new Vector2i(destination.x, destination.y),
-                    Mathf.CeilToInt(mAABB.HalfSizeX / 8.0f), Mathf.CeilToInt(mAABB.HalfSizeY / 8.0f), 
+                    Mathf.CeilToInt(mAABB.HalfSizeX / 8.0f), Mathf.CeilToInt(mAABB.HalfSizeY / 8.0f),
                     (short)mMaxJumpHeight));
     }
-
-    public void OnFoundPath(List<Vector2i> path)
+    void OnFoundPath(List<Vector2i> path)
     {
         mJumpingUpStairsRight = false;
         mJumpingUpStairsLeft = false;
@@ -102,20 +96,20 @@ public class Bot : Character
             mCurrentNodeId = -1;
 
             if (mCurrentAction == BotAction.MoveTo)
-                mCurrentAction = BotAction.None;
+                mCurrentAction = BotAction.Idle;
         }
 
         if (!Debug.isDebugBuild)
             DrawPathLines();
     }
-
-    public void MoveTo(Vector2 destination)
+    void MoveTo(Vector2 destination)
     {
-        MoveTo(mMap.GetMapTileAtPoint(destination));
+        if (mMap.IsOnMap(destination))
+        {
+            MoveTo(mMap.GetMapTileAtPoint(destination));
+        }
     }
-
-
-    public void ChangeAction(BotAction newAction)
+    void ChangeAction(BotAction newAction)
     {
         mCurrentAction = newAction;
     }
@@ -142,8 +136,7 @@ public class Bot : Character
             }
         }
     }
-
-    public void UpdateDest(out Vector2 prevDest, out Vector2 currentDest, out Vector2 nextDest, out bool destOnGround, out Vector2 pathPosition, out bool reachedY, out bool reachedX, int characterHeight, int prevNodeOffset)
+    void UpdateDest(out Vector2 prevDest, out Vector2 currentDest, out Vector2 nextDest, out bool destOnGround, out Vector2 pathPosition, out bool reachedY, out bool reachedX, int characterHeight, int prevNodeOffset)
     {
         prevDest = new Vector2(mPath[mCurrentNodeId - prevNodeOffset].x * Map.cTileSize + mMap.transform.position.x,
                                              mPath[mCurrentNodeId - prevNodeOffset].y * Map.cTileSize + mMap.transform.position.y);
@@ -166,8 +159,8 @@ public class Bot : Character
             || (prevDest.x >= currentDest.x && pathPosition.x <= currentDest.x);
         reachedX = reachedX || Mathf.Abs(pathPosition.x - currentDest.x) <= Constants.cBotMaxPositionError;
 
-        if (reachedX && Mathf.Abs(pathPosition.x - currentDest.x) > Constants.cBotMaxPositionError 
-            && Mathf.Abs(pathPosition.x - currentDest.x) < Map.cTileSize 
+        if (reachedX && Mathf.Abs(pathPosition.x - currentDest.x) > Constants.cBotMaxPositionError
+            && Mathf.Abs(pathPosition.x - currentDest.x) < Map.cTileSize
             && !mPrevInputs[(int)KeyInput.GoRight] && !mPrevInputs[(int)KeyInput.GoLeft])
         {
             if (Mathf.Abs(pathPosition.x - nextDest.x) < Mathf.Abs(pathPosition.x - currentDest.x))
@@ -188,20 +181,17 @@ public class Bot : Character
             reachedY = true;
     }
 
-    bool mJumpingUpStairsLeft = false;
-    bool mJumpingUpStairsRight = false;
-
-
-    public void Stop()
+    public void SetDestination(Vector2 destination)
     {
-        ChangeAction(BotAction.None);
+        mDestination = destination;
+        MoveTo(mDestination);
     }
     void FixedUpdate()
     {
         BotUpdate();
     }
-	public void BotUpdate()
-	{
+    void BotUpdate()
+    {
         mInputs[(int)KeyInput.GoRight] = false;
         mInputs[(int)KeyInput.GoLeft] = false;
         mInputs[(int)KeyInput.Jump] = false;
@@ -212,27 +202,26 @@ public class Bot : Character
         var position = mAABB.Center;
         position.y -= mAABB.HalfSizeY;
 
-		mMap.GetMapTileAtPoint(position, out tileX, out tileY);
-		
-		int characterHeight = Mathf.CeilToInt(mAABB.HalfSizeY*2.0f/Map.cTileSize);
+        mMap.GetMapTileAtPoint(position, out tileX, out tileY);
+
+        int characterHeight = Mathf.CeilToInt(mAABB.HalfSizeY * 2.0f / Map.cTileSize);
 
         int dir;
 
         switch (mCurrentAction)
         {
-            case BotAction.None:
-
-
+            case BotAction.Idle:
+                
+                /*
                 if (mFramesOfJumping > 0)
                 {
                     mFramesOfJumping -= 1;
                     mInputs[(int)KeyInput.Jump] = true;
-                }
-
+                }*/
                 break;
 
             case BotAction.MoveTo:
-
+                #region MoveTo
                 Vector2 prevDest, currentDest, nextDest, pathPosition;
                 bool destOnGround, reachedY, reachedX;
                 UpdateDest(out prevDest, out currentDest, out nextDest, out destOnGround, out pathPosition, out reachedY, out reachedX, characterHeight, 1);
@@ -299,7 +288,7 @@ public class Bot : Character
                     if (mCurrentNodeId >= mPath.Count)
                     {
                         mCurrentNodeId = -1;
-                        ChangeAction(BotAction.None);
+                        ChangeAction(BotAction.Idle);
                         break;
                     }
 
@@ -440,12 +429,12 @@ public class Bot : Character
                     mStuckFrames = 0;
 
                 break;
+                #endregion
         }
-			
-        
-        if (gameObject.activeInHierarchy)
-		    CharacterUpdate();
-	}
 
-    
+
+        if (gameObject.activeInHierarchy)
+            CharacterUpdate();
+    }
+
 }

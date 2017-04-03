@@ -114,15 +114,15 @@ namespace Algorithms
         #endregion
 		
         #region Constructors
-        public PathFinderFast(byte[,] grid, Map map)
+        public PathFinderFast(Map map)
         {
 			if (map == null)
 				throw new Exception("Map cannot be null");
-            if (grid == null)
+            if (map.mGrid == null)
                 throw new Exception("Grid cannot be null");
 			
 			mMap = map;
-            mGrid           = grid;
+            mGrid           = map.mGrid;
             mGridX          = (ushort) (mGrid.GetUpperBound(0) + 1);
             mGridY          = (ushort) (mGrid.GetUpperBound(1) + 1);
             mGridXMinus1    = (ushort) (mGridX - 1);
@@ -143,6 +143,8 @@ namespace Algorithms
                 nodes[i] = new List<PathFinderNodeFast>(1);
 
             mOpen = new PriorityQueueB<Location>(new ComparePFNodeMatrix(nodes));
+
+            InitPathFinder();
         }
         #endregion
 
@@ -221,6 +223,26 @@ namespace Algorithms
         #endregion
 
         #region Methods
+
+        void InitPathFinder()
+        {
+            //mMap = 
+            //mPathFinder = new PathFinderFast(mGrid, this);
+
+            Formula = HeuristicFormula.Manhattan;
+            //if false then diagonal movement will be prohibited
+            Diagonals = false;
+            //if true then diagonal movement will have higher cost
+            HeavyDiagonals = false;
+            //estimate of path length
+            HeuristicEstimate = 6;
+            PunishChangeDirection = false;
+            TieBreaker = false;
+            SearchLimit = 10000;
+            DebugProgress = false;
+            DebugFoundPath = false;
+        }
+
         public void FindPathStop()
         {
             mStop = true;
