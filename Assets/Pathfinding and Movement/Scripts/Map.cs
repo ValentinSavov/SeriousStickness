@@ -123,7 +123,8 @@ public partial class Map : MonoBehaviour
         return (tiles[x, y] != TileType.Empty);
     }
 
-	public bool IsOnMap(Vector3 point)
+
+	  public bool IsOnMap(Vector3 point)
     {
         if( (point.x < (position.x + (mWidth * cTileSize))) && (point.y < (position.y + (mHeight * cTileSize))) )
         {
@@ -134,6 +135,8 @@ public partial class Map : MonoBehaviour
         }
         return false;
     }
+
+
 	
 
 	public void GetMapTileAtPoint(Vector2 point, out int tileIndexX, out int tileIndexY)
