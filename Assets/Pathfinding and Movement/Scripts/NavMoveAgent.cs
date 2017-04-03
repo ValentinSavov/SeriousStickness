@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Algorithms;
 
-public class Bot : Character
+public class NavMoveAgent : Character
 {
     public enum BotAction
     {
@@ -21,8 +21,7 @@ public class Bot : Character
     public int mStuckFrames = 0;
 
     public int mMaxJumpHeight = 5;
-
-
+    
     public const int cMaxStuckFrames = 20;
     public const int cMaxFramesNotGettingCloserToNextNode = 120;
     public float mPrevDistanceToCurrentDestX, mPrevDistanceToCurrentDestY;

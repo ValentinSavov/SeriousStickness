@@ -66,7 +66,7 @@ public partial class Map : MonoBehaviour
     public MapRoomData mapRoom;
 
     public Camera gameCamera;
-    public Bot player;
+    public NavMoveAgent player;
     bool[] inputs;
     bool[] prevInputs;
 
