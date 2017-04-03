@@ -30,6 +30,7 @@ public class BotControl : MonoBehaviour, IGoap, DamageAcceptor
         stats.currentArmorPoints = stats.totalArmorPoints;
     }
     #endregion
+
     #region  DamageAcceptor
     public void acceptDamage(DamageAcceptorRegistry.DamageArgs argInArgs)
     {
@@ -92,6 +93,7 @@ public class BotControl : MonoBehaviour, IGoap, DamageAcceptor
         registry.damageAcceptors.RemoveDamageAcceptor(this);
     }
     #endregion
+
     #region  IGoap
     public HashSet<KeyValuePair<string,object>> getWorldState ()
     {
@@ -115,7 +117,7 @@ public class BotControl : MonoBehaviour, IGoap, DamageAcceptor
     public void planFound(HashSet<KeyValuePair<string, object>> goal, Queue<GoapAction> actions) { }
     public void actionsFinished() { }
     public void planAborted(GoapAction aborter){}
-    #endregion
+    
 
 
     class TargetReachParams
@@ -150,7 +152,7 @@ public class BotControl : MonoBehaviour, IGoap, DamageAcceptor
 
         return false;
     }
-
+    #endregion
 
 
     #region weapon stuff

@@ -123,8 +123,19 @@ public partial class Map : MonoBehaviour
         return (tiles[x, y] != TileType.Empty);
     }
 
+	public bool IsOnMap(Vector3 point)
+    {
+        if( (point.x < (position.x + (mWidth * cTileSize))) && (point.y < (position.y + (mHeight * cTileSize))) )
+        {
+            if ((point.x > position.x) && (point.y > position.y))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 	
-	
+
 	public void GetMapTileAtPoint(Vector2 point, out int tileIndexX, out int tileIndexY)
 	{
 		tileIndexY =(int)((point.y - position.y + cTileSize/2.0f)/(float)(cTileSize));
@@ -335,10 +346,17 @@ public partial class Map : MonoBehaviour
         int mouseTileX, mouseTileY;
         GetMapTileAtPoint(mousePosInWorld, out mouseTileX, out mouseTileY);
 
+        //vsa tbr - this is for click and test the pathf and move
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
-            player.TappedOnTile(new Vector2i(mouseTileX, mouseTileY));
+            //player.TappedOnTile(new Vector2i(mouseTileX, mouseTileY));
+            //player.MoveTo(new Vector2i(mouseTileX, mouseTileY));
+            if(IsOnMap(mousePosInWorld))
+            {
+                player.SetDestination(mousePosInWorld);
+            }
         }
+        ////////
 
         if (Input.GetKey(KeyCode.Mouse1) || Input.GetKey(KeyCode.Mouse2))
         {

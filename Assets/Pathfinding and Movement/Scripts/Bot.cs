@@ -5,25 +5,25 @@ using Algorithms;
 
 public class Bot : Character
 {
-	public enum BotAction
-	{
-		None = 0,
-		MoveTo,
-	}
-	
-	public BotAction mCurrentAction = BotAction.None;
-	
-	public Vector2 mDestination;
-	
-	public int mCurrentNodeId = -1;
+    public enum BotAction
+    {
+        Idle = 0,
+        MoveTo,
+    }
 
-	public int mFramesOfJumping = 0;
-	public int mStuckFrames = 0;
+    public BotAction mCurrentAction = BotAction.Idle;
+
+    Vector2 mDestination;
+
+    public int mCurrentNodeId = -1;
+
+    public int mFramesOfJumping = 0;
+    public int mStuckFrames = 0;
 
     public int mMaxJumpHeight = 5;
-	
-	
-	public const int cMaxStuckFrames = 20;
+
+
+    public const int cMaxStuckFrames = 20;
     public const int cMaxFramesNotGettingCloserToNextNode = 120;
     public float mPrevDistanceToCurrentDestX, mPrevDistanceToCurrentDestY;
     public int mNotGettingCloserToNextNodeFrames = 0;
@@ -32,18 +32,11 @@ public class Bot : Character
     bool mJumpingUpStairsRight = false;
 
 
-    public void TappedOnTile(Vector2i mapPos)
-    {
-        //while (!(mMap.IsObstacle(mapPos.x, mapPos.y) || mMap.IsOneWayPlatform(mapPos.x, mapPos.y)))
-        //    --mapPos.y;
 
-        MoveTo(new Vector2i(mapPos.x, mapPos.y));
-    }
     void Start()
     {
         // this simulates control over Character class just like user inputs
         CharacterInit(new bool[(int)KeyInput.Count], new bool[(int)KeyInput.Count]);
-        BehaviorInit();
     }
     void CharacterInit(bool[] inputs, bool[] prevInputs)
     {
@@ -53,6 +46,7 @@ public class Bot : Character
         mMap = GameObject.FindObjectOfType<Map>();
         mAudioSource = GetComponent<AudioSource>();
         mPosition = transform.position;
+        mDestination = mPosition;
 
         //demo1
         mAABB.HalfSize = new Vector2(6.0f, 7.0f);
@@ -64,7 +58,7 @@ public class Bot : Character
 
         //transform.localScale = new Vector3(mAABB.HalfSizeX / 8.0f, mAABB.HalfSizeY / 8.0f, 1.0f);
     }
-    public void MoveTo(Vector2i destination)
+    void MoveTo(Vector2i destination)
     {
         mStuckFrames = 0;
         mNotGettingCloserToNextNodeFrames = 0;
@@ -73,9 +67,9 @@ public class Bot : Character
         PathFinderFast mPathFinder = new PathFinderFast(mMap);
         OnFoundPath(
             mPathFinder.FindPath(
-                    mMap.GetMapTileAtPoint(new Vector2(mAABB.Center.x, mAABB.Center.y - mAABB.HalfSizeY + 1.0f)), 
+                    mMap.GetMapTileAtPoint(new Vector2(mAABB.Center.x, mAABB.Center.y - mAABB.HalfSizeY + 1.0f)),
                     new Vector2i(destination.x, destination.y),
-                    Mathf.CeilToInt(mAABB.HalfSizeX / 8.0f), Mathf.CeilToInt(mAABB.HalfSizeY / 8.0f), 
+                    Mathf.CeilToInt(mAABB.HalfSizeX / 8.0f), Mathf.CeilToInt(mAABB.HalfSizeY / 8.0f),
                     (short)mMaxJumpHeight));
     }
     void OnFoundPath(List<Vector2i> path)
@@ -102,7 +96,7 @@ public class Bot : Character
             mCurrentNodeId = -1;
 
             if (mCurrentAction == BotAction.MoveTo)
-                mCurrentAction = BotAction.None;
+                mCurrentAction = BotAction.Idle;
         }
 
         if (!Debug.isDebugBuild)
@@ -110,7 +104,10 @@ public class Bot : Character
     }
     void MoveTo(Vector2 destination)
     {
-        MoveTo(mMap.GetMapTileAtPoint(destination));
+        if (mMap.IsOnMap(destination))
+        {
+            MoveTo(mMap.GetMapTileAtPoint(destination));
+        }
     }
     void ChangeAction(BotAction newAction)
     {
@@ -162,8 +159,8 @@ public class Bot : Character
             || (prevDest.x >= currentDest.x && pathPosition.x <= currentDest.x);
         reachedX = reachedX || Mathf.Abs(pathPosition.x - currentDest.x) <= Constants.cBotMaxPositionError;
 
-        if (reachedX && Mathf.Abs(pathPosition.x - currentDest.x) > Constants.cBotMaxPositionError 
-            && Mathf.Abs(pathPosition.x - currentDest.x) < Map.cTileSize 
+        if (reachedX && Mathf.Abs(pathPosition.x - currentDest.x) > Constants.cBotMaxPositionError
+            && Mathf.Abs(pathPosition.x - currentDest.x) < Map.cTileSize
             && !mPrevInputs[(int)KeyInput.GoRight] && !mPrevInputs[(int)KeyInput.GoLeft])
         {
             if (Mathf.Abs(pathPosition.x - nextDest.x) < Mathf.Abs(pathPosition.x - currentDest.x))
@@ -183,17 +180,18 @@ public class Bot : Character
         if (!reachedY && reachedX && currentDest.y > pathPosition.y && !mOnGround && mSpeed.y < 0.0f)
             reachedY = true;
     }
-    void Stop()
-    {
-        ChangeAction(BotAction.None);
-    }
 
+    public void SetDestination(Vector2 destination)
+    {
+        mDestination = destination;
+        MoveTo(mDestination);
+    }
     void FixedUpdate()
     {
         BotUpdate();
     }
-	void BotUpdate()
-	{
+    void BotUpdate()
+    {
         mInputs[(int)KeyInput.GoRight] = false;
         mInputs[(int)KeyInput.GoLeft] = false;
         mInputs[(int)KeyInput.Jump] = false;
@@ -204,27 +202,26 @@ public class Bot : Character
         var position = mAABB.Center;
         position.y -= mAABB.HalfSizeY;
 
-		mMap.GetMapTileAtPoint(position, out tileX, out tileY);
-		
-		int characterHeight = Mathf.CeilToInt(mAABB.HalfSizeY*2.0f/Map.cTileSize);
+        mMap.GetMapTileAtPoint(position, out tileX, out tileY);
+
+        int characterHeight = Mathf.CeilToInt(mAABB.HalfSizeY * 2.0f / Map.cTileSize);
 
         int dir;
 
         switch (mCurrentAction)
         {
-            case BotAction.None:
-
-
+            case BotAction.Idle:
+                
+                /*
                 if (mFramesOfJumping > 0)
                 {
                     mFramesOfJumping -= 1;
                     mInputs[(int)KeyInput.Jump] = true;
-                }
-
+                }*/
                 break;
 
             case BotAction.MoveTo:
-
+                #region MoveTo
                 Vector2 prevDest, currentDest, nextDest, pathPosition;
                 bool destOnGround, reachedY, reachedX;
                 UpdateDest(out prevDest, out currentDest, out nextDest, out destOnGround, out pathPosition, out reachedY, out reachedX, characterHeight, 1);
@@ -291,7 +288,7 @@ public class Bot : Character
                     if (mCurrentNodeId >= mPath.Count)
                     {
                         mCurrentNodeId = -1;
-                        ChangeAction(BotAction.None);
+                        ChangeAction(BotAction.Idle);
                         break;
                     }
 
@@ -432,147 +429,12 @@ public class Bot : Character
                     mStuckFrames = 0;
 
                 break;
+                #endregion
         }
-			
-        
+
+
         if (gameObject.activeInHierarchy)
-		    CharacterUpdate();
-	}
-
-
-#region States AI Stuff
-    private FSM stateMachine;
-    private FSM.FSMState idleState; // finds something to do
-    private FSM.FSMState moveToState; // moves to a target
-    private FSM.FSMState performActionState; // performs an action
-    void BehaviorInit()
-    {
-        //stateMachine = new FSM();
-        //createIdleState();
-        //createMoveToState();
-        //createPerformActionState();
-        //stateMachine.pushState(idleState);
+            CharacterUpdate();
     }
 
-    void ResetFSM()
-    {
-        stateMachine = new FSM();
-        stateMachine.pushState(idleState);
-    }
-
-    private void createIdleState()
-    {
-        idleState = (fsm, gameObj) => {
-            // GOAP planning
-
-            // get the world state and the goal we want to plan for
-            //HashSet<KeyValuePair<string, object>> worldState = dataProvider.getWorldState();
-            //HashSet<KeyValuePair<string, object>> goal = dataProvider.createGoalState();
-
-            // Plan
-            //Queue<GoapAction> plan = planner.plan(gameObject, availableActions, worldState, goal);
-            //if (plan != null)
-            {
-                // we have a plan, hooray!
-                //currentActions = plan;
-                //dataProvider.planFound(goal, plan);
-
-                fsm.popState(); // move to PerformAction state
-                fsm.pushState(performActionState);
-
-            }
-            //else
-            {
-                // ugh, we couldn't get a plan
-                //Debug.Log("<color=orange>Failed Plan:</color>" + prettyPrint(goal));
-                //dataProvider.planFailed(goal);
-                fsm.popState(); // move back to IdleAction state
-                fsm.pushState(idleState);
-            }
-        };
-    }
-
-    private void createMoveToState()
-    {
-        moveToState = (fsm, gameObj) => {
-            // move the game object
-
-            //GoapAction action = currentActions.Peek();
-            //if (action.requiresInRange() && action.target == null)
-            {
-                Debug.Log("<color=red>Fatal error:</color> Action requires a target but has none. Planning failed. You did not assign the target in your Action.checkProceduralPrecondition()");
-                fsm.popState(); // move
-                fsm.popState(); // perform
-                fsm.pushState(idleState);
-                return;
-            }
-
-            // get the agent to go to action spot
-            //if (dataProvider.GoToAction(action))
-            {
-                fsm.popState();
-            }
-        };
-    }
-
-    private void createPerformActionState()
-    {
-        performActionState = (fsm, gameObj) => {
-            // perform the action
-
-            //if (!hasActionPlan())
-            {
-                // no actions to perform
-                Debug.Log("<color=red>Done actions</color>");
-                fsm.popState();
-                fsm.pushState(idleState);
-                //dataProvider.actionsFinished();
-                return;
-            }
-
-            //GoapAction action = currentActions.Peek();
-            //if (action.isDone())
-            {
-                // the action is done. Remove it so we can perform the next one
-                //currentActions.Dequeue();
-            }
-
-            //if (hasActionPlan())
-            {
-                // perform the next action
-                //action = currentActions.Peek();
-                //bool inRange = action.requiresInRange() ? action.isInRange() : true;
-
-                //if (inRange)
-                {
-                    // we are in range, so perform the action
-                    //bool success = action.perform(gameObj);
-
-                    //if (!success)
-                    {
-                        // action failed, we need to plan again
-                        fsm.popState();
-                        fsm.pushState(idleState);
-                        //dataProvider.planAborted(action);
-                    }
-                }
-                //else
-                {
-                    // we need to move there first
-                    // push moveTo state
-                    fsm.pushState(moveToState);
-                }
-
-            }
-            //else
-            {
-                // no actions left, move to Plan state
-                fsm.popState();
-                fsm.pushState(idleState);
-                //dataProvider.actionsFinished();
-            }
-
-        };
-    }
-    #endregion
 }
