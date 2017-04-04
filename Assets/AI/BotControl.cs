@@ -3,33 +3,58 @@ using System.Collections;
 using System.Collections.Generic;
 
 
-public class BotControl : MonoBehaviour, IGoap, DamageAcceptor
+public class BotControl : MonoBehaviour, DamageAcceptor
 {
-    #region standart stuff and monobehavior
+
     public List<string> groups { get; set; }
     GameObject gpParent;
     StickStats stats;
     Registry registry;
+    NavMoveAgent agent;
     RectTransform healthBar;
-    MovementController movement;
     Node[] graph;
+
+    GameObject target;
 
     void Start ()
 	{
         //graph = GameObject.Find("Graph").GetComponentsInChildren<Node>();
-        movement = GetComponent<MovementController>();
         gpParent = GameObject.Find("GeneralPurposeParent");
         stats = GetComponent<StickStats>();
+        agent = GetComponent<NavMoveAgent>();
         registry = GameObject.FindObjectOfType<Registry>().GetComponent<Registry>();
         stats.moveSpeed += Random.Range(-(stats.moveSpeed *0.2f), stats.moveSpeed *0.2f);
         registry.damageAcceptors.AddDamageAcceptor(this);
         groups = new List<string>();
         groups.Add("bots");
-
+        target = GameObject.FindObjectOfType<PlayerTag>().gameObject;
         stats.currentHitPoints = stats.totalHitPoints;
         stats.currentArmorPoints = stats.totalArmorPoints;
+        InvokeRepeating("TargetUpdate", 0f, 1f);
     }
-    #endregion
+
+    void TargetUpdate()
+    {
+        agent.SetDestination((Vector2)target.transform.position);
+    }
+
+    float previousEngageTime = 0f;
+    void Update()
+    {
+        Weapon weap = GetComponentInChildren<Weapon>();
+        if (weap != null)
+        {
+            if ((target.transform.position - this.transform.position).magnitude < weap.range)
+            {
+                if ((Time.time - previousEngageTime) >= (1f / (GetComponent<StickStats>().attackSpeed / 100)))
+                {
+                    previousEngageTime = Time.time;
+                    weap.Engage(target);
+                }
+            }
+        }
+                
+    }
 
     #region  DamageAcceptor
     public void acceptDamage(DamageAcceptorRegistry.DamageArgs argInArgs)
@@ -93,68 +118,7 @@ public class BotControl : MonoBehaviour, IGoap, DamageAcceptor
         registry.damageAcceptors.RemoveDamageAcceptor(this);
     }
     #endregion
-
-    #region  IGoap
-    public HashSet<KeyValuePair<string,object>> getWorldState ()
-    {
-		HashSet<KeyValuePair<string,object>> worldState = new HashSet<KeyValuePair<string,object>> ();
-
-        worldState.Add(new KeyValuePair<string, object>("playerIsDead", false ) );
-        worldState.Add(new KeyValuePair<string, object>("hasWeapon", (GetComponentInChildren<Weapon>() != null)) );
-        worldState.Add(new KeyValuePair<string, object>("weaponExists", registry.weapons.IsThereAWeapon()) );
-
-        return worldState;
-	}
-	public HashSet<KeyValuePair<string,object>> createGoalState ()
-    {
-		HashSet<KeyValuePair<string,object>> goal = new HashSet<KeyValuePair<string,object>> ();
-
-		goal.Add(new KeyValuePair<string, object>("attackPlayer", true ));
-        
-        return goal;
-	}
-    public void planFailed(HashSet<KeyValuePair<string, object>> failedGoal) { }
-    public void planFound(HashSet<KeyValuePair<string, object>> goal, Queue<GoapAction> actions) { }
-    public void actionsFinished() { }
-    public void planAborted(GoapAction aborter){}
     
-
-
-    class TargetReachParams
-    {
-        public Vector3 targetPos = new Vector3(0, 0, 0);
-        public float actionRange = 0.5f;
-        public Vector3 nextNodePos = new Vector3(0, 0, 0);
-    }
-    TargetReachParams targetParams = new TargetReachParams();
-    public bool GoToAction(GoapAction nextAction)
-    {
-        Debug.Log("Go to action");
-        //if (targetParams.targetPos == new Vector3(0, 0, 0))
-        {
-            //Debug.Log("first time");
-            targetParams.targetPos = nextAction.target.transform.position;
-
-            //GetComponent<Bot>().MoveTo((Vector2)targetParams.targetPos);
-        }
-        if ((gameObject.transform.position - nextAction.target.transform.position).magnitude <= 20)
-        {
-            nextAction.setInRange(true);
-            targetParams.nextNodePos = new Vector3(0, 0, 0);
-            return true;
-        }
-        /*if ((gameObject.transform.position - nextAction.target.transform.position).magnitude <= nextAction.range)
-        {
-            nextAction.setInRange(true);
-            targetParams.nextNodePos = new Vector3(0, 0, 0);
-            return true;
-        }*/
-
-        return false;
-    }
-    #endregion
-
-
     #region weapon stuff
     void OnTriggerStay2D(Collider2D other)
     {
@@ -171,7 +135,7 @@ public class BotControl : MonoBehaviour, IGoap, DamageAcceptor
                 other.transform.localScale = new Vector3(1, 1, 1);
                 other.gameObject.GetComponent<Weapon>().groups = groups;
 
-                GetComponent<GoapAgent>().ResetAgent();
+                //GetComponent<GoapAgent>().ResetAgent();
             }
         }
     }
