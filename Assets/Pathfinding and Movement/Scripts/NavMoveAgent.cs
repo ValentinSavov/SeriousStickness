@@ -184,7 +184,10 @@ public class NavMoveAgent : Character
         if (!reachedY && reachedX && currentDest.y > pathPosition.y && !mOnGround && mSpeed.y < 0.0f)
             reachedY = true;
     }
-
+    public void Stop()
+    {
+        ChangeAction(BotAction.Idle);
+    }
     public void SetDestination(Vector2 destination)
     {
         mDestination = destination;
