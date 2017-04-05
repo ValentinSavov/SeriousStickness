@@ -67,8 +67,6 @@ public partial class Map : MonoBehaviour
 
     public Camera gameCamera;
     public NavMoveAgent player;
-    bool[] inputs;
-    bool[] prevInputs;
 
     int lastMouseTileX = -1;
     int lastMouseTileY = -1;
@@ -281,9 +279,6 @@ public partial class Map : MonoBehaviour
 
         Application.targetFrameRate = 60;
         
-        inputs = new bool[(int)KeyInput.Count];
-        prevInputs = new bool[(int)KeyInput.Count];
-
         //set the position
         position = transform.position;
 
@@ -306,6 +301,13 @@ public partial class Map : MonoBehaviour
                 tilesSprites[x, y].transform.position = position + new Vector3(cTileSize * x, cTileSize * y, 10.0f);
                 
                 SetTile(x, y, mapRoom.tileData[y * mWidth + x] == TileType.Empty ? TileType.Empty : TileType.Block);
+                //vsa
+                if(mapRoom.tileData[y * mWidth + x] == TileType.Block)
+                {
+                    tilesSprites[x, y].gameObject.AddComponent<BoxCollider2D>();
+                }
+                
+
             }
         }
 
@@ -334,11 +336,6 @@ public partial class Map : MonoBehaviour
 
     void Update()
     {
-        inputs[(int)KeyInput.GoRight] = Input.GetKey(goRightKey);
-        inputs[(int)KeyInput.GoLeft] = Input.GetKey(goLeftKey);
-        inputs[(int)KeyInput.GoDown] = Input.GetKey(goDownKey);
-        inputs[(int)KeyInput.Jump] = Input.GetKey(goJumpKey);
-
         if (Input.GetKeyUp(KeyCode.Mouse0))
             lastMouseTileX = lastMouseTileY = -1;
 

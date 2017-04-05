@@ -39,8 +39,8 @@ public class Character : MovingObject
     /// </summary>
     protected int mFramesFromJumpStart = 0;
 
-    protected bool[] mInputs;
-    protected bool[] mPrevInputs;
+    public bool[] mInputs;
+    public bool[] mPrevInputs;
 
     /// <summary>
     /// The hero's vertical speed when he starts a jump

@@ -7,9 +7,8 @@ public class GameCamera : MonoBehaviour
     /// <summary>
     /// A reference to the the player.
     /// </summary>
-    public Transform mPlayerTransform;
 
-    public Character mPlayer;
+    public GameObject targetToFollow;
 
     /// <summary>
     /// The position.
@@ -34,15 +33,9 @@ public class GameCamera : MonoBehaviour
 
     public void FixedUpdate()
     {
-        if (mPlayerTransform == null)
-            return;
-
-        if (mPlayer == null)
-            mPlayer = mPlayerTransform.GetComponent<Character>();
-
         Vector2 targetPos;
 
-        targetPos = mPlayer.mPosition;
+        targetPos = targetToFollow.transform.position;
 
         mPosition = new Vector3(targetPos.x, targetPos.y, mPosition.z);
 
