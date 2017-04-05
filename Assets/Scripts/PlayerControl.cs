@@ -18,11 +18,14 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor
     private List<SourcesAndCooldowns> damageSourcesInCooldown = new List<SourcesAndCooldowns>();
     Animator anim;
     PlayerGear gear;
+    Character character;
     void Start()
     {
         gear = GetComponent<PlayerGear>();
         anim = GetComponent<Animator>();
         stats = GetComponent<StickStats>();
+        character = GetComponent<Character>();
+        //CharacterInit();
         //cursor = GameObject.FindObjectOfType<Cursor>().gameObject;
         registry = GameObject.FindObjectOfType<Registry>().GetComponent<Registry>();
         registry.damageAcceptors.AddDamageAcceptor(this);
@@ -35,9 +38,15 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor
     }
 
 
-    void Update()
+    void FixedUpdate()
     {
+        //character.mInputs[(int)KeyInput.GoRight] = false;
+        //character.mInputs[(int)KeyInput.GoLeft] = false;
+        //character.mInputs[(int)KeyInput.Jump] = false;
+        //character.mInputs[(int)KeyInput.GoDown] = false;
+
         UpdateDamageCooldowns();
+
         CheckGround();
         float x = Input.GetAxis("Horizontal") * Time.deltaTime * stats.moveSpeed;
         if (anim != null) anim.SetFloat("Speed", Input.GetAxis("Horizontal"));
@@ -53,13 +62,25 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor
         }
 
         transform.Translate(x, 0, 0);
+        //float x = Input.GetAxis("Horizontal");
+        if (x < 0)
+        {
+            //character.mInputs[(int)KeyInput.GoLeft] = true;
+        }
+        else if (x > 0)
+        {
+            //character.mInputs[(int)KeyInput.GoRight] = true;
+        }
+
         if (Input.GetAxis("Vertical") < -0.5f)
         {
+            //character.mInputs[(int)KeyInput.GoDown] = true;
             wantToJumpDown = true;
             transform.Translate(0, 0.001f, 0); // this is for trigger detection - if it does not move no trigger event is generated
         }
         else if (Input.GetButtonDown("Jump"))
         {
+            //character.mInputs[(int)KeyInput.Jump] = true;
             if (grounded)
             {
                 GetComponent<Rigidbody2D>().velocity = Vector2.zero;
@@ -80,10 +101,29 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor
             gear.PrevWeapon();
         }
 
-
+        //if (gameObject.activeInHierarchy)
+            //character.CharacterUpdate();
     }
 
+    void CharacterInit()
+    {
+        character.mInputs = new bool[(int)KeyInput.Count];
+        character.mPrevInputs = new bool[(int)KeyInput.Count];
 
+        character.mMap = GameObject.FindObjectOfType<Map>();
+        character.mAudioSource = GetComponent<AudioSource>();
+        character.mPosition = transform.position;
+        character.mAnimator = GetComponent<Animator>();
+        
+        character.mAABB.HalfSize = new Vector2(6.0f, 7.0f);
+        
+        character.mJumpSpeed = stats.jumpSpeed;// Constants.cJumpSpeed;
+        character.mWalkSpeed = stats.moveSpeed;// Constants.cWalkSpeed;
+
+        //transform.localScale = new Vector3(mAABB.HalfSizeX / 8.0f, mAABB.HalfSizeY / 8.0f, 1.0f);
+    }
+
+    #region damage stuff
     public void acceptDamage(DamageAcceptorRegistry.DamageArgs argInArgs)
     {
         if (damageSourcesInCooldown.Find(x => x.source == argInArgs.source) == null)
@@ -172,7 +212,10 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor
         damageSourcesInCooldown.Clear();
         damageSourcesInCooldown = newList;
     }
-    
+    #endregion
+
+    #region old jump and coliders stuff
+
     void CheckGround()
     {
         grounded = false;
@@ -187,7 +230,7 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor
         }
     }
     
-    /* stuff for jump down */
+    // stuff for jump down
     void OnTriggerExit2D(Collider2D other)
     {
         if (other.gameObject.GetComponent<FloorTag>() != null)
@@ -212,7 +255,7 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor
             }
         }
     }
-    /**/
+    
 
     Collider2D GetCollider()
     {
@@ -227,4 +270,6 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor
         }
         return found;
     }
+    #endregion
+    
 }
