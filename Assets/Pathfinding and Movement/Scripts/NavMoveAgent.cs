@@ -142,29 +142,29 @@ public class NavMoveAgent : Character
     }
     void UpdateDest(out Vector2 prevDest, out Vector2 currentDest, out Vector2 nextDest, out bool destOnGround, out Vector2 pathPosition, out bool reachedY, out bool reachedX, int characterHeight, int prevNodeOffset)
     {
-        prevDest = new Vector2(mPath[mCurrentNodeId - prevNodeOffset].x * Map.cTileSize + mMap.transform.position.x,
-                                             mPath[mCurrentNodeId - prevNodeOffset].y * Map.cTileSize + mMap.transform.position.y);
-        currentDest = new Vector2(mPath[mCurrentNodeId].x * Map.cTileSize + mMap.transform.position.x,
-                                          mPath[mCurrentNodeId].y * Map.cTileSize + mMap.transform.position.y);
+        prevDest = new Vector2(mPath[mCurrentNodeId - prevNodeOffset].x * mMap.cTileSize + mMap.transform.position.x,
+                                             mPath[mCurrentNodeId - prevNodeOffset].y * mMap.cTileSize + mMap.transform.position.y);
+        currentDest = new Vector2(mPath[mCurrentNodeId].x * mMap.cTileSize + mMap.transform.position.x,
+                                          mPath[mCurrentNodeId].y * mMap.cTileSize + mMap.transform.position.y);
         nextDest = currentDest;
 
         if (mPath.Count > mCurrentNodeId + 1)
         {
-            nextDest = new Vector2(mPath[mCurrentNodeId + 1].x * Map.cTileSize + mMap.transform.position.x,
-                                          mPath[mCurrentNodeId + 1].y * Map.cTileSize + mMap.transform.position.y);
+            nextDest = new Vector2(mPath[mCurrentNodeId + 1].x * mMap.cTileSize + mMap.transform.position.x,
+                                          mPath[mCurrentNodeId + 1].y * mMap.cTileSize + mMap.transform.position.y);
         }
 
         destOnGround = mMap.IsObstacle(mPath[mCurrentNodeId].x, mPath[mCurrentNodeId].y - 1)
             || mMap.IsOneWayPlatform(mPath[mCurrentNodeId].x, mPath[mCurrentNodeId].y - 1);
 
-        pathPosition = mAABB.Center - mAABB.HalfSize + Vector2.one * Map.cTileSize * 0.5f;
+        pathPosition = mAABB.Center - mAABB.HalfSize + Vector2.one * mMap.cTileSize * 0.5f;
 
         reachedX = (prevDest.x <= currentDest.x && pathPosition.x >= currentDest.x)
             || (prevDest.x >= currentDest.x && pathPosition.x <= currentDest.x);
         reachedX = reachedX || Mathf.Abs(pathPosition.x - currentDest.x) <= cBotMaxPositionError;
 
         if (reachedX && Mathf.Abs(pathPosition.x - currentDest.x) > cBotMaxPositionError
-            && Mathf.Abs(pathPosition.x - currentDest.x) < Map.cTileSize
+            && Mathf.Abs(pathPosition.x - currentDest.x) < mMap.cTileSize
             && !mPrevInputs[(int)KeyInput.GoRight] && !mPrevInputs[(int)KeyInput.GoLeft])
         {
             if (Mathf.Abs(pathPosition.x - nextDest.x) < Mathf.Abs(pathPosition.x - currentDest.x))
@@ -173,7 +173,7 @@ public class NavMoveAgent : Character
                 mPosition.x = currentDest.x;
         }
 
-        reachedY = (prevDest.y <= currentDest.y && pathPosition.y - currentDest.y >= 0.0f && pathPosition.y - currentDest.y <= Map.cTileSize * 2)
+        reachedY = (prevDest.y <= currentDest.y && pathPosition.y - currentDest.y >= 0.0f && pathPosition.y - currentDest.y <= mMap.cTileSize * 2)
             || (prevDest.y >= currentDest.y && pathPosition.y <= currentDest.y);
         reachedY = reachedY || Mathf.Abs(pathPosition.y - currentDest.y) <= cBotMaxPositionError;
         //bool reachedY = (pathPosition.y >= currentDest.y);
@@ -211,7 +211,7 @@ public class NavMoveAgent : Character
 
         mMap.GetMapTileAtPoint(position, out tileX, out tileY);
 
-        int characterHeight = Mathf.CeilToInt(mAABB.HalfSizeY * 2.0f / Map.cTileSize);
+        int characterHeight = Mathf.CeilToInt(mAABB.HalfSizeY * 2.0f / mMap.cTileSize);
 
         int dir;
 

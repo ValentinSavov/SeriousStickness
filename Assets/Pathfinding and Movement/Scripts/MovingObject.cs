@@ -163,7 +163,7 @@ public class MovingObject : MonoBehaviour
 		int tileIndexX, tileIndexY; 
 		
 		//iterate over all the tiles that the object may collide with from the left to the right
-		for (var checkedVector2i = topLeft; checkedVector2i.x < topRight.x + Map.cTileSize; checkedVector2i.x += Map.cTileSize)
+		for (var checkedVector2i = topLeft; checkedVector2i.x < topRight.x + mMap.cTileSize; checkedVector2i.x += mMap.cTileSize)
 		{
 			//makre sure that we don't check beyound the top right corner
 			checkedVector2i.x = Mathf.Min(checkedVector2i.x, topRight.x);
@@ -181,7 +181,7 @@ public class MovingObject : MonoBehaviour
                 if (mMap.IsObstacle(tileIndexX, tileIndexY))
 				{
 					//calculate the y position of the bottom of the ceiling tile
-					ceilingY = (float)tileIndexY * Map.cTileSize - Map.cTileSize/2.0f + mMap.position.y;
+					ceilingY = (float)tileIndexY * mMap.cTileSize - mMap.cTileSize/2.0f + mMap.position.y;
 					return true;
 				}
 			}
@@ -221,7 +221,7 @@ public class MovingObject : MonoBehaviour
 		int tileIndexX, tileIndexY; 
 		
 		//iterate over all the tiles that the object may collide with from the left to the right
-		for (var checkedVector2i = bottomLeft; checkedVector2i.x < bottomRight.x + Map.cTileSize; checkedVector2i.x += Map.cTileSize)
+		for (var checkedVector2i = bottomLeft; checkedVector2i.x < bottomRight.x + mMap.cTileSize; checkedVector2i.x += mMap.cTileSize)
 		{
 			//makre sure that we don't check beyound the bottom right corner
 			checkedVector2i.x = Mathf.Min(checkedVector2i.x, bottomRight.x);
@@ -235,7 +235,7 @@ public class MovingObject : MonoBehaviour
 			//hit it without hitting the one above
 			if (!mMap.IsObstacle(tileIndexX, tileIndexY + 1))
 			{
-				var floorTop = (float)tileIndexY * Map.cTileSize + Map.cTileSize/2.0f + mMap.position.y;
+				var floorTop = (float)tileIndexY * mMap.cTileSize + mMap.cTileSize/2.0f + mMap.position.y;
 				//if the tile is not empty, it means we have a floor right below us
                 if (mMap.IsObstacle(tileIndexX, tileIndexY))
 				{
@@ -289,7 +289,7 @@ public class MovingObject : MonoBehaviour
 		int tileIndexX, tileIndexY;
 		
 		//iterate over all the tiles that the object may collide with from the top to the bottom
-		for (var checkedVector2i = bottomRight; checkedVector2i.y < topRight.y + Map.cTileSize; checkedVector2i.y += Map.cTileSize)
+		for (var checkedVector2i = bottomRight; checkedVector2i.y < topRight.y + mMap.cTileSize; checkedVector2i.y += mMap.cTileSize)
 		{
 			//make sure that we don't check beyound the top right corner
 			checkedVector2i.y = Mathf.Min(checkedVector2i.y, topRight.y);
@@ -306,7 +306,7 @@ public class MovingObject : MonoBehaviour
                 if (mMap.IsObstacle(tileIndexX, tileIndexY))
 				{
 					//calculate the x position of the left side of the wall
-					wallX = (float)tileIndexX * Map.cTileSize - Map.cTileSize/2.0f + mMap.position.x;
+					wallX = (float)tileIndexX * mMap.cTileSize - mMap.cTileSize/2.0f + mMap.position.x;
 					return true;
 				}
 			}
@@ -344,7 +344,7 @@ public class MovingObject : MonoBehaviour
 		int tileIndexX, tileIndexY;
 		
 		//iterate over all the tiles that the object may collide with from the top to the bottom
-		for (var checkedVector2i = bottomLeft; checkedVector2i.y < topLeft.y + Map.cTileSize; checkedVector2i.y += Map.cTileSize)
+		for (var checkedVector2i = bottomLeft; checkedVector2i.y < topLeft.y + mMap.cTileSize; checkedVector2i.y += mMap.cTileSize)
 		{
 			//make sure that we don't check beyound the top right corner
 			checkedVector2i.y = Mathf.Min(checkedVector2i.y, topLeft.y);
@@ -361,7 +361,7 @@ public class MovingObject : MonoBehaviour
                 if (mMap.IsObstacle(tileIndexX, tileIndexY))
 				{
 					//calculate the x position of the right side of the wall
-					wallX = (float)tileIndexX * Map.cTileSize + Map.cTileSize/2.0f + mMap.position.x;
+					wallX = (float)tileIndexX * mMap.cTileSize + mMap.cTileSize/2.0f + mMap.position.x;
 					return true;
 				}
 			}
@@ -488,6 +488,6 @@ public class MovingObject : MonoBehaviour
 		mAABB.Center = mPosition;
 		
 		//apply the changes to the transform
-		transform.position = new Vector3(Mathf.Round(mPosition.x), Mathf.Round(mPosition.y), mSpriteDepth);
+		transform.position = new Vector3((mPosition.x), (mPosition.y), mSpriteDepth);
 	}
 }

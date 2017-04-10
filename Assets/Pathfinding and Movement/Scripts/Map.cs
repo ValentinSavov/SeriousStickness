@@ -52,7 +52,7 @@ public partial class Map : MonoBehaviour
 	/// <summary>
 	/// The size of a tile in pixels.
 	/// </summary>
-	static public int cTileSize = 16;
+	public float cTileSize = 16;
 	
 	/// <summary>
 	/// The width of the map in tiles.
