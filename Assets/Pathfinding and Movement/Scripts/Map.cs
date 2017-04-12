@@ -32,12 +32,12 @@ public partial class Map : MonoBehaviour
 	/// </summary>
 	[HideInInspector]
 	public byte[,] mGrid;
-	
-	/// <summary>
-	/// The map's tile data.
-	/// </summary>
-	[HideInInspector]
-	private TileType[,] tiles;
+
+    /// <summary>
+    /// The map's tile data.
+    /// </summary>
+    [HideInInspector]
+    private TileType[,] tiles;
 
 	/// <summary>
 	/// The map's sprites.
@@ -122,7 +122,7 @@ public partial class Map : MonoBehaviour
     }
 
 
-	  public bool IsOnMap(Vector3 point)
+	public bool IsOnMap(Vector3 point)
     {
         if( (point.x < (position.x + (mWidth * cTileSize))) && (point.y < (position.y + (mHeight * cTileSize))) )
         {
@@ -277,21 +277,22 @@ public partial class Map : MonoBehaviour
     {
         mRandomNumber = new System.Random();
 
-        Application.targetFrameRate = 60;
-        
+        //Application.targetFrameRate = 60;
+
         //set the position
         position = transform.position;
 
-        mWidth = mapRoom.width;
-        mHeight = mapRoom.height;
+        //mWidth = mapRoom.width;
+        //mHeight = mapRoom.height;
 
         tiles = new TileType[mWidth, mHeight];
         tilesSprites = new SpriteRenderer[mapRoom.width, mapRoom.height];
 
         mGrid = new byte[Mathf.NextPowerOfTwo((int)mWidth), Mathf.NextPowerOfTwo((int)mHeight)];
 
-        Camera.main.orthographicSize = Camera.main.pixelHeight / 2;
+        //Camera.main.orthographicSize = Camera.main.pixelHeight / 2;
 
+        /*
         for (int y = 0; y < mHeight; ++y)
         {
             for (int x = 0; x < mWidth; ++x)
@@ -310,6 +311,42 @@ public partial class Map : MonoBehaviour
 
             }
         }
+        */
+
+        for (int y = 0; y < mHeight; ++y)
+        {
+            for (int x = 0; x < mWidth; ++x)
+            {
+                bool colFound = false;
+                Collider2D[] cols = Physics2D.OverlapPointAll(position + new Vector3(cTileSize * x, cTileSize * y, 0));
+                foreach (Collider2D col in cols)
+                {
+                    if (col.gameObject.isStatic)
+                    {
+                        colFound = true;
+                        break;
+                    }
+                }
+
+                //if (Physics2D.OverlapPoint(position + new Vector3(cTileSize * x, cTileSize * y, 0)))
+                if (colFound)
+                {
+                    Debug.DrawLine(position + new Vector3((cTileSize * x) - (cTileSize / 8), (cTileSize * y), 0), position + new Vector3((cTileSize * x) + (cTileSize / 8), (cTileSize * y), 0), Color.red, 1000f);
+                    Debug.DrawLine(position + new Vector3((cTileSize * x), (cTileSize * y) - (cTileSize / 8), 0), position + new Vector3((cTileSize * x), (cTileSize * y) + (cTileSize / 8), 0), Color.red, 1000f);
+                    tiles[x, y] = TileType.Block;
+                    mGrid[x, y] = 0;
+                    tilesSprites[x, y] = Instantiate<SpriteRenderer>(tilePrefab);
+                    tilesSprites[x, y].transform.parent = transform;
+                    tilesSprites[x, y].transform.position = position + new Vector3(cTileSize * x, cTileSize * y, 10.0f);
+
+                }
+                else
+                {
+                    tiles[x, y] = TileType.Empty;
+                    mGrid[x, y] = 1;
+                }
+            }
+        }
 
         for (int y = 0; y < mHeight; ++y)
         {
@@ -323,18 +360,33 @@ public partial class Map : MonoBehaviour
             tiles[x, mHeight - 2] = TileType.Block;
         }
 
-        /*for (int y = 2; y < mHeight - 2; ++y)
+        for (int y = 0; y < mHeight; ++y)
         {
-            for (int x = 2; x < mWidth - 2; ++x)
+            for (int x = 0; x < mWidth; ++x)
             {
-                if (y < mHeight/4)
-                    SetTile(x, y, TileType.Block);
+                if(tiles[x,y] == TileType.Empty)
+                {
+                    Debug.DrawLine(position + new Vector3((cTileSize * x) - (cTileSize / 8), (cTileSize * y), 0), position + new Vector3((cTileSize * x) + (cTileSize / 8), (cTileSize * y), 0), Color.green, 1000f);
+                    Debug.DrawLine(position + new Vector3((cTileSize * x), (cTileSize * y) - (cTileSize / 8), 0), position + new Vector3((cTileSize * x), (cTileSize * y) + (cTileSize / 8), 0), Color.green, 1000f);
+                }
+                else
+                {
+                    if(tiles[x, y] == TileType.OneWay)
+                    {
+                        Debug.DrawLine(position + new Vector3((cTileSize * x) - (cTileSize / 8), (cTileSize * y), 0), position + new Vector3((cTileSize * x) + (cTileSize / 8), (cTileSize * y), 0), Color.blue, 1000f);
+                        Debug.DrawLine(position + new Vector3((cTileSize * x), (cTileSize * y) - (cTileSize / 8), 0), position + new Vector3((cTileSize * x), (cTileSize * y) + (cTileSize / 8), 0), Color.blue, 1000f);
+                    }
+                    else
+                    {
+                        Debug.DrawLine(position + new Vector3((cTileSize * x) - (cTileSize / 8), (cTileSize * y), 0), position + new Vector3((cTileSize * x) + (cTileSize / 8), (cTileSize * y), 0), Color.red, 1000f);
+                        Debug.DrawLine(position + new Vector3((cTileSize * x), (cTileSize * y) - (cTileSize / 8), 0), position + new Vector3((cTileSize * x), (cTileSize * y) + (cTileSize / 8), 0), Color.red, 1000f);
+                    }
+                }
             }
-        }*/
-
+        }
     }
 
-    void Update()
+    void Update_bcp()
     {
         if (Input.GetKeyUp(KeyCode.Mouse0))
             lastMouseTileX = lastMouseTileY = -1;

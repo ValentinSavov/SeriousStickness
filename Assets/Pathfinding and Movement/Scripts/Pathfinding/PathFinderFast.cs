@@ -250,7 +250,7 @@ namespace Algorithms
 
         public List<Vector2i> FindPath(Vector2i start, Vector2i end, int characterWidth, int characterHeight, short maxCharacterJumpHeight)
         {
-            lock(this)
+            //lock(this)
             {
                 while (touchedLocations.Count > 0)
                     nodes[touchedLocations.Pop()].Clear();
@@ -321,9 +321,13 @@ namespace Algorithms
 						
 						var onGround = false;
 						var atCeiling = false;
+                        //vsa
+                        //Debug.Log(mLocationX + " " + mLocationY);
+                        if ((mLocationX <= 0) || (mLocationY <= 0))
+                            continue;
 
                         if (mGrid[mNewLocationX, mNewLocationY] == 0)
-                            goto CHILDREN_LOOP_END;
+                            continue;
 
                         if (mMap.IsGround(mNewLocationX, mNewLocationY - 1))
                             onGround = true;
@@ -436,8 +440,8 @@ namespace Algorithms
                         nodes[mNewLocation].Add(newNode);
                         mOpen.Push(new Location(mNewLocation, nodes[mNewLocation].Count - 1));
 						
-					CHILDREN_LOOP_END:
-						continue;
+					//CHILDREN_LOOP_END:
+						//continue;
                     }
 
                     nodes[mLocation.xy][mLocation.z] = nodes[mLocation.xy][mLocation.z].UpdateStatus(mCloseNodeValue);
