@@ -53,9 +53,11 @@ public class NavMoveAgent : Character
         mDestination = mPosition;
 
         //demo1
-        mAABB.HalfSize = new Vector2(6.0f, 7.0f);
+        //mAABB.HalfSize = new Vector2(6.0f, 7.0f);
         //demo2
         //mAABB.HalfSize = new Vector2(6.0f, 20.0f);
+        //vsa
+        mAABB.HalfSize = new Vector2(1.0f, 2.0f);
 
         mJumpSpeed = stats.jumpSpeed;// Constants.cJumpSpeed;
         mWalkSpeed = stats.moveSpeed;// Constants.cWalkSpeed;

@@ -350,14 +350,18 @@ public partial class Map : MonoBehaviour
 
         for (int y = 0; y < mHeight; ++y)
         {
+            tiles[0, y] = TileType.Block;
             tiles[1, y] = TileType.Block;
             tiles[mWidth - 2, y] = TileType.Block;
+            tiles[mWidth - 1, y] = TileType.Block;
         }
 
         for (int x = 0; x < mWidth; ++x)
         {
+            tiles[x, 0] = TileType.Block;
             tiles[x, 1] = TileType.Block;
             tiles[x, mHeight - 2] = TileType.Block;
+            tiles[x, mHeight - 1] = TileType.Block;
         }
 
         for (int y = 0; y < mHeight; ++y)
