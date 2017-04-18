@@ -68,13 +68,13 @@ public class Character : MovingObject
             var start = mPath[0];
 
             Gizmos.color = Color.blue;
-            Gizmos.DrawSphere(mMap.transform.position + new Vector3(start.x * mMap.cTileSize, start.y * mMap.cTileSize, -5.0f), 5.0f);
+            //Gizmos.DrawSphere(mMap.transform.position + new Vector3(start.x * mMap.cTileSize, start.y * mMap.cTileSize, -5.0f), 5.0f);
 
             for (var i = 1; i < mPath.Count; ++i)
             {
                 var end = mPath[i];
                 Gizmos.color = Color.blue;
-                Gizmos.DrawSphere(mMap.transform.position + new Vector3(end.x * mMap.cTileSize, end.y * mMap.cTileSize, -5.0f), 5.0f);
+                //Gizmos.DrawSphere(mMap.transform.position + new Vector3(end.x * mMap.cTileSize, end.y * mMap.cTileSize, -5.0f), 5.0f);
                 Gizmos.color = Color.red;
                 Gizmos.DrawLine(mMap.transform.position + new Vector3(start.x * mMap.cTileSize, start.y * mMap.cTileSize, -5.0f),
                                 mMap.transform.position + new Vector3(end.x * mMap.cTileSize, end.y * mMap.cTileSize, -5.0f));

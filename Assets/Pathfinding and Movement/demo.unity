@@ -481,7 +481,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 226340670}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 87.2, y: 139, z: 0}
+  m_LocalPosition: {x: 14.92, y: 14.03, z: 0}
   m_LocalScale: {x: 20, y: 20, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -550,7 +550,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 111608ddb70aaf448beed0d667b1ff81, type: 3}
+  m_Sprite: {fileID: 21300000, guid: f6368d53a63b97f45b6be487c750f780, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -5646,8 +5646,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackSpeed: 20
-  moveSpeed: 160
-  jumpSpeed: 410
+  moveSpeed: 16
+  jumpSpeed: 41
   totalHitPoints: 200
   totalArmorPoints: 0
   currentHitPoints: 0
@@ -5673,7 +5673,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1629910775}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 55.6, y: 93.4, z: 0}
+  m_LocalPosition: {x: 2.77, y: 4.98, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 726466214}
@@ -7701,7 +7701,7 @@ MonoBehaviour:
   position: {x: 0, y: 0, z: 0}
   tilePrefab: {fileID: 21201918, guid: ffcd4b6442878c648af60936cdec0465, type: 2}
   mSpritesContainer: {fileID: 2106156356}
-  cTileSize: 16
+  cTileSize: 0.9
   mWidth: 20
   mHeight: 20
   mapRoom: {fileID: 11400000, guid: a8bf52a1f5d6dd645b610dd12bba5a2a, type: 2}

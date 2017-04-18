@@ -91,6 +91,8 @@ public class MovingObject : MonoBehaviour
 
     public bool mIgnoresOneWayPlatforms = false;
 
+
+    
 	void OnDrawGizmos()
 	{
 		DrawMovingObjectGizmos ();
@@ -107,66 +109,64 @@ public class MovingObject : MonoBehaviour
 		//draw the aabb rectangle
 		Gizmos.color = Color.yellow;
    		Gizmos.DrawWireCube(aabbPos, mAABB.HalfSize*2.0f);
-		
-		//draw the ground checking sensor
-		Vector2 bottomLeft = aabbPos - new Vector3(mAABB.HalfSizeX, mAABB.HalfSizeY, 0.0f) - Vector3.up + Vector3.right;
-		var bottomRight = new Vector2(bottomLeft.x + mAABB.HalfSizeX*2.0f - 2.0f, bottomLeft.y);
-		
-		Gizmos.color = Color.red;
-		Gizmos.DrawLine(bottomLeft, bottomRight);
-		
-		//draw the ceiling checking sensor
-		Vector2 topRight = aabbPos + new Vector3(mAABB.HalfSize.x, mAABB.HalfSize.y, 0.0f) + Vector3.up - Vector3.right;
-		var topLeft = new Vector2(topRight.x - mAABB.HalfSize.x*2.0f + 2.0f, topRight.y);
-		
-		Gizmos.color = Color.red;
-		Gizmos.DrawLine(topLeft, topRight);
-		
-		//draw left wall checking sensor
-		bottomLeft = aabbPos - new Vector3(mAABB.HalfSize.x, mAABB.HalfSize.y, 0.0f) - Vector3.right;
-		topLeft = bottomLeft;
-		topLeft.y += mAABB.HalfSize.y * 2.0f;
-		
-		Gizmos.DrawLine(topLeft, bottomLeft);
-		
+
+        Gizmos.color = Color.red;
+
+        //draw the ground checking sensor
+        Gizmos.DrawLine(GbottomRight, GbottomLeft);
+        //draw the ceiling checking sensor
+        Gizmos.DrawLine(CtopLeft, CtopRight);
+        //draw left wall checking sensor
+		Gizmos.DrawLine(LbottomLeft, LtopLeft);
 		//draw right wall checking sensor
-		
-		bottomRight = aabbPos + new Vector3(mAABB.HalfSize.x, -mAABB.HalfSize.y, 0.0f) + Vector3.right;
-		topRight = bottomRight;
-		topRight.y += mAABB.HalfSize.y * 2.0f;
-		
-		Gizmos.DrawLine(topRight, bottomRight);
+		Gizmos.DrawLine(RbottomRight, RtopRight);
 	}
 
-	/// <summary>
-	/// Determines whether there's ceiling right above the hero.
-	/// </summary>
-	/// <returns>
-	/// <c>true</c> if there is ceiling right above the hero; otherwise, <c>false</c>.
-	/// </returns>
-	/// <param name='ceilY'>
-	/// The position of the bottom of the ceiling tile in world coordinates.
-	/// </param>
-	public bool HasCeiling(Vector2 position, out float ceilingY)
+    Vector2 CtopRight;
+    Vector2 CtopLeft;
+
+    Vector2 GbottomLeft;
+    Vector2 GbottomRight;
+
+    Vector2 RbottomRight;
+    Vector2 RtopRight;
+
+    Vector2 LbottomLeft;
+    Vector2 LtopLeft;
+
+
+    /// <summary>
+    /// Determines whether there's ceiling right above the hero.
+    /// </summary>
+    /// <returns>
+    /// <c>true</c> if there is ceiling right above the hero; otherwise, <c>false</c>.
+    /// </returns>
+    /// <param name='ceilY'>
+    /// The position of the bottom of the ceiling tile in world coordinates.
+    /// </param>
+    public bool HasCeiling(Vector2 position, out float ceilingY)
 	{
 		//make sure the aabb is up to date with the position
 		var center = position;
 		
 		//init the groundY
 		ceilingY = 0.0f;
-		
-		//set the Vector2is right below us on our left and right sides
-		var topRight = center + mAABB.HalfSize + Vector2.up - Vector2.right;
-		var topLeft = new Vector2(topRight.x - mAABB.HalfSize.x*2.0f + 2.0f, topRight.y);
-		
-		//get the indices of a tile below us on our left side
-		int tileIndexX, tileIndexY; 
+
+        //set the Vector2is right below us on our left and right sides
+        //var topRight = center + mAABB.HalfSize + Vector2.up - Vector2.right;
+        //var topLeft = new Vector2(topRight.x - mAABB.HalfSize.x*2.0f + 2.0f, topRight.y);
+        float smallOffset = mMap.cTileSize * 0.1f;
+        CtopRight = center + new Vector2(mAABB.HalfSize.x - smallOffset, mAABB.HalfSize.y + smallOffset);
+        CtopLeft = new Vector2(CtopRight.x - (mAABB.HalfSize.x * 2f) + (smallOffset * 2f), CtopRight.y);
+
+        //get the indices of a tile below us on our left side
+        int tileIndexX, tileIndexY; 
 		
 		//iterate over all the tiles that the object may collide with from the left to the right
-		for (var checkedVector2i = topLeft; checkedVector2i.x < topRight.x + mMap.cTileSize; checkedVector2i.x += mMap.cTileSize)
+		for (var checkedVector2i = CtopLeft; checkedVector2i.x < CtopRight.x + mMap.cTileSize; checkedVector2i.x += mMap.cTileSize)
 		{
 			//makre sure that we don't check beyound the top right corner
-			checkedVector2i.x = Mathf.Min(checkedVector2i.x, topRight.x);
+			checkedVector2i.x = Mathf.Min(checkedVector2i.x, CtopRight.x);
 			
 			mMap.GetMapTileAtPoint (checkedVector2i, out tileIndexX, out tileIndexY);
 			
@@ -187,7 +187,7 @@ public class MovingObject : MonoBehaviour
 			}
 			
 			//if we checked all the possible tiles and there's nothing right above the aabb
-			if (checkedVector2i.x == topRight.x)
+			if (checkedVector2i.x == CtopRight.x)
 				return false;
 		}
 		
@@ -211,20 +211,24 @@ public class MovingObject : MonoBehaviour
 		
 		//init the groundY
 		groundY = 0.0f;
-		
-		//set the Vector2is right below us on our left and right sides
-		var bottomLeft = center - mAABB.HalfSize - Vector2.up + Vector2.right;
-		var bottomRight = new Vector2(bottomLeft.x + mAABB.HalfSize.x*2.0f - 2.0f, bottomLeft.y);
-		
-		//left side
-		//calculate the indices of a tile below us on our left side
-		int tileIndexX, tileIndexY; 
+
+        //set the Vector2is right below us on our left and right sides
+        //var bottomLeft = center - mAABB.HalfSize - Vector2.up + Vector2.right;
+        //var bottomRight = new Vector2(bottomLeft.x + mAABB.HalfSize.x*2.0f - 2.0f, bottomLeft.y);
+        float smallOffset = mMap.cTileSize * 0.1f;
+        GbottomLeft = center + new Vector2(-mAABB.HalfSize.x + smallOffset, -mAABB.HalfSize.y - smallOffset);
+        GbottomRight = new Vector2(GbottomLeft.x + (mAABB.HalfSize.x * 2f) - (smallOffset * 2f), GbottomLeft.y);
+
+
+        //left side
+        //calculate the indices of a tile below us on our left side
+        int tileIndexX, tileIndexY; 
 		
 		//iterate over all the tiles that the object may collide with from the left to the right
-		for (var checkedVector2i = bottomLeft; checkedVector2i.x < bottomRight.x + mMap.cTileSize; checkedVector2i.x += mMap.cTileSize)
+		for (var checkedVector2i = GbottomLeft; checkedVector2i.x < GbottomRight.x + mMap.cTileSize; checkedVector2i.x += mMap.cTileSize)
 		{
 			//makre sure that we don't check beyound the bottom right corner
-			checkedVector2i.x = Mathf.Min(checkedVector2i.x, bottomRight.x);
+			checkedVector2i.x = Mathf.Min(checkedVector2i.x, GbottomRight.x);
 			
 			mMap.GetMapTileAtPoint (checkedVector2i, out tileIndexX, out tileIndexY);
 			
@@ -252,7 +256,7 @@ public class MovingObject : MonoBehaviour
 			}
 			
 			//if we checked all the possible tiles and there's nothing right below the aabb
-			if (checkedVector2i.x == bottomRight.x)
+			if (checkedVector2i.x == GbottomRight.x)
 			{
 				if (mOnOneWayPlatform)
 					return true;
@@ -282,17 +286,20 @@ public class MovingObject : MonoBehaviour
 		wallX = 0.0f;
 		
 		//calculate the bottom left and top left vertices of our aabb
-		var bottomRight = center + new Vector2(mAABB.HalfSize.x, -mAABB.HalfSize.y) + Vector2.right;
-		var topRight = bottomRight + new Vector2(0.0f, mAABB.HalfSize.y * 2.0f);
-		
-		//get the bottom right vertex's tile indices
-		int tileIndexX, tileIndexY;
+		//var bottomRight = center + new Vector2(mAABB.HalfSize.x, -mAABB.HalfSize.y) + Vector2.right;
+		//var topRight = bottomRight + new Vector2(0.0f, mAABB.HalfSize.y * 2.0f);
+        float smallOffset = mMap.cTileSize * 0.1f;
+        RbottomRight = center + new Vector2(mAABB.HalfSize.x + smallOffset, -mAABB.HalfSize.y);
+        RtopRight = new Vector2(RbottomRight.x , RbottomRight.y + (mAABB.HalfSize.y * 2f));
+
+        //get the bottom right vertex's tile indices
+        int tileIndexX, tileIndexY;
 		
 		//iterate over all the tiles that the object may collide with from the top to the bottom
-		for (var checkedVector2i = bottomRight; checkedVector2i.y < topRight.y + mMap.cTileSize; checkedVector2i.y += mMap.cTileSize)
+		for (var checkedVector2i = RbottomRight; checkedVector2i.y < RtopRight.y + mMap.cTileSize; checkedVector2i.y += mMap.cTileSize)
 		{
 			//make sure that we don't check beyound the top right corner
-			checkedVector2i.y = Mathf.Min(checkedVector2i.y, topRight.y);
+			checkedVector2i.y = Mathf.Min(checkedVector2i.y, RtopRight.y);
 			
 			mMap.GetMapTileAtPoint (checkedVector2i, out tileIndexX, out tileIndexY);
 			
@@ -312,7 +319,7 @@ public class MovingObject : MonoBehaviour
 			}
 			
 			//if we checked all the possible tiles and there's nothing right next to the aabb
-			if (checkedVector2i.y == topRight.y)
+			if (checkedVector2i.y == RtopRight.y)
 				return false;
 		}
 		
@@ -337,17 +344,20 @@ public class MovingObject : MonoBehaviour
 		wallX = 0.0f;
 		
 		//calculate the bottom left and top left vertices of our mAABB.
-		var bottomLeft = center - mAABB.HalfSize - Vector2.right;
-		var topLeft = bottomLeft + new Vector2(0.0f, mAABB.HalfSize.y * 2.0f);
-		
-		//get the bottom left vertex's tile indices
-		int tileIndexX, tileIndexY;
+		//var bottomLeft = center - mAABB.HalfSize - Vector2.right;
+		//var topLeft = bottomLeft + new Vector2(0.0f, mAABB.HalfSize.y * 2.0f);
+        float smallOffset = mMap.cTileSize * 0.1f;
+        LbottomLeft = center - new Vector2(mAABB.HalfSize.x + smallOffset, mAABB.HalfSize.y);
+        LtopLeft = new Vector2(LbottomLeft.x, LbottomLeft.y + (mAABB.HalfSize.y * 2f));
+
+        //get the bottom left vertex's tile indices
+        int tileIndexX, tileIndexY;
 		
 		//iterate over all the tiles that the object may collide with from the top to the bottom
-		for (var checkedVector2i = bottomLeft; checkedVector2i.y < topLeft.y + mMap.cTileSize; checkedVector2i.y += mMap.cTileSize)
+		for (var checkedVector2i = LbottomLeft; checkedVector2i.y < LtopLeft.y + mMap.cTileSize; checkedVector2i.y += mMap.cTileSize)
 		{
 			//make sure that we don't check beyound the top right corner
-			checkedVector2i.y = Mathf.Min(checkedVector2i.y, topLeft.y);
+			checkedVector2i.y = Mathf.Min(checkedVector2i.y, LtopLeft.y);
 			
 			mMap.GetMapTileAtPoint (checkedVector2i, out tileIndexX, out tileIndexY);
 			
@@ -367,7 +377,7 @@ public class MovingObject : MonoBehaviour
 			}
 			
 			//if we checked all the possible tiles and there's nothing right next to the aabb
-			if (checkedVector2i.y == topLeft.y)
+			if (checkedVector2i.y == LtopLeft.y)
 				return false;
 		}
 		
