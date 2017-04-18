@@ -16,16 +16,19 @@ public class Character : MovingObject
     };
 
     [Header("Character")]
+    
+    public Vector2 mCharacterSize = new Vector2(1,2);
+    public float mCharacterGravityMultiplyer = 1;
+    public const float cMaxFalingSpeed = -900.0f;
+    public const int cJumpFramesThreshold = 4;
+    public float mWalkSfxTimer = 0.0f;
+    public const float cWalkSfxTime = 0.25f;
+
     public AudioClip mHitWallSfx;
     public AudioClip mJumpSfx;
     public AudioClip mWalkSfx;
     public AudioSource mAudioSource;
 
-    public float mCharacterGravity = -1030.0f;
-    public const float cMaxFalingSpeed = -900.0f;
-    public const int cJumpFramesThreshold = 4;
-    public float mWalkSfxTimer = 0.0f;
-    public const float cWalkSfxTime = 0.25f;
     /// <summary>
     /// The current state.
     /// </summary>
@@ -45,11 +48,13 @@ public class Character : MovingObject
     /// <summary>
     /// The hero's vertical speed when he starts a jump
     /// </summary>
+    [HideInInspector]
     public float mJumpSpeed;
 
     /// <summary>
     /// The walk speed constant in pixels/second.
     /// </summary>
+    [HideInInspector]
     public float mWalkSpeed;
 
     public List<Vector2i> mPath = new List<Vector2i>();
@@ -68,13 +73,13 @@ public class Character : MovingObject
             var start = mPath[0];
 
             Gizmos.color = Color.blue;
-            //Gizmos.DrawSphere(mMap.transform.position + new Vector3(start.x * mMap.cTileSize, start.y * mMap.cTileSize, -5.0f), 5.0f);
+            Gizmos.DrawSphere(mMap.transform.position + new Vector3(start.x * mMap.cTileSize, start.y * mMap.cTileSize, -5.0f), mMap.cTileSize/4);
 
             for (var i = 1; i < mPath.Count; ++i)
             {
                 var end = mPath[i];
                 Gizmos.color = Color.blue;
-                //Gizmos.DrawSphere(mMap.transform.position + new Vector3(end.x * mMap.cTileSize, end.y * mMap.cTileSize, -5.0f), 5.0f);
+                Gizmos.DrawSphere(mMap.transform.position + new Vector3(end.x * mMap.cTileSize, end.y * mMap.cTileSize, -5.0f), mMap.cTileSize / 4);
                 Gizmos.color = Color.red;
                 Gizmos.DrawLine(mMap.transform.position + new Vector3(start.x * mMap.cTileSize, start.y * mMap.cTileSize, -5.0f),
                                 mMap.transform.position + new Vector3(end.x * mMap.cTileSize, end.y * mMap.cTileSize, -5.0f));
@@ -124,7 +129,7 @@ public class Character : MovingObject
         //this should be applied at the beginning of the jump routine
         //because this way we can assure that when we hit the ground 
         //the speed.y will not change after we zero it
-        mSpeed.y += mCharacterGravity * Time.deltaTime;
+        mSpeed.y += Physics2D.gravity.y * mCharacterGravityMultiplyer * Time.deltaTime;
 
         mSpeed.y = Mathf.Max(mSpeed.y, cMaxFalingSpeed);
 

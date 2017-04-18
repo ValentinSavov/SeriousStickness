@@ -91,17 +91,23 @@ public class MovingObject : MonoBehaviour
 
     public bool mIgnoresOneWayPlatforms = false;
 
+    Vector2 CtopRight;
+    Vector2 CtopLeft;
 
-    
-	void OnDrawGizmos()
-	{
-		DrawMovingObjectGizmos ();
-	}
+    Vector2 GbottomLeft;
+    Vector2 GbottomRight;
 
-	/// <summary>
-	/// Draws the aabb and ceiling, ground and wall sensors .
-	/// </summary>
-	protected void DrawMovingObjectGizmos()
+    Vector2 RbottomRight;
+    Vector2 RtopRight;
+
+    Vector2 LbottomLeft;
+    Vector2 LtopLeft;
+
+
+    /// <summary>
+    /// Draws the aabb and ceiling, ground and wall sensors .
+    /// </summary>
+    protected void DrawMovingObjectGizmos()
 	{
 		//calculate the position of the aabb's center
 		var aabbPos = transform.position;
@@ -122,17 +128,6 @@ public class MovingObject : MonoBehaviour
 		Gizmos.DrawLine(RbottomRight, RtopRight);
 	}
 
-    Vector2 CtopRight;
-    Vector2 CtopLeft;
-
-    Vector2 GbottomLeft;
-    Vector2 GbottomRight;
-
-    Vector2 RbottomRight;
-    Vector2 RtopRight;
-
-    Vector2 LbottomLeft;
-    Vector2 LtopLeft;
 
 
     /// <summary>

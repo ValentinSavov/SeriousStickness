@@ -888,12 +888,13 @@ MonoBehaviour:
   mSpriteDepth: -1
   cOneWayPlatformThreshold: 2
   mIgnoresOneWayPlatforms: 0
+  mCharacterSize: {x: 1, y: 2}
+  mCharacterGravityMultiplyer: 1
+  mWalkSfxTimer: 0
   mHitWallSfx: {fileID: 8300000, guid: 7b3da162083bd1843913301d43ce9840, type: 3}
   mJumpSfx: {fileID: 8300000, guid: 0675524b9de73754286435cc2b6083ca, type: 3}
   mWalkSfx: {fileID: 8300000, guid: 129cfec52de8a314b809cf8c994139b6, type: 3}
   mAudioSource: {fileID: 450605702}
-  mCharacterGravity: -1030
-  mWalkSfxTimer: 0
   mCurrentState: 0
   mAnimator: {fileID: 450605700}
   mInputs: 
@@ -5478,12 +5479,13 @@ MonoBehaviour:
   mSpriteDepth: -1
   cOneWayPlatformThreshold: 2
   mIgnoresOneWayPlatforms: 0
+  mCharacterSize: {x: 1, y: 2}
+  mCharacterGravityMultiplyer: 1
+  mWalkSfxTimer: 0
   mHitWallSfx: {fileID: 8300000, guid: 7b3da162083bd1843913301d43ce9840, type: 3}
   mJumpSfx: {fileID: 8300000, guid: 0675524b9de73754286435cc2b6083ca, type: 3}
   mWalkSfx: {fileID: 8300000, guid: 129cfec52de8a314b809cf8c994139b6, type: 3}
   mAudioSource: {fileID: 450605702}
-  mCharacterGravity: -1030
-  mWalkSfxTimer: 0
   mCurrentState: 0
   mAnimator: {fileID: 1629910778}
   mInputs: 
@@ -5646,8 +5648,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackSpeed: 20
-  moveSpeed: 16
-  jumpSpeed: 41
+  moveSpeed: 10
+  jumpSpeed: 5
   totalHitPoints: 200
   totalArmorPoints: 0
   currentHitPoints: 0
@@ -7701,9 +7703,9 @@ MonoBehaviour:
   position: {x: 0, y: 0, z: 0}
   tilePrefab: {fileID: 21201918, guid: ffcd4b6442878c648af60936cdec0465, type: 2}
   mSpritesContainer: {fileID: 2106156356}
-  cTileSize: 0.9
-  mWidth: 20
-  mHeight: 20
+  cTileSize: 1
+  mWidth: 50
+  mHeight: 50
   mapRoom: {fileID: 11400000, guid: a8bf52a1f5d6dd645b610dd12bba5a2a, type: 2}
   gameCamera: {fileID: 1799959646}
   player: {fileID: 1629910776}
