@@ -481,7 +481,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 226340670}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 14.92, y: 14.03, z: 0}
+  m_LocalPosition: {x: 9.65, y: 7.1, z: 0}
   m_LocalScale: {x: 20, y: 20, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -5480,7 +5480,7 @@ MonoBehaviour:
   cOneWayPlatformThreshold: 2
   mIgnoresOneWayPlatforms: 0
   mCharacterSize: {x: 1, y: 2}
-  mCharacterGravityMultiplyer: 1
+  mCharacterGravityMultiplyer: 2
   mWalkSfxTimer: 0
   mHitWallSfx: {fileID: 8300000, guid: 7b3da162083bd1843913301d43ce9840, type: 3}
   mJumpSfx: {fileID: 8300000, guid: 0675524b9de73754286435cc2b6083ca, type: 3}
@@ -5649,7 +5649,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attackSpeed: 20
   moveSpeed: 10
-  jumpSpeed: 5
+  jumpSpeed: 13.5
   totalHitPoints: 200
   totalArmorPoints: 0
   currentHitPoints: 0
@@ -5877,15 +5877,15 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Size: {x: 128, y: 16}
+  m_Size: {x: 5, y: 1}
 --- !u!4 &1694183799
 Transform:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1694183797}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 32, y: 96, z: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 9, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2102976687}

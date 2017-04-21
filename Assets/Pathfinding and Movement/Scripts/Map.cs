@@ -290,7 +290,7 @@ public partial class Map : MonoBehaviour
 
         mGrid = new byte[Mathf.NextPowerOfTwo((int)mWidth), Mathf.NextPowerOfTwo((int)mHeight)];
 
-        //Camera.main.orthographicSize = Camera.main.pixelHeight / 2;
+        Camera.main.orthographicSize = Camera.main.pixelHeight / 2;
 
         /*
         for (int y = 0; y < mHeight; ++y)
@@ -338,6 +338,7 @@ public partial class Map : MonoBehaviour
                     tilesSprites[x, y] = Instantiate<SpriteRenderer>(tilePrefab);
                     tilesSprites[x, y].transform.parent = transform;
                     tilesSprites[x, y].transform.position = position + new Vector3(cTileSize * x, cTileSize * y, 10.0f);
+                    tilesSprites[x, y].transform.localScale *= cTileSize;
 
                 }
                 else

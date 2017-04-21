@@ -30,21 +30,20 @@ namespace Algorithms
     }
     #endregion
 	
-    public struct Location
-    {
-        public Location(int xy, int z)
-        {
-            this.xy = xy;
-            this.z = z;
-        }
-
-        public int xy;
-        public int z;
-    }
-
     public class PathFinderFast
     {
-        
+        public struct Location
+        {
+            public Location(int xy, int z)
+            {
+                this.xy = xy;
+                this.z = z;
+            }
+
+            public int xy;
+            public int z;
+        }
+
 		#region Structs
         internal struct PathFinderNodeFast
         {
@@ -93,9 +92,8 @@ namespace Algorithms
         
         //Promoted local variables to member variables to avoid recreation between calls
         private int                             mH                      = 0;
-        private Location                        mLocation               ;
+        private Location                        mLocation             ;
         private int                             mNewLocation            = 0;
-        private PathFinderNodeFast mNode;
         private ushort                          mLocationX              = 0;
         private ushort                          mLocationY              = 0;
         private ushort                          mNewLocationX           = 0;
@@ -133,18 +131,18 @@ namespace Algorithms
                 throw new Exception("Invalid Grid, size in X and Y must be power of 2");
 
             if (nodes == null || nodes.Length != (mGridX * mGridY))
-            {
-                nodes = new List<PathFinderNodeFast>[mGridX * mGridY];
+			{
+				nodes = new List<PathFinderNodeFast>[mGridX * mGridY];
                 touchedLocations = new Stack<int>(mGridX * mGridY);
                 mClose = new List<Vector2i>(mGridX * mGridY);
-            }
+			}
+			
+			for (var i = 0; i < nodes.Length; ++i)
+			{
+				nodes[i] = new List<PathFinderNodeFast>(1);
+			}
 
-            for (var i = 0; i < nodes.Length; ++i)
-                nodes[i] = new List<PathFinderNodeFast>(1);
-
-            mOpen = new PriorityQueueB<Location>(new ComparePFNodeMatrix(nodes));
-
-            InitPathFinder();
+            mOpen   = new PriorityQueueB<Location>(new ComparePFNodeMatrix(nodes));
         }
         #endregion
 
@@ -223,26 +221,6 @@ namespace Algorithms
         #endregion
 
         #region Methods
-
-        void InitPathFinder()
-        {
-            //mMap = 
-            //mPathFinder = new PathFinderFast(mGrid, this);
-
-            Formula = HeuristicFormula.Manhattan;
-            //if false then diagonal movement will be prohibited
-            Diagonals = false;
-            //if true then diagonal movement will have higher cost
-            HeavyDiagonals = false;
-            //estimate of path length
-            HeuristicEstimate = 6;
-            PunishChangeDirection = false;
-            TieBreaker = false;
-            SearchLimit = 10000;
-            DebugProgress = false;
-            DebugFoundPath = false;
-        }
-
         public void FindPathStop()
         {
             mStop = true;
@@ -250,13 +228,48 @@ namespace Algorithms
 
         public List<Vector2i> FindPath(Vector2i start, Vector2i end, int characterWidth, int characterHeight, short maxCharacterJumpHeight)
         {
+            Debug.Log(characterWidth + " " + characterHeight);
             //lock(this)
             {
                 while (touchedLocations.Count > 0)
                     nodes[touchedLocations.Pop()].Clear();
-				
-				if (mGrid[end.x, end.y] == 0)
-					return null;
+
+                var inSolidTile = false;
+
+                for (var i = 0; i < 2; ++i)
+                {
+                    inSolidTile = false;
+                    for (var w = 0; w < characterWidth; ++w)
+                    {
+                        if (mGrid[end.x + w, end.y] == 0
+                            || mGrid[end.x + w, end.y + characterHeight - 1] == 0)
+                        {
+                            inSolidTile = true;
+                            break;
+                        }
+
+                    }
+                    if (inSolidTile == false)
+                    {
+                        for (var h = 1; h < characterHeight - 1; ++h)
+                        {
+                            if (mGrid[end.x, end.y + h] == 0
+                                || mGrid[end.x + characterWidth - 1, end.y + h] == 0)
+                            {
+                                inSolidTile = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (inSolidTile)
+                        end.x -= characterWidth - 1;
+                    else
+                        break;
+                }
+
+                if (inSolidTile == true)
+                    return null;
 
                 mFound              = false;
                 mStop               = false;
@@ -266,9 +279,9 @@ namespace Algorithms
                 mCloseNodeValue     += 2;
                 mOpen.Clear();
 
-                mLocation.xy = (start.y << mGridXLog2) + start.x;
-                mLocation.z = 0;
-                mEndLocation                   = (end.y << mGridXLog2) + end.x;
+                mLocation.xy                     = (start.y << mGridXLog2) + start.x;
+                mLocation.z                     = 0;
+                mEndLocation                    = (end.y << mGridXLog2) + end.x;
 
                 PathFinderNodeFast firstNode = new PathFinderNodeFast();
                 firstNode.G = 0;
@@ -277,13 +290,24 @@ namespace Algorithms
                 firstNode.PY = (ushort)start.y;
                 firstNode.PZ = 0;
                 firstNode.Status = mOpenNodeValue;
-				
-				if (mMap.IsGround(start.x, start.y - 1))
-					firstNode.JumpLength = 0;
-				else
-					firstNode.JumpLength = (short)(maxCharacterJumpHeight * 2);
-				
-				nodes[mLocation.xy].Add(firstNode);
+
+                bool startsOnGround = false;
+
+                for (int x = start.x; x < start.x + characterWidth; ++x)
+                {
+                    if (mMap.IsGround(x, start.y - 1))
+                    {
+                        startsOnGround = true;
+                        break;
+                    }
+                }
+
+                if (startsOnGround)
+                    firstNode.JumpLength = 0;
+                else
+                    firstNode.JumpLength = (short)(maxCharacterJumpHeight * 2);
+
+                nodes[mLocation.xy].Add(firstNode);
                 touchedLocations.Push(mLocation.xy);
 
                 mOpen.Push(mLocation);
@@ -296,8 +320,8 @@ namespace Algorithms
                     if (nodes[mLocation.xy][mLocation.z].Status == mCloseNodeValue)
                         continue;
 
-                    mLocationX = (ushort) (mLocation.xy & mGridXMinus1);
-                    mLocationY = (ushort)(mLocation.xy >> mGridXLog2);
+                    mLocationX   = (ushort) (mLocation.xy & mGridXMinus1);
+                    mLocationY   = (ushort) (mLocation.xy >> mGridXLog2);
 
                     if (mLocation.xy == mEndLocation)
                     {
@@ -318,39 +342,45 @@ namespace Algorithms
                         mNewLocationX = (ushort) (mLocationX + mDirection[i,0]);
                         mNewLocationY = (ushort) (mLocationY + mDirection[i,1]);
                         mNewLocation  = (mNewLocationY << mGridXLog2) + mNewLocationX;
-						
-						var onGround = false;
-						var atCeiling = false;
-                        //vsa
-                        //Debug.Log(mLocationX + " " + mLocationY);
-                        if ((mLocationX <= 0) || (mLocationY <= 0))
-                            continue;
 
-                        if (mGrid[mNewLocationX, mNewLocationY] == 0)
-                            continue;
+                        var onGround = false;
+                        var atCeiling = false;
 
-                        if (mMap.IsGround(mNewLocationX, mNewLocationY - 1))
-                            onGround = true;
-                        else if (mGrid[mNewLocationX, mNewLocationY + characterHeight] == 0)
-                            atCeiling = true;	
+                        for (var w = 0; w < characterWidth; ++w)
+                        {
+                            if (mGrid[mNewLocationX + w, mNewLocationY] == 0
+                                || mGrid[mNewLocationX + w, mNewLocationY + characterHeight - 1] == 0)
+                                goto CHILDREN_LOOP_END;
+
+                            if (mMap.IsGround(mNewLocationX + w, mNewLocationY - 1))
+                                onGround = true;
+                            else if (mGrid[mNewLocationX + w, mNewLocationY + characterHeight] == 0)
+                                atCeiling = true;
+                        }
+                        for (var h = 1; h < characterHeight - 1; ++h)
+                        {
+                            if (mGrid[mNewLocationX, mNewLocationY + h] == 0
+                                || mGrid[mNewLocationX + characterWidth - 1, mNewLocationY + h] == 0)
+                                goto CHILDREN_LOOP_END;
+                        }
 						
 						//calculate a proper jumplength value for the successor
 
                         var jumpLength = nodes[mLocation.xy][mLocation.z].JumpLength;
                         short newJumpLength = jumpLength;
 
-						if (atCeiling)
+                        if (onGround)
+							newJumpLength = 0;
+						else if (atCeiling)
                         {
                             if (mNewLocationX != mLocationX)
                                 newJumpLength = (short)Mathf.Max(maxCharacterJumpHeight * 2 + 1, jumpLength + 1);
                             else
                                 newJumpLength = (short)Mathf.Max(maxCharacterJumpHeight * 2, jumpLength + 2);
                         }
-                        else if (onGround)
-							newJumpLength = 0;
 						else if (mNewLocationY > mLocationY)
 						{
-                            if (jumpLength < 2) //first jump is always two block up instead of one up and optionally one to either right or left
+                            if (jumpLength < 2 && maxCharacterJumpHeight > 2) //first jump is always two block up instead of one up and optionally one to either right or left
                                 newJumpLength = 3;
                             else  if (jumpLength % 2 == 0)
                                 newJumpLength = (short)(jumpLength + 2);
@@ -366,34 +396,39 @@ namespace Algorithms
 						}
 						else if (!onGround && mNewLocationX != mLocationX)
 							newJumpLength = (short)(jumpLength + 1);
-						
-						if (jumpLength >= 0 && jumpLength % 2 != 0 && mLocationX != mNewLocationX)
+
+                        if (jumpLength >= 0 && jumpLength % 2 != 0 && mLocationX != mNewLocationX)
+                            continue;
+
+                        if ((newJumpLength == 0 && mNewLocationX != mLocationX && jumpLength + 1 >= maxCharacterJumpHeight * 2 + 6 && (jumpLength + 1 - (maxCharacterJumpHeight * 2 + 6)) % 8 <= 1)
+                             || (newJumpLength >= maxCharacterJumpHeight * 2 + 6 && mNewLocationX != mLocationX && (newJumpLength - (maxCharacterJumpHeight * 2 + 6)) % 8 != 7))
 							continue;
-						
-						//if we're falling and succeor's height is bigger than ours, skip that successor
+
+                        //if we're falling and succeor's height is bigger than ours, skip that successor
 						if (jumpLength >= maxCharacterJumpHeight * 2 && mNewLocationY > mLocationY)
 							continue;
-
-                        if (newJumpLength >= maxCharacterJumpHeight * 2 + 6 && mNewLocationX != mLocationX && (newJumpLength - (maxCharacterJumpHeight * 2 + 6)) % 8 != 3)
-							continue;
-
 
                         mNewG = nodes[mLocation.xy][mLocation.z].G + mGrid[mNewLocationX, mNewLocationY] + newJumpLength / 4;
 
                         if (nodes[mNewLocation].Count > 0)
                         {
                             int lowestJump = short.MaxValue;
+                            int lowestG = short.MaxValue;
                             bool couldMoveSideways = false;
                             for (int j = 0; j < nodes[mNewLocation].Count; ++j)
                             {
                                 if (nodes[mNewLocation][j].JumpLength < lowestJump)
                                     lowestJump = nodes[mNewLocation][j].JumpLength;
 
+                                if (nodes[mNewLocation][j].G < lowestG)
+                                    lowestG = nodes[mNewLocation][j].G;
+
                                 if (nodes[mNewLocation][j].JumpLength % 2 == 0 && nodes[mNewLocation][j].JumpLength < maxCharacterJumpHeight * 2 + 6)
                                     couldMoveSideways = true;
                             }
 
-                            if (lowestJump <= newJumpLength && (newJumpLength % 2 != 0 || newJumpLength >= maxCharacterJumpHeight * 2 + 6 || couldMoveSideways))
+                            // The current node has smaller cost than the previous? then skip this node
+                            if (lowestG <= mNewG && lowestJump <= newJumpLength && (newJumpLength % 2 != 0 || newJumpLength >= maxCharacterJumpHeight * 2 + 6 || couldMoveSideways))
                                 continue;
                         }
 						
@@ -440,8 +475,8 @@ namespace Algorithms
                         nodes[mNewLocation].Add(newNode);
                         mOpen.Push(new Location(mNewLocation, nodes[mNewLocation].Count - 1));
 						
-					//CHILDREN_LOOP_END:
-						//continue;
+					CHILDREN_LOOP_END:
+						continue;
                     }
 
                     nodes[mLocation.xy][mLocation.z] = nodes[mLocation.xy][mLocation.z].UpdateStatus(mCloseNodeValue);
@@ -453,19 +488,19 @@ namespace Algorithms
                     mClose.Clear();
                     var posX = end.x;
                     var posY = end.y;
-
-                    var fPrevNodeTmp = new PathFinderNodeFast();
+					
+					var fPrevNodeTmp = new PathFinderNodeFast();
                     var fNodeTmp = nodes[mEndLocation][0];
-
+					
                     var fNode = end;
                     var fPrevNode = end;
 
                     var loc = (fNodeTmp.PY << mGridXLog2) + fNodeTmp.PX;
-
-                    while (fNode.x != fNodeTmp.PX || fNode.y != fNodeTmp.PY)
+					
+                    while(fNode.x != fNodeTmp.PX || fNode.y != fNodeTmp.PY)
                     {
                         var fNextNodeTmp = nodes[loc][fNodeTmp.PZ];
-
+                        
                         if ((mClose.Count == 0)
                             || (mMap.IsOneWayPlatform(fNode.x, fNode.y - 1))
                             || (mGrid[fNode.x, fNode.y - 1] == 0 && mMap.IsOneWayPlatform(fPrevNode.x, fPrevNode.y - 1))
@@ -474,18 +509,18 @@ namespace Algorithms
                             || (fNodeTmp.JumpLength == 0 && fPrevNodeTmp.JumpLength != 0)                                                                                                       //mark landings
                             || (fNode.y > mClose[mClose.Count - 1].y && fNode.y > fNodeTmp.PY)
                             || (fNode.y < mClose[mClose.Count - 1].y && fNode.y < fNodeTmp.PY)
-                            || ((mMap.IsGround(fNode.x - 1, fNode.y) || mMap.IsGround(fNode.x + 1, fNode.y))
+                            || ((mMap.IsGround(fNode.x - 1, fNode.y) || mMap.IsGround(fNode.x + 1, fNode.y)) 
                                 && fNode.y != mClose[mClose.Count - 1].y && fNode.x != mClose[mClose.Count - 1].x))
                             mClose.Add(fNode);
 
                         fPrevNode = fNode;
-                        posX = fNodeTmp.PX;
+						posX = fNodeTmp.PX;
                         posY = fNodeTmp.PY;
-                        fPrevNodeTmp = fNodeTmp;
+						fPrevNodeTmp = fNodeTmp;
                         fNodeTmp = fNextNodeTmp;
-                        loc = (fNodeTmp.PY << mGridXLog2) + fNodeTmp.PX;
+						loc = (fNodeTmp.PY << mGridXLog2) + fNodeTmp.PX;
                         fNode = new Vector2i(posX, posY);
-                    }
+                    } 
 
                     mClose.Add(fNode);
 
