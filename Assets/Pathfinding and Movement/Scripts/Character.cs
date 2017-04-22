@@ -17,9 +17,9 @@ public class Character : MovingObject
 
     [Header("Character")]
     
-    public Vector2 mCharacterSize = new Vector2(1,2);
+
     public float mCharacterGravityMultiplyer = 1;
-    public const float cMaxFalingSpeed = -900.0f;
+    public const float cMaxFalingSpeed = -90.0f;
     public const int cJumpFramesThreshold = 4;
     public float mWalkSfxTimer = 0.0f;
     public const float cWalkSfxTime = 0.25f;
@@ -147,7 +147,7 @@ public class Character : MovingObject
         }
         else if (mInputs[(int)KeyInput.GoRight])	//if right key is pressed then accelerate right
         {
-            transform.localScale = new Vector3(-1.0f, 1.0f, 1.0f);
+            transform.localScale = new Vector3(-mScale.x, mScale.y, 1.0f);
             mSpeed.x = mWalkSpeed;
 
             //..W
@@ -158,7 +158,7 @@ public class Character : MovingObject
         }
         else if (mInputs[(int)KeyInput.GoLeft])	//if left key is pressed then accelerate left
         {
-            transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+            transform.localScale = new Vector3(mScale.x, mScale.y, 1.0f);
             mSpeed.x = -mWalkSpeed;
 
             //W..
@@ -228,12 +228,12 @@ public class Character : MovingObject
                 else if (mInputs[(int)KeyInput.GoRight])
                 {
                     mSpeed.x = mWalkSpeed;
-                    transform.localScale = new Vector3(-1.0f, 1.0f, 1.0f);
+                    transform.localScale = new Vector3(-mScale.x, mScale.y, 1.0f);
                 }
                 else if (mInputs[(int)KeyInput.GoLeft])
                 {
                     mSpeed.x = -mWalkSpeed;
-                    transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+                    transform.localScale = new Vector3(mScale.x, mScale.y, 1.0f);
                 }
 
                 //if there's no tile to walk on, fall

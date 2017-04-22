@@ -873,8 +873,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mOldPosition: {x: 0, y: 0}
   mPosition: {x: 0, y: 0}
+  mScale: {x: 0, y: 0}
   mSpeed: {x: 0, y: 0}
   mOldSpeed: {x: 0, y: 0}
+  mAABBOffset: {x: 0, y: 0}
   mMap: {fileID: 2106156355}
   mPushesRightWall: 0
   mPushesLeftWall: 0
@@ -888,7 +890,6 @@ MonoBehaviour:
   mSpriteDepth: -1
   cOneWayPlatformThreshold: 2
   mIgnoresOneWayPlatforms: 0
-  mCharacterSize: {x: 1, y: 2}
   mCharacterGravityMultiplyer: 1
   mWalkSfxTimer: 0
   mHitWallSfx: {fileID: 8300000, guid: 7b3da162083bd1843913301d43ce9840, type: 3}
@@ -908,9 +909,8 @@ MonoBehaviour:
   mFramesOfJumping: 0
   mStuckFrames: 0
   mMaxJumpHeight: 5
-  mPrevDistanceToCurrentDestX: 0
-  mPrevDistanceToCurrentDestY: 0
-  mNotGettingCloserToNextNodeFrames: 0
+  mWidth: 1
+  mHeight: 3
 --- !u!212 &450605704
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -5464,8 +5464,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mOldPosition: {x: 0, y: 0}
   mPosition: {x: 0, y: 0}
+  mScale: {x: 0, y: 0}
   mSpeed: {x: 0, y: 0}
   mOldSpeed: {x: 0, y: 0}
+  mAABBOffset: {x: 0, y: 0}
   mMap: {fileID: 2106156355}
   mPushesRightWall: 0
   mPushesLeftWall: 0
@@ -5479,7 +5481,6 @@ MonoBehaviour:
   mSpriteDepth: -1
   cOneWayPlatformThreshold: 2
   mIgnoresOneWayPlatforms: 0
-  mCharacterSize: {x: 1, y: 2}
   mCharacterGravityMultiplyer: 2
   mWalkSfxTimer: 0
   mHitWallSfx: {fileID: 8300000, guid: 7b3da162083bd1843913301d43ce9840, type: 3}
@@ -5499,9 +5500,8 @@ MonoBehaviour:
   mFramesOfJumping: 0
   mStuckFrames: 0
   mMaxJumpHeight: 5
-  mPrevDistanceToCurrentDestX: 0
-  mPrevDistanceToCurrentDestY: 0
-  mNotGettingCloserToNextNodeFrames: 0
+  mWidth: 1
+  mHeight: 1
 --- !u!81 &1629910777
 AudioListener:
   m_ObjectHideFlags: 0
@@ -5675,7 +5675,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1629910775}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.77, y: 4.98, z: 0}
+  m_LocalPosition: {x: 4.72, y: 6.45, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 726466214}

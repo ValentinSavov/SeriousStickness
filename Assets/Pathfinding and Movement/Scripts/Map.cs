@@ -410,7 +410,7 @@ public partial class Map : MonoBehaviour
             //player.MoveTo(new Vector2i(mouseTileX, mouseTileY));
             if(IsOnMap(mousePosInWorld))
             {
-                player.SetDestination(mousePosInWorld);
+                //player.SetDestination(mousePosInWorld);
             }
         }
         ////////

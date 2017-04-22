@@ -14,21 +14,21 @@ public class MovingObject : MonoBehaviour
 	/// The current position.
 	/// </summary>
 	public Vector2 mPosition;
-	
-	/// <summary>
-	/// The current speed in pixels/second.
-	/// </summary>
-	public Vector2 mSpeed;
+    public Vector2 mScale;
+    /// <summary>
+    /// The current speed in pixels/second.
+    /// </summary>
+    public Vector2 mSpeed;
 	
 	/// <summary>
 	/// The previous speed in pixels/second.
 	/// </summary>
 	public Vector2 mOldSpeed;
-	
-	/// <summary>
-	/// The AABB for collision queries.
-	/// </summary>
-	public AABB mAABB;
+    public Vector2 mAABBOffset;
+    /// <summary>
+    /// The AABB for collision queries.
+    /// </summary>
+    public AABB mAABB;
 	
 	/// <summary>
 	/// The tile map.
@@ -110,10 +110,9 @@ public class MovingObject : MonoBehaviour
     protected void DrawMovingObjectGizmos()
 	{
 		//calculate the position of the aabb's center
-		var aabbPos = transform.position;
-		
-		//draw the aabb rectangle
-		Gizmos.color = Color.yellow;
+        var aabbPos = transform.position + (Vector3)mAABBOffset;
+        //draw the aabb rectangle
+        Gizmos.color = Color.yellow;
    		Gizmos.DrawWireCube(aabbPos, mAABB.HalfSize*2.0f);
 
         Gizmos.color = Color.red;
@@ -142,7 +141,7 @@ public class MovingObject : MonoBehaviour
     public bool HasCeiling(Vector2 position, out float ceilingY)
 	{
 		//make sure the aabb is up to date with the position
-		var center = position;
+		var center = position + mAABBOffset;
 		
 		//init the groundY
 		ceilingY = 0.0f;
@@ -202,7 +201,7 @@ public class MovingObject : MonoBehaviour
 	public bool HasGround(Vector2 position, out float groundY)
 	{
 		//make sure the aabb is up to date with the position
-		var center = position;
+		var center = position + mAABBOffset;
 		
 		//init the groundY
 		groundY = 0.0f;
@@ -275,7 +274,7 @@ public class MovingObject : MonoBehaviour
 	public bool CollidesWithRightWall(Vector2 position, out float wallX)
 	{
 		//make sure the aabb is up to date with the position
-		var center = position;
+		var center = position + mAABBOffset;
 		
 		//init the wallX
 		wallX = 0.0f;
@@ -333,7 +332,7 @@ public class MovingObject : MonoBehaviour
 	public bool CollidesWithLeftWall(Vector2 position, out float wallX)
 	{
 		//make sure the aabb is up to date with the position
-		var center = position;
+		var center = position + mAABBOffset;
 		
 		//init the wallX
 		wallX = 0.0f;
@@ -379,120 +378,120 @@ public class MovingObject : MonoBehaviour
 		return false;
 	}
 
-	/// <summary>
-	/// Updates the moving object's physics, integrates the movement, updates sensors for terrain collisions.
-	/// </summary>
-	public void UpdatePhysics()
-	{	
-		//assign the previous state of onGround, atCeiling, pushesRightWall, pushesLeftWall
-		//before those get recalculated for this frame
-		mWasOnGround = mOnGround;
-		mPushedRightWall = mPushesRightWall;
-		mPushedLeftWall = mPushesLeftWall;
-		mWasAtCeiling = mAtCeiling;
-		
-		mOnOneWayPlatform = false;
-		
-		//save the speed to oldSpeed vector
-		mOldSpeed = mSpeed;
-		
-		//save the position to the oldPosition vector
-		mOldPosition = mPosition;
-		
-		//integrate the movement only if we're not tweening
-		mPosition += mSpeed*Time.deltaTime;
-		
-		var checkAgainLeft = false;
-		
+    /// <summary>
+    /// Updates the moving object's physics, integrates the movement, updates sensors for terrain collisions.
+    /// </summary>
+    public void UpdatePhysics()
+    {
+        //assign the previous state of onGround, atCeiling, pushesRightWall, pushesLeftWall
+        //before those get recalculated for this frame
+        mWasOnGround = mOnGround;
+        mPushedRightWall = mPushesRightWall;
+        mPushedLeftWall = mPushesLeftWall;
+        mWasAtCeiling = mAtCeiling;
 
-		float groundY, ceilingY;
-		float rightWallX = 0.0f, leftWallX = 0.0f;
-		
-		//if we overlap a tile on the left then align the hero
-		if (mSpeed.x <= 0.0f && CollidesWithLeftWall(mPosition, out leftWallX))
-		{
-			if (mOldPosition.x - mAABB.HalfSize.x >= leftWallX)
-			{
-				mPosition.x = leftWallX + mAABB.HalfSize.x;
-				mSpeed.x = Mathf.Max(mSpeed.x, 0.0f);
-				
-				mPushesLeftWall = true;
-			}
-			else
-				checkAgainLeft = true;
-		}
-		else
-			mPushesLeftWall = false;
-		
-		var checkAgainRight = false;
-		
-		//if we overlap a tile on the right then align the hero
-		if (mSpeed.x >= 0.0f && CollidesWithRightWall(mPosition, out rightWallX))
-		{
-			if (mOldPosition.x + mAABB.HalfSize.x <= rightWallX)
-			{
-				mPosition.x = rightWallX - mAABB.HalfSize.x;
-				mSpeed.x = Mathf.Min(mSpeed.x, 0.0f);
-				
-				mPushesRightWall = true;
-			}
-			else
-				checkAgainRight = true;
-		}
-		else
-			mPushesRightWall = false;
-		
-		//when we hit the ground
-		//we can't hit the ground if our speed is positive
-		if (HasGround(mPosition, out groundY) && mSpeed.y <= 0.0f
-			&& mOldPosition.y - mAABB.HalfSize.y >= groundY - 0.5f)
-		{
-			//calculate the y position on top of the ground
-			mPosition.y = groundY + mAABB.HalfSize.y;
-				
-			//stop falling
-			mSpeed.y = 0.0f;
+        mOnOneWayPlatform = false;
 
-			//we are on the ground now
-			mOnGround = true;
-		}
-		else
-			mOnGround = false;
-		
-		//check if the hero hit the ceiling
-		if (HasCeiling(mPosition, out ceilingY) && mSpeed.y >= 0.0f
-			&& mOldPosition.y + mAABB.HalfSize.y + 1.0f <= ceilingY)
-		{
-			mPosition.y = ceilingY - mAABB.HalfSize.y - 1.0f;
-				
-			//stop going up
-			mSpeed.y = 0.0f;
-			
-			mAtCeiling = true;
-		}
-		else
-			mAtCeiling = false;
-		
-		//if we are colliding with the block but we don't know from which side we had hit him, just prioritize the horizontal alignment
-		if (checkAgainLeft && !mOnGround && !mAtCeiling)
-		{
-			mPosition.x = leftWallX + mAABB.HalfSize.x;
-			mSpeed.x = Mathf.Max(mSpeed.x, 0.0f);
+        //save the speed to oldSpeed vector
+        mOldSpeed = mSpeed;
 
-			mPushesLeftWall = true;
-		}
-		else if (checkAgainRight && !mOnGround && !mAtCeiling)
-		{
-			mPosition.x = rightWallX - mAABB.HalfSize.x;
-			mSpeed.x = Mathf.Min(mSpeed.x, 0.0f);
+        //save the position to the oldPosition vector
+        mOldPosition = mPosition;
 
-			mPushesRightWall = true;
-		}
-		
-		//update the aabb
-		mAABB.Center = mPosition;
-		
-		//apply the changes to the transform
-		transform.position = new Vector3((mPosition.x), (mPosition.y), mSpriteDepth);
-	}
+        //integrate the movement only if we're not tweening
+        mPosition += mSpeed * Time.deltaTime;
+
+        var checkAgainLeft = false;
+
+
+        float groundY, ceilingY;
+        float rightWallX = 0.0f, leftWallX = 0.0f;
+
+        //if we overlap a tile on the left then align the hero
+        if (mSpeed.x <= 0.0f && CollidesWithLeftWall(mPosition, out leftWallX))
+        {
+            if (mOldPosition.x - mAABB.HalfSize.x + mAABBOffset.x >= leftWallX)
+            {
+                mPosition.x = leftWallX + mAABB.HalfSize.x - mAABBOffset.x;
+                mSpeed.x = Mathf.Max(mSpeed.x, 0.0f);
+
+                mPushesLeftWall = true;
+            }
+            else
+                checkAgainLeft = true;
+        }
+        else
+            mPushesLeftWall = false;
+
+        var checkAgainRight = false;
+
+        //if we overlap a tile on the right then align the hero
+        if (mSpeed.x >= 0.0f && CollidesWithRightWall(mPosition, out rightWallX))
+        {
+            if (mOldPosition.x + mAABB.HalfSize.x + mAABBOffset.x <= rightWallX)
+            {
+                mPosition.x = rightWallX - mAABB.HalfSize.x - mAABBOffset.x;
+                mSpeed.x = Mathf.Min(mSpeed.x, 0.0f);
+
+                mPushesRightWall = true;
+            }
+            else
+                checkAgainRight = true;
+        }
+        else
+            mPushesRightWall = false;
+
+        //when we hit the ground
+        //we can't hit the ground if our speed is positive
+        if (HasGround(mPosition, out groundY) && mSpeed.y <= 0.0f
+            && mOldPosition.y - mAABB.HalfSize.y + mAABBOffset.y >= groundY - 0.5f)
+        {
+            //calculate the y position on top of the ground
+            mPosition.y = groundY + mAABB.HalfSize.y - mAABBOffset.y;
+
+            //stop falling
+            mSpeed.y = 0.0f;
+
+            //we are on the ground now
+            mOnGround = true;
+        }
+        else
+            mOnGround = false;
+
+        //check if the hero hit the ceiling
+        if (HasCeiling(mPosition, out ceilingY) && mSpeed.y >= 0.0f
+            && mOldPosition.y + mAABB.HalfSize.y + mAABBOffset.y + 1.0f <= ceilingY)
+        {
+            mPosition.y = ceilingY - mAABB.HalfSize.y - mAABBOffset.y - 1.0f;
+
+            //stop going up
+            mSpeed.y = 0.0f;
+
+            mAtCeiling = true;
+        }
+        else
+            mAtCeiling = false;
+
+        //if we are colliding with the block but we don't know from which side we had hit him, just prioritize the horizontal alignment
+        if (checkAgainLeft && !mOnGround && !mAtCeiling)
+        {
+            mPosition.x = leftWallX + mAABB.HalfSize.x;
+            mSpeed.x = Mathf.Max(mSpeed.x, 0.0f);
+
+            mPushesLeftWall = true;
+        }
+        else if (checkAgainRight && !mOnGround && !mAtCeiling)
+        {
+            mPosition.x = rightWallX - mAABB.HalfSize.x;
+            mSpeed.x = Mathf.Min(mSpeed.x, 0.0f);
+
+            mPushesRightWall = true;
+        }
+
+        //update the aabb
+        mAABB.Center = mPosition + mAABBOffset;
+
+        //apply the changes to the transform
+        transform.position = new Vector3((mPosition.x), (mPosition.y), mSpriteDepth);
+    }
 }

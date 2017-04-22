@@ -36,7 +36,7 @@ public class BotControl : MonoBehaviour, DamageAcceptor
 
     void TargetUpdate()
     {
-        agent.SetDestination((Vector2)target.transform.position);
+        agent.MoveTo((Vector2)target.transform.position);
     }
 
     float previousEngageTime = 0f;

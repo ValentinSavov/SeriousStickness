@@ -79,11 +79,11 @@ namespace Algorithms
         private bool                            mStopped                = true;
         private HeuristicFormula                mFormula                = HeuristicFormula.Manhattan;
         private bool                            mDiagonals              = true;
-        private int                             mHEstimate              = 2;
+        private int                             mHEstimate              = 6;
         private bool                            mPunishChangeDirection  = false;
         private bool                            mTieBreaker             = false;
         private bool                            mHeavyDiagonals         = false;
-        private int                             mSearchLimit            = 2000;
+        private int                             mSearchLimit            = 1000000;
         private double                          mCompletedTime          = 0;
         private bool                            mDebugProgress          = false;
         private bool                            mDebugFoundPath         = false;
@@ -307,6 +307,7 @@ namespace Algorithms
                 else
                     firstNode.JumpLength = (short)(maxCharacterJumpHeight * 2);
 
+                //Debug.Log("mLocation.xy: " + mLocation.xy);
                 nodes[mLocation.xy].Add(firstNode);
                 touchedLocations.Push(mLocation.xy);
 
