@@ -2,18 +2,19 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using Algorithms;
+using UnityEngine.UI;
 
 public class NavMoveAgent : Character
 {
     
     public enum BotAction
     {
-        Idle = 0,
+        None = 0,
         MoveTo,
     }
 
     [Header("Navigation and Move Agent")]
-    public BotAction mCurrentAction = BotAction.Idle;
+    public BotAction mCurrentAction = BotAction.None;
 
     Vector2 mDestination;
 
@@ -22,19 +23,15 @@ public class NavMoveAgent : Character
     public int mFramesOfJumping = 0;
     public int mStuckFrames = 0;
 
-    public int mMaxJumpHeight = 5;
-    
-    public const int cMaxStuckFrames = 20;
-    public const int cMaxFramesNotGettingCloserToNextNode = 120;
-    public float mPrevDistanceToCurrentDestX, mPrevDistanceToCurrentDestY;
-    public int mNotGettingCloserToNextNodeFrames = 0;
+    public float mMaxJumpHeight = 5;
+    public float mWidth = 1;
+    public float mHeight = 3;
 
-    bool mJumpingUpStairsLeft = false;
-    bool mJumpingUpStairsRight = false;
+    private StickStats stats;
+	
+	public const int cMaxStuckFrames = 20;
 
-    const float cBotMaxPositionError = 1.0f;
-
-    StickStats stats;
+    float cBotMaxPositionError = 1.0f;
 
     void Start()
     {
@@ -44,6 +41,8 @@ public class NavMoveAgent : Character
     }
     void CharacterInit(bool[] inputs, bool[] prevInputs)
     {
+        //mScale = Vector2.one;
+        mScale = new Vector3(mWidth, mHeight, 1f);
         mInputs = inputs;
         mPrevInputs = prevInputs;
 
@@ -51,37 +50,88 @@ public class NavMoveAgent : Character
         mAudioSource = GetComponent<AudioSource>();
         mPosition = transform.position;
         mDestination = mPosition;
-
-        //demo1
-        //mAABB.HalfSize = new Vector2(6.0f, 7.0f);
-        //demo2
-        //mAABB.HalfSize = new Vector2(6.0f, 20.0f);
-        //vsa
-        mAABB.HalfSize = mCharacterSize/2;
-
+		
+        mAABB.HalfSize = new Vector2((float)mWidth/2, (float)mHeight/2);
+        
         mJumpSpeed = stats.jumpSpeed;// Constants.cJumpSpeed;
         mWalkSpeed = stats.moveSpeed;// Constants.cWalkSpeed;
 
-        //transform.localScale = new Vector3(mAABB.HalfSizeX / 8.0f, mAABB.HalfSizeY / 8.0f, 1.0f);
+        mAABBOffset.y = mAABB.HalfSizeY;
+        mAABB.Center = mPosition + mAABBOffset;
     }
-    void MoveTo(Vector2i destination)
+
+    public void SetCharacterWidth(Slider slider)
+    {
+        mWidth = (int)slider.value;
+
+        mPosition = transform.position;
+
+        mScale.x = Mathf.Sign(mScale.x) * (float)mWidth;
+        transform.localScale = new Vector3(mScale.x, mScale.y, 1.0f);
+
+        mAABB.HalfSizeX = mWidth / 2;
+    }
+
+    public void SetCharacterHeight(Slider slider)
+    {
+        mHeight = (int)slider.value;
+
+        mPosition = transform.position;
+
+        mScale.y = (float)mHeight * 0.33333f;
+        transform.localScale = new Vector3(mScale.x, mScale.y, 1.0f);
+
+        mAABB.HalfSizeY = mHeight / 2;
+
+        mAABBOffset.y = mAABB.HalfSizeY;
+    }
+
+    bool IsOnGroundAndFitsPos(Vector2i pos)
+    {
+        for (int y = pos.y; y < pos.y + mHeight; ++y)
+        {
+            for (int x = pos.x; x < pos.x + mWidth; ++x)
+            {
+                if (mMap.IsObstacle(x, y))
+                    return false;
+            }
+        }
+
+        for (int x = pos.x; x < pos.x + mWidth; ++x)
+        {
+            if (mMap.IsGround(x, pos.y - 1))
+                return true;
+        }
+
+        return false;
+    }
+
+    public void MoveTo(Vector2i destination)
     {
         mStuckFrames = 0;
-        mNotGettingCloserToNextNodeFrames = 0;
-        mPrevDistanceToCurrentDestX = 0.0f;
-        mPrevDistanceToCurrentDestY = 0.0f;
+
+        Vector2i startTile = mMap.GetMapTileAtPoint(mAABB.Center - mAABB.HalfSize + Vector2.one * mMap.cTileSize * 0.5f);
+        
+        if (mOnGround && !IsOnGroundAndFitsPos(startTile))
+        {
+            if (IsOnGroundAndFitsPos(new Vector2i(startTile.x + 1, startTile.y)))
+                startTile.x += 1;
+            else
+                startTile.x -= 1;
+        }
+
         PathFinderFast mPathFinder = new PathFinderFast(mMap);
-        OnFoundPath(
-            mPathFinder.FindPath(
-                    mMap.GetMapTileAtPoint(new Vector2(mAABB.Center.x, mAABB.Center.y - mAABB.HalfSizeY + 1.0f)),
-                    new Vector2i(destination.x, destination.y),
-                    Mathf.CeilToInt(mAABB.HalfSizeX / 8.0f), Mathf.CeilToInt(mAABB.HalfSizeY / 8.0f),
-                    (short)mMaxJumpHeight));
-    }
-    void OnFoundPath(List<Vector2i> path)
-    {
-        mJumpingUpStairsRight = false;
-        mJumpingUpStairsLeft = false;
+        Debug.Log("mAABB.HalfSize: " + mAABB.HalfSize);
+        Debug.Log("mAABB.Center: " + mAABB.Center);
+        Debug.Log("mAABBOffset: " + mAABBOffset);
+        Debug.Log("startTile: " + startTile.x + " " + startTile.y);
+        var path = mPathFinder.FindPath(
+                        startTile, 
+                        destination,
+                        Mathf.CeilToInt(mWidth),//Mathf.CeilToInt(mAABB.HalfSizeX / 8.0f), 
+                        Mathf.CeilToInt(mHeight),//Mathf.CeilToInt(mAABB.HalfSizeY / 8.0f), 
+                        (short)mMaxJumpHeight);
+
 
         mPath.Clear();
 
@@ -92,23 +142,22 @@ public class NavMoveAgent : Character
 
             mCurrentNodeId = 1;
 
-            if (mCurrentNodeId < mPath.Count)
-                mFramesOfJumping = GetJumpFrameCount(mPath[mCurrentNodeId].y - mPath[mCurrentNodeId - 1].y);
+            /*ChangeAction(BotAction.MoveTo);
 
-            ChangeAction(BotAction.MoveTo);
+            mFramesOfJumping = GetJumpFramesForNode(0);*/
         }
         else
         {
             mCurrentNodeId = -1;
 
             if (mCurrentAction == BotAction.MoveTo)
-                mCurrentAction = BotAction.Idle;
+                mCurrentAction = BotAction.None;
         }
 
         if (!Debug.isDebugBuild)
             DrawPathLines();
     }
-    void MoveTo(Vector2 destination)
+    public void MoveTo(Vector2 destination)
     {
         if (mMap.IsOnMap(destination))
         {
@@ -132,20 +181,39 @@ public class NavMoveAgent : Character
                 case 2:
                     return 2;
                 case 3:
-                    return 5;
+                    return 6;
                 case 4:
-                    return 8;
+                    return 9;
                 case 5:
-                    return 14;
+                    return 15;
+                case 6:
+                    return 21;
                 default:
                     return 30;
             }
         }
     }
-    void UpdateDest(out Vector2 prevDest, out Vector2 currentDest, out Vector2 nextDest, out bool destOnGround, out Vector2 pathPosition, out bool reachedY, out bool reachedX, int characterHeight, int prevNodeOffset)
+
+
+
+    public bool ReachedNodeOnXAxis(Vector2 pathPosition, Vector2 prevDest, Vector2 currentDest)
     {
-        prevDest = new Vector2(mPath[mCurrentNodeId - prevNodeOffset].x * mMap.cTileSize + mMap.transform.position.x,
-                                             mPath[mCurrentNodeId - prevNodeOffset].y * mMap.cTileSize + mMap.transform.position.y);
+        return (prevDest.x <= currentDest.x && pathPosition.x >= currentDest.x)
+            || (prevDest.x >= currentDest.x && pathPosition.x <= currentDest.x)
+            || Mathf.Abs(pathPosition.x - currentDest.x) <= cBotMaxPositionError;
+    }
+
+    public bool ReachedNodeOnYAxis(Vector2 pathPosition, Vector2 prevDest, Vector2 currentDest)
+    {
+        return (prevDest.y <= currentDest.y && pathPosition.y >= currentDest.y)
+            || (prevDest.y >= currentDest.y && pathPosition.y <= currentDest.y)
+            || (Mathf.Abs(pathPosition.y - currentDest.y) <= cBotMaxPositionError);
+    }
+
+    public void GetContext(out Vector2 prevDest, out Vector2 currentDest, out Vector2 nextDest, out bool destOnGround, out bool reachedX, out bool reachedY)
+    {
+        prevDest = new Vector2(mPath[mCurrentNodeId - 1].x * mMap.cTileSize + mMap.transform.position.x,
+                                             mPath[mCurrentNodeId - 1].y * mMap.cTileSize + mMap.transform.position.y);
         currentDest = new Vector2(mPath[mCurrentNodeId].x * mMap.cTileSize + mMap.transform.position.x,
                                           mPath[mCurrentNodeId].y * mMap.cTileSize + mMap.transform.position.y);
         nextDest = currentDest;
@@ -156,56 +224,79 @@ public class NavMoveAgent : Character
                                           mPath[mCurrentNodeId + 1].y * mMap.cTileSize + mMap.transform.position.y);
         }
 
-        destOnGround = mMap.IsObstacle(mPath[mCurrentNodeId].x, mPath[mCurrentNodeId].y - 1)
-            || mMap.IsOneWayPlatform(mPath[mCurrentNodeId].x, mPath[mCurrentNodeId].y - 1);
-
-        pathPosition = mAABB.Center - mAABB.HalfSize + Vector2.one * mMap.cTileSize * 0.5f;
-
-        reachedX = (prevDest.x <= currentDest.x && pathPosition.x >= currentDest.x)
-            || (prevDest.x >= currentDest.x && pathPosition.x <= currentDest.x);
-        reachedX = reachedX || Mathf.Abs(pathPosition.x - currentDest.x) <= cBotMaxPositionError;
-
-        if (reachedX && Mathf.Abs(pathPosition.x - currentDest.x) > cBotMaxPositionError
-            && Mathf.Abs(pathPosition.x - currentDest.x) < mMap.cTileSize
-            && !mPrevInputs[(int)KeyInput.GoRight] && !mPrevInputs[(int)KeyInput.GoLeft])
+        destOnGround = false;
+        for (int x = mPath[mCurrentNodeId].x; x < mPath[mCurrentNodeId].x + mWidth; ++x)
         {
-            if (Mathf.Abs(pathPosition.x - nextDest.x) < Mathf.Abs(pathPosition.x - currentDest.x))
-                mPosition.x = nextDest.x;
-            else
-                mPosition.x = currentDest.x;
+            if (mMap.IsGround(x, mPath[mCurrentNodeId].y - 1))
+            {
+                destOnGround = true;
+                break;
+            }
         }
 
-        reachedY = (prevDest.y <= currentDest.y && pathPosition.y - currentDest.y >= 0.0f && pathPosition.y - currentDest.y <= mMap.cTileSize * 2)
-            || (prevDest.y >= currentDest.y && pathPosition.y <= currentDest.y);
-        reachedY = reachedY || Mathf.Abs(pathPosition.y - currentDest.y) <= cBotMaxPositionError;
-        //bool reachedY = (pathPosition.y >= currentDest.y);
+        Vector2 pathPosition = mAABB.Center - mAABB.HalfSize + Vector2.one * mMap.cTileSize * 0.5f;
+
+        reachedX = ReachedNodeOnXAxis(pathPosition, prevDest, currentDest);
+        reachedY = ReachedNodeOnYAxis(pathPosition, prevDest, currentDest);
+
+        //snap the character if it reached the goal but overshot it by more than cBotMaxPositionError
+        if (reachedX && Mathf.Abs(pathPosition.x - currentDest.x) > cBotMaxPositionError && Mathf.Abs(pathPosition.x - currentDest.x) < cBotMaxPositionError*3.0f && !mPrevInputs[(int)KeyInput.GoRight] && !mPrevInputs[(int)KeyInput.GoLeft])
+        {
+            pathPosition.x = currentDest.x;
+            mPosition.x = pathPosition.x - mMap.cTileSize * 0.5f + mAABB.HalfSizeX + mAABBOffset.x;
+        }
 
         if (destOnGround && !mOnGround)
             reachedY = false;
-
-        if (!reachedY && reachedX && currentDest.y > pathPosition.y && !mOnGround && mSpeed.y < 0.0f)
-            reachedY = true;
     }
+
+    public void TestJumpValues()
+    {
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+            mFramesOfJumping = GetJumpFrameCount(1);
+        else if (Input.GetKeyDown(KeyCode.Alpha2))
+            mFramesOfJumping = GetJumpFrameCount(2);
+        else if (Input.GetKeyDown(KeyCode.Alpha3))
+            mFramesOfJumping = GetJumpFrameCount(3);
+        else if (Input.GetKeyDown(KeyCode.Alpha4))
+            mFramesOfJumping = GetJumpFrameCount(4);
+        else if (Input.GetKeyDown(KeyCode.Alpha5))
+            mFramesOfJumping = GetJumpFrameCount(5);
+        else if (Input.GetKeyDown(KeyCode.Alpha6))
+            mFramesOfJumping = GetJumpFrameCount(6);
+    }
+
+    public int GetJumpFramesForNode(int prevNodeId)
+    {
+        int currentNodeId = prevNodeId + 1;
+
+        if (mPath[currentNodeId].y - mPath[prevNodeId].y > 0 && mOnGround)
+        {
+            int jumpHeight = 1;
+            for (int i = currentNodeId; i < mPath.Count; ++i)
+            {
+                if (mPath[i].y - mPath[prevNodeId].y >= jumpHeight)
+                    jumpHeight = mPath[i].y - mPath[prevNodeId].y;
+                if (mPath[i].y - mPath[prevNodeId].y < jumpHeight || mMap.IsGround(mPath[i].x, mPath[i].y - 1))
+                    return GetJumpFrameCount(jumpHeight);
+            }
+        }
+
+        return 0;
+    }
+
     public void Stop()
     {
-        ChangeAction(BotAction.Idle);
+        ChangeAction(BotAction.None);
     }
-    public void SetDestination(Vector2 destination)
-    {
-        mDestination = destination;
-        MoveTo(mDestination);
-    }
+
     void FixedUpdate()
-    {
-        BotUpdate();
-    }
+	{
+	    BotUpdate();
+	}
+	
     void BotUpdate()
     {
-        mInputs[(int)KeyInput.GoRight] = false;
-        mInputs[(int)KeyInput.GoLeft] = false;
-        mInputs[(int)KeyInput.Jump] = false;
-        mInputs[(int)KeyInput.GoDown] = false;
-
         //get the position of the bottom of the bot's aabb, this will be much more useful than the center of the sprite (mPosition)
         int tileX, tileY;
         var position = mAABB.Center;
@@ -215,25 +306,26 @@ public class NavMoveAgent : Character
 
         int characterHeight = Mathf.CeilToInt(mAABB.HalfSizeY * 2.0f / mMap.cTileSize);
 
-        int dir;
-
         switch (mCurrentAction)
         {
-            case BotAction.Idle:
-                
-                /*
+            case BotAction.None:
+
+                TestJumpValues();
+
                 if (mFramesOfJumping > 0)
                 {
                     mFramesOfJumping -= 1;
                     mInputs[(int)KeyInput.Jump] = true;
-                }*/
+                }
+
                 break;
 
             case BotAction.MoveTo:
-                #region MoveTo
-                Vector2 prevDest, currentDest, nextDest, pathPosition;
+
+                Vector2 prevDest, currentDest, nextDest;
                 bool destOnGround, reachedY, reachedX;
-                UpdateDest(out prevDest, out currentDest, out nextDest, out destOnGround, out pathPosition, out reachedY, out reachedX, characterHeight, 1);
+                GetContext(out prevDest, out currentDest, out nextDest, out destOnGround, out reachedX, out reachedY);
+                Vector2 pathPosition = mAABB.Center - mAABB.HalfSize + Vector2.one * mMap.cTileSize * 0.5f;
 
                 mInputs[(int)KeyInput.GoRight] = false;
                 mInputs[(int)KeyInput.GoLeft] = false;
@@ -246,187 +338,64 @@ public class NavMoveAgent : Character
                 if (reachedX && reachedY)
                 {
                     int prevNodeId = mCurrentNodeId;
-
-                    mJumpingUpStairsRight = false;
-                    mJumpingUpStairsLeft = false;
-
-                    //handle  the stairs case
-                    if (destOnGround)
-                    {
-                        for (int i = 6; i > 0 && !mJumpingUpStairsRight && !mJumpingUpStairsRight; i -= 3)
-                        {
-                            if (mCurrentNodeId + i < mPath.Count)
-                            {
-                                int oldX = -1, oldY = -1;
-                                dir = mPath[mCurrentNodeId].x > mPath[mCurrentNodeId - 1].x ? 1 : -1;
-
-                                bool isStair = true;
-                                for (int j = i; j >= 0; j -= 3)
-                                {
-                                    if (!mMap.IsNotEmpty(mPath[mCurrentNodeId + j].x, mPath[mCurrentNodeId + j].y - 1)
-                                        || !mMap.IsObstacle(mPath[mCurrentNodeId + j].x + dir, mPath[mCurrentNodeId + j].y)
-                                        || (oldX != -1 && (mPath[mCurrentNodeId + j].y + 1 != oldY || mPath[mCurrentNodeId + j].x + dir != oldX)))
-                                    {
-                                        isStair = false;
-                                        break;
-                                    }
-
-                                    oldX = mPath[mCurrentNodeId + j].x;
-                                    oldY = mPath[mCurrentNodeId + j].y;
-                                }
-
-                                if (isStair)
-                                {
-                                    mCurrentNodeId += i;
-                                    if (dir == 1)
-                                        mJumpingUpStairsRight = true;
-                                    else
-                                        mJumpingUpStairsLeft = true;
-
-                                    break;
-                                }
-                            }
-                        }
-                    }
-
-                    if (!mJumpingUpStairsLeft && !mJumpingUpStairsRight)
-                    {
-                        mCurrentNodeId++;
-                    }
+                    mCurrentNodeId++;
 
                     if (mCurrentNodeId >= mPath.Count)
                     {
                         mCurrentNodeId = -1;
-                        ChangeAction(BotAction.Idle);
+                        ChangeAction(BotAction.None);
                         break;
                     }
 
-                    dir = mPath[mCurrentNodeId].x > mPath[prevNodeId].x ? 1 : -1;
-
-                    if (!mMap.AnySolidBlockInStripe(mPath[prevNodeId].x + dir, tileY + characterHeight, mPath[mCurrentNodeId].y))
-                    {
-                        if (mPath[mCurrentNodeId].x > mPath[prevNodeId].x)
-                            mInputs[(int)KeyInput.GoRight] = true;
-                        else if (mPath[mCurrentNodeId].x < mPath[prevNodeId].x)
-                            mInputs[(int)KeyInput.GoLeft] = true;
-                    }
-
-                    if (!mOnGround && mPath[mCurrentNodeId].y == mPath[prevNodeId].y)
-                        mFramesOfJumping = 1;
-                    else
-                        mFramesOfJumping = GetJumpFrameCount(mPath[mCurrentNodeId].y - mPath[prevNodeId].y);
-
-                    UpdateDest(out prevDest, out currentDest, out nextDest, out destOnGround, out pathPosition, out reachedY, out reachedX, characterHeight, mCurrentNodeId - prevNodeId);
-                }
-                else if (mJumpingUpStairsRight || mJumpingUpStairsLeft)
-                {
-                    if (currentDest.x > pathPosition.x && mJumpingUpStairsRight && !reachedX)
-                        mInputs[(int)KeyInput.GoRight] = true;
-                    else if (currentDest.x < pathPosition.x && mJumpingUpStairsLeft && !reachedX)
-                        mInputs[(int)KeyInput.GoLeft] = true;
-
                     if (mOnGround)
-                    {
-                        mFramesOfJumping = GetJumpFrameCount(mPath[mCurrentNodeId].y - tileY);
-                        if (mFramesOfJumping == 0)
-                            mFramesOfJumping = 1;
-                    }
+                        mFramesOfJumping = GetJumpFramesForNode(prevNodeId);
+
+                    goto case BotAction.MoveTo;
                 }
-                else
+                else if (!reachedX)
                 {
-                    if (!reachedX)
+                    if (currentDest.x - pathPosition.x > cBotMaxPositionError)
+                        mInputs[(int)KeyInput.GoRight] = true;
+                    else if (pathPosition.x - currentDest.x > cBotMaxPositionError)
+                        mInputs[(int)KeyInput.GoLeft] = true;
+                }
+                else if (!reachedY && mPath.Count > mCurrentNodeId + 1 && !destOnGround)
+                {
+                    int checkedX = 0;
+
+                    if (mPath[mCurrentNodeId + 1].x != mPath[mCurrentNodeId].x)
                     {
-                        if (destOnGround && currentDest.y > pathPosition.y && currentDest.y - pathPosition.y > mAABB.HalfSizeY * 2.0f)
-                        {
-                            //do nothing
-                        }
+                        mMap.GetMapTileAtPoint(pathPosition, out tileX, out tileY);
+
+                        if (mPath[mCurrentNodeId + 1].x > mPath[mCurrentNodeId].x)
+                            checkedX = tileX + Mathf.CeilToInt(mWidth);
                         else
-                        {
-                            if (currentDest.x > pathPosition.x /*&& !mPushesRightWall*/)
-                                mInputs[(int)KeyInput.GoRight] = true;
-                            else if (currentDest.x < pathPosition.x /*&& !mPushesLeftWall*/)
-                                mInputs[(int)KeyInput.GoLeft] = true;
-                        }
+                            checkedX = tileX - 1;
                     }
-                    else if (!reachedY)
+
+                    if (checkedX != 0 && !mMap.AnySolidBlockInStripe(checkedX, tileY, mPath[mCurrentNodeId + 1].y))
                     {
-                        if (mPath.Count > mCurrentNodeId + 1 && !destOnGround)
-                        {
-                            dir = mPath[mCurrentNodeId + 1].x - mPath[mCurrentNodeId].x > 0 ? 1 : -1;
+                        if (nextDest.x - pathPosition.x > cBotMaxPositionError)
+                            mInputs[(int)KeyInput.GoRight] = true;
+                        else if (pathPosition.x - nextDest.x > cBotMaxPositionError)
+                            mInputs[(int)KeyInput.GoLeft] = true;
 
-                            if (nextDest.y < currentDest.y)
-                            {
-                                if (mPath[mCurrentNodeId].y > mPath[mCurrentNodeId + 1].y
-                                    && mPath[mCurrentNodeId].x != mPath[mCurrentNodeId + 1].x
-                                    && !mMap.AnySolidBlockInStripe(tileX + dir, tileY, mPath[mCurrentNodeId + 1].y))
-                                {
-                                    if (nextDest.x > pathPosition.x && currentDest.x > prevDest.x)
-                                        mInputs[(int)KeyInput.GoRight] = true;
-                                    else if (nextDest.x < pathPosition.x && currentDest.x < prevDest.x)
-                                        mInputs[(int)KeyInput.GoLeft] = true;
-                                }
-                            }
-                            else if (prevDest.y <= currentDest.y
-                                && currentDest.y <= nextDest.y
-                                && !mMap.IsNotEmpty(mPath[mCurrentNodeId].x, mPath[mCurrentNodeId].y - 1)
-                                //&& !mMap.IsGround(mPath[mCurrentNodeId + 1].x, mPath[mCurrentNodeId + 1].y - 1)
-                                //&& !mMap.AnySolidBlockInRectangle(mPath[mCurrentNodeId - 1], mPath[mCurrentNodeId])
-                                && !mMap.AnySolidBlockInStripe(tileX + dir, tileY + characterHeight - 1, mPath[mCurrentNodeId + 1].y))
-                            {
-                                if (nextDest.x > pathPosition.x)
-                                    mInputs[(int)KeyInput.GoRight] = true;
-                                else if (nextDest.x < pathPosition.x)
-                                    mInputs[(int)KeyInput.GoLeft] = true;
-                            }
-                        }
-
-                        if (mFramesOfJumping == 0
-                            && currentDest.y - pathPosition.y > cBotMaxPositionError
-                            && ((mWasOnGround && !mOnGround)
-                                || tileX == mPath[mCurrentNodeId].x
-                                || mPushesLeftWall
-                                || mPushesRightWall))
+                        if (ReachedNodeOnXAxis(pathPosition, currentDest, nextDest) && ReachedNodeOnYAxis(pathPosition, currentDest, nextDest))
                         {
-                            mFramesOfJumping = GetJumpFrameCount(mPath[mCurrentNodeId].y - mPath[mCurrentNodeId - 1].y);
+                            mCurrentNodeId += 1;
+                            goto case BotAction.MoveTo;
                         }
                     }
                 }
 
-                if (mFramesOfJumping > 0)
+                if (mFramesOfJumping > 0 &&
+                    (!mOnGround || (reachedX && !destOnGround) || (mOnGround && destOnGround)))
                 {
-                    if (!destOnGround && currentDest.y >= pathPosition.y && !reachedX && mOnGround)
-                    {
-                        //do nothing
-                    }
-                    else
-                    {
-                        mInputs[(int)KeyInput.Jump] = true;
+                    Debug.Log(mFramesOfJumping + " : " + mSpeed.y);
+                    mInputs[(int)KeyInput.Jump] = true;
+                    if (!mOnGround)
                         --mFramesOfJumping;
-
-                        if (!(mJumpingUpStairsLeft || mJumpingUpStairsRight) && mFramesOfJumping == 0 && ((!reachedX && !mOnGround) || (reachedX && !reachedY && !mOnGround && currentDest.y > pathPosition.y)))
-                            mFramesOfJumping++;
-                    }
                 }
-
-                if (mCurrentState == Character.CharacterState.GrabLedge)
-                {
-                    mInputs[(int)KeyInput.GoDown] = true;
-                    mInputs[(int)KeyInput.GoRight] = false;
-                    mInputs[(int)KeyInput.GoLeft] = false;
-                }
-
-                if (Mathf.Abs(pathPosition.x - currentDest.x) < mPrevDistanceToCurrentDestX
-                    || Mathf.Abs(pathPosition.y - currentDest.y) < mPrevDistanceToCurrentDestY)
-                {
-                    ++mNotGettingCloserToNextNodeFrames;
-
-                    if (+mNotGettingCloserToNextNodeFrames > cMaxFramesNotGettingCloserToNextNode)
-                        MoveTo(mPath[mPath.Count - 1]);
-                }
-                else
-                    mNotGettingCloserToNextNodeFrames = 0;
-                mPrevDistanceToCurrentDestX = Mathf.Abs(pathPosition.x - currentDest.x);
-                mPrevDistanceToCurrentDestY = Mathf.Abs(pathPosition.y - currentDest.y);
 
                 if (mPosition == mOldPosition)
                 {
@@ -438,12 +407,10 @@ public class NavMoveAgent : Character
                     mStuckFrames = 0;
 
                 break;
-                #endregion
         }
-
-
+			
+        
         if (gameObject.activeInHierarchy)
-            CharacterUpdate();
-    }
-
+		    CharacterUpdate();
+	}
 }
