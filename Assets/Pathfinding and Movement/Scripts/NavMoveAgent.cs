@@ -31,7 +31,7 @@ public class NavMoveAgent : Character
 	
 	public const int cMaxStuckFrames = 20;
 
-    float cBotMaxPositionError = 1.0f;
+    float cBotMaxPositionError = 0.1f;
 
     void Start()
     {
@@ -51,39 +51,13 @@ public class NavMoveAgent : Character
         mPosition = transform.position;
         mDestination = mPosition;
 		
-        mAABB.HalfSize = new Vector2((float)mWidth/2, (float)mHeight/2);
+        mAABB.HalfSize = new Vector2(((float)mWidth/2f) * mMap.cTileSize, ((float)mHeight/2f) * mMap.cTileSize);
         
         mJumpSpeed = stats.jumpSpeed;// Constants.cJumpSpeed;
         mWalkSpeed = stats.moveSpeed;// Constants.cWalkSpeed;
 
         mAABBOffset.y = mAABB.HalfSizeY;
         mAABB.Center = mPosition + mAABBOffset;
-    }
-
-    public void SetCharacterWidth(Slider slider)
-    {
-        mWidth = (int)slider.value;
-
-        mPosition = transform.position;
-
-        mScale.x = Mathf.Sign(mScale.x) * (float)mWidth;
-        transform.localScale = new Vector3(mScale.x, mScale.y, 1.0f);
-
-        mAABB.HalfSizeX = mWidth / 2;
-    }
-
-    public void SetCharacterHeight(Slider slider)
-    {
-        mHeight = (int)slider.value;
-
-        mPosition = transform.position;
-
-        mScale.y = (float)mHeight * 0.33333f;
-        transform.localScale = new Vector3(mScale.x, mScale.y, 1.0f);
-
-        mAABB.HalfSizeY = mHeight / 2;
-
-        mAABBOffset.y = mAABB.HalfSizeY;
     }
 
     bool IsOnGroundAndFitsPos(Vector2i pos)
@@ -121,15 +95,15 @@ public class NavMoveAgent : Character
         }
 
         PathFinderFast mPathFinder = new PathFinderFast(mMap);
-        Debug.Log("mAABB.HalfSize: " + mAABB.HalfSize);
-        Debug.Log("mAABB.Center: " + mAABB.Center);
-        Debug.Log("mAABBOffset: " + mAABBOffset);
-        Debug.Log("startTile: " + startTile.x + " " + startTile.y);
+        //Debug.Log("mAABB.HalfSize: " + mAABB.HalfSize);
+        //Debug.Log("mAABB.Center: " + mAABB.Center);
+        //Debug.Log("mAABBOffset: " + mAABBOffset);
+        //Debug.Log("startTile: " + startTile.x + " " + startTile.y);
         var path = mPathFinder.FindPath(
                         startTile, 
                         destination,
-                        Mathf.CeilToInt(mWidth),//Mathf.CeilToInt(mAABB.HalfSizeX / 8.0f), 
-                        Mathf.CeilToInt(mHeight),//Mathf.CeilToInt(mAABB.HalfSizeY / 8.0f), 
+                        /*Mathf.CeilToInt(mAABB.HalfSizeX * 2 * mMap.cTileSize),*/Mathf.CeilToInt(mAABB.HalfSizeX / 8.0f), 
+                        /*Mathf.CeilToInt(mAABB.HalfSizeY * 2 * mMap.cTileSize),*/Mathf.CeilToInt(mAABB.HalfSizeY / 8.0f), 
                         (short)mMaxJumpHeight);
 
 
@@ -142,9 +116,9 @@ public class NavMoveAgent : Character
 
             mCurrentNodeId = 1;
 
-            /*ChangeAction(BotAction.MoveTo);
+            ChangeAction(BotAction.MoveTo);
 
-            mFramesOfJumping = GetJumpFramesForNode(0);*/
+            mFramesOfJumping = GetJumpFramesForNode(0);
         }
         else
         {

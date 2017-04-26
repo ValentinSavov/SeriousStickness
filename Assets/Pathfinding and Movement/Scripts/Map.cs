@@ -290,7 +290,7 @@ public partial class Map : MonoBehaviour
 
         mGrid = new byte[Mathf.NextPowerOfTwo((int)mWidth), Mathf.NextPowerOfTwo((int)mHeight)];
 
-        Camera.main.orthographicSize = Camera.main.pixelHeight / 2;
+        //Camera.main.orthographicSize = Camera.main.pixelHeight / 2;
 
         /*
         for (int y = 0; y < mHeight; ++y)
@@ -391,7 +391,7 @@ public partial class Map : MonoBehaviour
         }
     }
 
-    void Update_bcp()
+    void Update()
     {
         if (Input.GetKeyUp(KeyCode.Mouse0))
             lastMouseTileX = lastMouseTileY = -1;
@@ -410,7 +410,7 @@ public partial class Map : MonoBehaviour
             //player.MoveTo(new Vector2i(mouseTileX, mouseTileY));
             if(IsOnMap(mousePosInWorld))
             {
-                //player.SetDestination(mousePosInWorld);
+                player.MoveTo(mousePosInWorld);
             }
         }
         ////////
@@ -420,7 +420,9 @@ public partial class Map : MonoBehaviour
             if (mouseTileX != lastMouseTileX || mouseTileY != lastMouseTileY || Input.GetKeyDown(KeyCode.Mouse1) || Input.GetKeyDown(KeyCode.Mouse2))
             {
                 if (!IsNotEmpty(mouseTileX, mouseTileY))
-                    SetTile(mouseTileX, mouseTileY, TileType.Block );
+                {
+                    SetTile(mouseTileX, mouseTileY, TileType.Block);
+                }
                 else
                     SetTile(mouseTileX, mouseTileY, TileType.Empty);
 

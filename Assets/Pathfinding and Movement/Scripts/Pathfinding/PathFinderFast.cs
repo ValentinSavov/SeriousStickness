@@ -228,7 +228,6 @@ namespace Algorithms
 
         public List<Vector2i> FindPath(Vector2i start, Vector2i end, int characterWidth, int characterHeight, short maxCharacterJumpHeight)
         {
-            Debug.Log(characterWidth + " " + characterHeight);
             //lock(this)
             {
                 while (touchedLocations.Count > 0)
@@ -323,6 +322,11 @@ namespace Algorithms
 
                     mLocationX   = (ushort) (mLocation.xy & mGridXMinus1);
                     mLocationY   = (ushort) (mLocation.xy >> mGridXLog2);
+                    Debug.Log("mLocation.xy " + mLocation.xy);
+                    Debug.Log("mLocationX " + mLocationX);
+                    Debug.Log("mLocationY " + mLocationY);
+                    Debug.Log("mGridXMinus1 " + mGridXMinus1);
+                    Debug.Log("mGridXLog2 " + mGridXLog2);
 
                     if (mLocation.xy == mEndLocation)
                     {
