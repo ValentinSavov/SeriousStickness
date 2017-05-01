@@ -322,11 +322,11 @@ namespace Algorithms
 
                     mLocationX   = (ushort) (mLocation.xy & mGridXMinus1);
                     mLocationY   = (ushort) (mLocation.xy >> mGridXLog2);
-                    Debug.Log("mLocation.xy " + mLocation.xy);
-                    Debug.Log("mLocationX " + mLocationX);
-                    Debug.Log("mLocationY " + mLocationY);
-                    Debug.Log("mGridXMinus1 " + mGridXMinus1);
-                    Debug.Log("mGridXLog2 " + mGridXLog2);
+                    //Debug.Log("mLocation.xy " + mLocation.xy);
+                    //Debug.Log("mLocationX " + mLocationX);
+                    //Debug.Log("mLocationY " + mLocationY);
+                    //Debug.Log("mGridXMinus1 " + mGridXMinus1);
+                    //Debug.Log("mGridXLog2 " + mGridXLog2);
 
                     if (mLocation.xy == mEndLocation)
                     {
