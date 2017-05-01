@@ -14,21 +14,21 @@ public class MovingObject : MonoBehaviour
 	/// The current position.
 	/// </summary>
 	public Vector2 mPosition;
-	
-	/// <summary>
-	/// The current speed in pixels/second.
-	/// </summary>
-	public Vector2 mSpeed;
+    public Vector2 mScale;
+    /// <summary>
+    /// The current speed in pixels/second.
+    /// </summary>
+    public Vector2 mSpeed;
 	
 	/// <summary>
 	/// The previous speed in pixels/second.
 	/// </summary>
 	public Vector2 mOldSpeed;
-	
-	/// <summary>
-	/// The AABB for collision queries.
-	/// </summary>
-	public AABB mAABB;
+    public Vector2 mAABBOffset;
+    /// <summary>
+    /// The AABB for collision queries.
+    /// </summary>
+    public AABB mAABB;
 	
 	/// <summary>
 	/// The tile map.
@@ -91,82 +91,76 @@ public class MovingObject : MonoBehaviour
 
     public bool mIgnoresOneWayPlatforms = false;
 
-	void OnDrawGizmos()
-	{
-		DrawMovingObjectGizmos ();
-	}
+    Vector2 CtopRight;
+    Vector2 CtopLeft;
 
-	/// <summary>
-	/// Draws the aabb and ceiling, ground and wall sensors .
-	/// </summary>
-	protected void DrawMovingObjectGizmos()
+    Vector2 GbottomLeft;
+    Vector2 GbottomRight;
+
+    Vector2 RbottomRight;
+    Vector2 RtopRight;
+
+    Vector2 LbottomLeft;
+    Vector2 LtopLeft;
+
+
+    /// <summary>
+    /// Draws the aabb and ceiling, ground and wall sensors .
+    /// </summary>
+    protected void DrawMovingObjectGizmos()
 	{
 		//calculate the position of the aabb's center
-		var aabbPos = transform.position;
-		
-		//draw the aabb rectangle
-		Gizmos.color = Color.yellow;
+        var aabbPos = transform.position + (Vector3)mAABBOffset;
+        //draw the aabb rectangle
+        Gizmos.color = Color.yellow;
    		Gizmos.DrawWireCube(aabbPos, mAABB.HalfSize*2.0f);
-		
-		//draw the ground checking sensor
-		Vector2 bottomLeft = aabbPos - new Vector3(mAABB.HalfSizeX, mAABB.HalfSizeY, 0.0f) - Vector3.up + Vector3.right;
-		var bottomRight = new Vector2(bottomLeft.x + mAABB.HalfSizeX*2.0f - 2.0f, bottomLeft.y);
-		
-		Gizmos.color = Color.red;
-		Gizmos.DrawLine(bottomLeft, bottomRight);
-		
-		//draw the ceiling checking sensor
-		Vector2 topRight = aabbPos + new Vector3(mAABB.HalfSize.x, mAABB.HalfSize.y, 0.0f) + Vector3.up - Vector3.right;
-		var topLeft = new Vector2(topRight.x - mAABB.HalfSize.x*2.0f + 2.0f, topRight.y);
-		
-		Gizmos.color = Color.red;
-		Gizmos.DrawLine(topLeft, topRight);
-		
-		//draw left wall checking sensor
-		bottomLeft = aabbPos - new Vector3(mAABB.HalfSize.x, mAABB.HalfSize.y, 0.0f) - Vector3.right;
-		topLeft = bottomLeft;
-		topLeft.y += mAABB.HalfSize.y * 2.0f;
-		
-		Gizmos.DrawLine(topLeft, bottomLeft);
-		
+
+        Gizmos.color = Color.red;
+
+        //draw the ground checking sensor
+        Gizmos.DrawLine(GbottomRight, GbottomLeft);
+        //draw the ceiling checking sensor
+        Gizmos.DrawLine(CtopLeft, CtopRight);
+        //draw left wall checking sensor
+		Gizmos.DrawLine(LbottomLeft, LtopLeft);
 		//draw right wall checking sensor
-		
-		bottomRight = aabbPos + new Vector3(mAABB.HalfSize.x, -mAABB.HalfSize.y, 0.0f) + Vector3.right;
-		topRight = bottomRight;
-		topRight.y += mAABB.HalfSize.y * 2.0f;
-		
-		Gizmos.DrawLine(topRight, bottomRight);
+		Gizmos.DrawLine(RbottomRight, RtopRight);
 	}
 
-	/// <summary>
-	/// Determines whether there's ceiling right above the hero.
-	/// </summary>
-	/// <returns>
-	/// <c>true</c> if there is ceiling right above the hero; otherwise, <c>false</c>.
-	/// </returns>
-	/// <param name='ceilY'>
-	/// The position of the bottom of the ceiling tile in world coordinates.
-	/// </param>
-	public bool HasCeiling(Vector2 position, out float ceilingY)
+
+
+    /// <summary>
+    /// Determines whether there's ceiling right above the hero.
+    /// </summary>
+    /// <returns>
+    /// <c>true</c> if there is ceiling right above the hero; otherwise, <c>false</c>.
+    /// </returns>
+    /// <param name='ceilY'>
+    /// The position of the bottom of the ceiling tile in world coordinates.
+    /// </param>
+    public bool HasCeiling(Vector2 position, out float ceilingY)
 	{
 		//make sure the aabb is up to date with the position
-		var center = position;
+		var center = position + mAABBOffset;
 		
 		//init the groundY
 		ceilingY = 0.0f;
-		
-		//set the Vector2is right below us on our left and right sides
-		var topRight = center + mAABB.HalfSize + Vector2.up - Vector2.right;
-		var topLeft = new Vector2(topRight.x - mAABB.HalfSize.x*2.0f + 2.0f, topRight.y);
-		
-		//get the indices of a tile below us on our left side
-		int tileIndexX, tileIndexY; 
+
+        //set the Vector2is right below us on our left and right sides
+        //var topRight = center + mAABB.HalfSize + Vector2.up - Vector2.right;
+        //var topLeft = new Vector2(topRight.x - mAABB.HalfSize.x*2.0f + 2.0f, topRight.y);
+        float smallOffset = mMap.cTileSize * 0.1f;
+        CtopRight = center + new Vector2(mAABB.HalfSize.x - smallOffset, mAABB.HalfSize.y + smallOffset);
+        CtopLeft = new Vector2(CtopRight.x - (mAABB.HalfSize.x * 2f) + (smallOffset * 2f), CtopRight.y);
+
+        //get the indices of a tile below us on our left side
+        int tileIndexX, tileIndexY; 
 		
 		//iterate over all the tiles that the object may collide with from the left to the right
-		for (var checkedVector2i = topLeft; checkedVector2i.x < topRight.x + Map.cTileSize; checkedVector2i.x += Map.cTileSize)
+		for (var checkedVector2i = CtopLeft; checkedVector2i.x < CtopRight.x + mMap.cTileSize; checkedVector2i.x += mMap.cTileSize)
 		{
 			//makre sure that we don't check beyound the top right corner
-			checkedVector2i.x = Mathf.Min(checkedVector2i.x, topRight.x);
+			checkedVector2i.x = Mathf.Min(checkedVector2i.x, CtopRight.x);
 			
 			mMap.GetMapTileAtPoint (checkedVector2i, out tileIndexX, out tileIndexY);
 			
@@ -181,13 +175,13 @@ public class MovingObject : MonoBehaviour
                 if (mMap.IsObstacle(tileIndexX, tileIndexY))
 				{
 					//calculate the y position of the bottom of the ceiling tile
-					ceilingY = (float)tileIndexY * Map.cTileSize - Map.cTileSize/2.0f + mMap.position.y;
+					ceilingY = (float)tileIndexY * mMap.cTileSize - mMap.cTileSize/2.0f + mMap.position.y;
 					return true;
 				}
 			}
 			
 			//if we checked all the possible tiles and there's nothing right above the aabb
-			if (checkedVector2i.x == topRight.x)
+			if (checkedVector2i.x == CtopRight.x)
 				return false;
 		}
 		
@@ -207,24 +201,28 @@ public class MovingObject : MonoBehaviour
 	public bool HasGround(Vector2 position, out float groundY)
 	{
 		//make sure the aabb is up to date with the position
-		var center = position;
+		var center = position + mAABBOffset;
 		
 		//init the groundY
 		groundY = 0.0f;
-		
-		//set the Vector2is right below us on our left and right sides
-		var bottomLeft = center - mAABB.HalfSize - Vector2.up + Vector2.right;
-		var bottomRight = new Vector2(bottomLeft.x + mAABB.HalfSize.x*2.0f - 2.0f, bottomLeft.y);
-		
-		//left side
-		//calculate the indices of a tile below us on our left side
-		int tileIndexX, tileIndexY; 
+
+        //set the Vector2is right below us on our left and right sides
+        //var bottomLeft = center - mAABB.HalfSize - Vector2.up + Vector2.right;
+        //var bottomRight = new Vector2(bottomLeft.x + mAABB.HalfSize.x*2.0f - 2.0f, bottomLeft.y);
+        float smallOffset = mMap.cTileSize * 0.1f;
+        GbottomLeft = center + new Vector2(-mAABB.HalfSize.x + smallOffset, -mAABB.HalfSize.y - smallOffset);
+        GbottomRight = new Vector2(GbottomLeft.x + (mAABB.HalfSize.x * 2f) - (smallOffset * 2f), GbottomLeft.y);
+
+
+        //left side
+        //calculate the indices of a tile below us on our left side
+        int tileIndexX, tileIndexY; 
 		
 		//iterate over all the tiles that the object may collide with from the left to the right
-		for (var checkedVector2i = bottomLeft; checkedVector2i.x < bottomRight.x + Map.cTileSize; checkedVector2i.x += Map.cTileSize)
+		for (var checkedVector2i = GbottomLeft; checkedVector2i.x < GbottomRight.x + mMap.cTileSize; checkedVector2i.x += mMap.cTileSize)
 		{
 			//makre sure that we don't check beyound the bottom right corner
-			checkedVector2i.x = Mathf.Min(checkedVector2i.x, bottomRight.x);
+			checkedVector2i.x = Mathf.Min(checkedVector2i.x, GbottomRight.x);
 			
 			mMap.GetMapTileAtPoint (checkedVector2i, out tileIndexX, out tileIndexY);
 			
@@ -235,7 +233,7 @@ public class MovingObject : MonoBehaviour
 			//hit it without hitting the one above
 			if (!mMap.IsObstacle(tileIndexX, tileIndexY + 1))
 			{
-				var floorTop = (float)tileIndexY * Map.cTileSize + Map.cTileSize/2.0f + mMap.position.y;
+				var floorTop = (float)tileIndexY * mMap.cTileSize + mMap.cTileSize/2.0f + mMap.position.y;
 				//if the tile is not empty, it means we have a floor right below us
                 if (mMap.IsObstacle(tileIndexX, tileIndexY))
 				{
@@ -252,7 +250,7 @@ public class MovingObject : MonoBehaviour
 			}
 			
 			//if we checked all the possible tiles and there's nothing right below the aabb
-			if (checkedVector2i.x == bottomRight.x)
+			if (checkedVector2i.x == GbottomRight.x)
 			{
 				if (mOnOneWayPlatform)
 					return true;
@@ -276,23 +274,26 @@ public class MovingObject : MonoBehaviour
 	public bool CollidesWithRightWall(Vector2 position, out float wallX)
 	{
 		//make sure the aabb is up to date with the position
-		var center = position;
+		var center = position + mAABBOffset;
 		
 		//init the wallX
 		wallX = 0.0f;
 		
 		//calculate the bottom left and top left vertices of our aabb
-		var bottomRight = center + new Vector2(mAABB.HalfSize.x, -mAABB.HalfSize.y) + Vector2.right;
-		var topRight = bottomRight + new Vector2(0.0f, mAABB.HalfSize.y * 2.0f);
-		
-		//get the bottom right vertex's tile indices
-		int tileIndexX, tileIndexY;
+		//var bottomRight = center + new Vector2(mAABB.HalfSize.x, -mAABB.HalfSize.y) + Vector2.right;
+		//var topRight = bottomRight + new Vector2(0.0f, mAABB.HalfSize.y * 2.0f);
+        float smallOffset = mMap.cTileSize * 0.1f;
+        RbottomRight = center + new Vector2(mAABB.HalfSize.x + smallOffset, -mAABB.HalfSize.y);
+        RtopRight = new Vector2(RbottomRight.x , RbottomRight.y + (mAABB.HalfSize.y * 2f));
+
+        //get the bottom right vertex's tile indices
+        int tileIndexX, tileIndexY;
 		
 		//iterate over all the tiles that the object may collide with from the top to the bottom
-		for (var checkedVector2i = bottomRight; checkedVector2i.y < topRight.y + Map.cTileSize; checkedVector2i.y += Map.cTileSize)
+		for (var checkedVector2i = RbottomRight; checkedVector2i.y < RtopRight.y + mMap.cTileSize; checkedVector2i.y += mMap.cTileSize)
 		{
 			//make sure that we don't check beyound the top right corner
-			checkedVector2i.y = Mathf.Min(checkedVector2i.y, topRight.y);
+			checkedVector2i.y = Mathf.Min(checkedVector2i.y, RtopRight.y);
 			
 			mMap.GetMapTileAtPoint (checkedVector2i, out tileIndexX, out tileIndexY);
 			
@@ -306,13 +307,13 @@ public class MovingObject : MonoBehaviour
                 if (mMap.IsObstacle(tileIndexX, tileIndexY))
 				{
 					//calculate the x position of the left side of the wall
-					wallX = (float)tileIndexX * Map.cTileSize - Map.cTileSize/2.0f + mMap.position.x;
+					wallX = (float)tileIndexX * mMap.cTileSize - mMap.cTileSize/2.0f + mMap.position.x;
 					return true;
 				}
 			}
 			
 			//if we checked all the possible tiles and there's nothing right next to the aabb
-			if (checkedVector2i.y == topRight.y)
+			if (checkedVector2i.y == RtopRight.y)
 				return false;
 		}
 		
@@ -331,23 +332,26 @@ public class MovingObject : MonoBehaviour
 	public bool CollidesWithLeftWall(Vector2 position, out float wallX)
 	{
 		//make sure the aabb is up to date with the position
-		var center = position;
+		var center = position + mAABBOffset;
 		
 		//init the wallX
 		wallX = 0.0f;
 		
 		//calculate the bottom left and top left vertices of our mAABB.
-		var bottomLeft = center - mAABB.HalfSize - Vector2.right;
-		var topLeft = bottomLeft + new Vector2(0.0f, mAABB.HalfSize.y * 2.0f);
-		
-		//get the bottom left vertex's tile indices
-		int tileIndexX, tileIndexY;
+		//var bottomLeft = center - mAABB.HalfSize - Vector2.right;
+		//var topLeft = bottomLeft + new Vector2(0.0f, mAABB.HalfSize.y * 2.0f);
+        float smallOffset = mMap.cTileSize * 0.1f;
+        LbottomLeft = center - new Vector2(mAABB.HalfSize.x + smallOffset, mAABB.HalfSize.y);
+        LtopLeft = new Vector2(LbottomLeft.x, LbottomLeft.y + (mAABB.HalfSize.y * 2f));
+
+        //get the bottom left vertex's tile indices
+        int tileIndexX, tileIndexY;
 		
 		//iterate over all the tiles that the object may collide with from the top to the bottom
-		for (var checkedVector2i = bottomLeft; checkedVector2i.y < topLeft.y + Map.cTileSize; checkedVector2i.y += Map.cTileSize)
+		for (var checkedVector2i = LbottomLeft; checkedVector2i.y < LtopLeft.y + mMap.cTileSize; checkedVector2i.y += mMap.cTileSize)
 		{
 			//make sure that we don't check beyound the top right corner
-			checkedVector2i.y = Mathf.Min(checkedVector2i.y, topLeft.y);
+			checkedVector2i.y = Mathf.Min(checkedVector2i.y, LtopLeft.y);
 			
 			mMap.GetMapTileAtPoint (checkedVector2i, out tileIndexX, out tileIndexY);
 			
@@ -361,133 +365,133 @@ public class MovingObject : MonoBehaviour
                 if (mMap.IsObstacle(tileIndexX, tileIndexY))
 				{
 					//calculate the x position of the right side of the wall
-					wallX = (float)tileIndexX * Map.cTileSize + Map.cTileSize/2.0f + mMap.position.x;
+					wallX = (float)tileIndexX * mMap.cTileSize + mMap.cTileSize/2.0f + mMap.position.x;
 					return true;
 				}
 			}
 			
 			//if we checked all the possible tiles and there's nothing right next to the aabb
-			if (checkedVector2i.y == topLeft.y)
+			if (checkedVector2i.y == LtopLeft.y)
 				return false;
 		}
 		
 		return false;
 	}
 
-	/// <summary>
-	/// Updates the moving object's physics, integrates the movement, updates sensors for terrain collisions.
-	/// </summary>
-	public void UpdatePhysics()
-	{	
-		//assign the previous state of onGround, atCeiling, pushesRightWall, pushesLeftWall
-		//before those get recalculated for this frame
-		mWasOnGround = mOnGround;
-		mPushedRightWall = mPushesRightWall;
-		mPushedLeftWall = mPushesLeftWall;
-		mWasAtCeiling = mAtCeiling;
-		
-		mOnOneWayPlatform = false;
-		
-		//save the speed to oldSpeed vector
-		mOldSpeed = mSpeed;
-		
-		//save the position to the oldPosition vector
-		mOldPosition = mPosition;
-		
-		//integrate the movement only if we're not tweening
-		mPosition += mSpeed*Time.deltaTime;
-		
-		var checkAgainLeft = false;
-		
+    /// <summary>
+    /// Updates the moving object's physics, integrates the movement, updates sensors for terrain collisions.
+    /// </summary>
+    public void UpdatePhysics()
+    {
+        //assign the previous state of onGround, atCeiling, pushesRightWall, pushesLeftWall
+        //before those get recalculated for this frame
+        mWasOnGround = mOnGround;
+        mPushedRightWall = mPushesRightWall;
+        mPushedLeftWall = mPushesLeftWall;
+        mWasAtCeiling = mAtCeiling;
 
-		float groundY, ceilingY;
-		float rightWallX = 0.0f, leftWallX = 0.0f;
-		
-		//if we overlap a tile on the left then align the hero
-		if (mSpeed.x <= 0.0f && CollidesWithLeftWall(mPosition, out leftWallX))
-		{
-			if (mOldPosition.x - mAABB.HalfSize.x >= leftWallX)
-			{
-				mPosition.x = leftWallX + mAABB.HalfSize.x;
-				mSpeed.x = Mathf.Max(mSpeed.x, 0.0f);
-				
-				mPushesLeftWall = true;
-			}
-			else
-				checkAgainLeft = true;
-		}
-		else
-			mPushesLeftWall = false;
-		
-		var checkAgainRight = false;
-		
-		//if we overlap a tile on the right then align the hero
-		if (mSpeed.x >= 0.0f && CollidesWithRightWall(mPosition, out rightWallX))
-		{
-			if (mOldPosition.x + mAABB.HalfSize.x <= rightWallX)
-			{
-				mPosition.x = rightWallX - mAABB.HalfSize.x;
-				mSpeed.x = Mathf.Min(mSpeed.x, 0.0f);
-				
-				mPushesRightWall = true;
-			}
-			else
-				checkAgainRight = true;
-		}
-		else
-			mPushesRightWall = false;
-		
-		//when we hit the ground
-		//we can't hit the ground if our speed is positive
-		if (HasGround(mPosition, out groundY) && mSpeed.y <= 0.0f
-			&& mOldPosition.y - mAABB.HalfSize.y >= groundY - 0.5f)
-		{
-			//calculate the y position on top of the ground
-			mPosition.y = groundY + mAABB.HalfSize.y;
-				
-			//stop falling
-			mSpeed.y = 0.0f;
+        mOnOneWayPlatform = false;
 
-			//we are on the ground now
-			mOnGround = true;
-		}
-		else
-			mOnGround = false;
-		
-		//check if the hero hit the ceiling
-		if (HasCeiling(mPosition, out ceilingY) && mSpeed.y >= 0.0f
-			&& mOldPosition.y + mAABB.HalfSize.y + 1.0f <= ceilingY)
-		{
-			mPosition.y = ceilingY - mAABB.HalfSize.y - 1.0f;
-				
-			//stop going up
-			mSpeed.y = 0.0f;
-			
-			mAtCeiling = true;
-		}
-		else
-			mAtCeiling = false;
-		
-		//if we are colliding with the block but we don't know from which side we had hit him, just prioritize the horizontal alignment
-		if (checkAgainLeft && !mOnGround && !mAtCeiling)
-		{
-			mPosition.x = leftWallX + mAABB.HalfSize.x;
-			mSpeed.x = Mathf.Max(mSpeed.x, 0.0f);
+        //save the speed to oldSpeed vector
+        mOldSpeed = mSpeed;
 
-			mPushesLeftWall = true;
-		}
-		else if (checkAgainRight && !mOnGround && !mAtCeiling)
-		{
-			mPosition.x = rightWallX - mAABB.HalfSize.x;
-			mSpeed.x = Mathf.Min(mSpeed.x, 0.0f);
+        //save the position to the oldPosition vector
+        mOldPosition = mPosition;
 
-			mPushesRightWall = true;
-		}
-		
-		//update the aabb
-		mAABB.Center = mPosition;
-		
-		//apply the changes to the transform
-		transform.position = new Vector3(Mathf.Round(mPosition.x), Mathf.Round(mPosition.y), mSpriteDepth);
-	}
+        //integrate the movement only if we're not tweening
+        mPosition += mSpeed * Time.deltaTime;
+
+        var checkAgainLeft = false;
+
+
+        float groundY, ceilingY;
+        float rightWallX = 0.0f, leftWallX = 0.0f;
+
+        //if we overlap a tile on the left then align the hero
+        if (mSpeed.x <= 0.0f && CollidesWithLeftWall(mPosition, out leftWallX))
+        {
+            if (mOldPosition.x - mAABB.HalfSize.x + mAABBOffset.x >= leftWallX)
+            {
+                mPosition.x = leftWallX + mAABB.HalfSize.x - mAABBOffset.x;
+                mSpeed.x = Mathf.Max(mSpeed.x, 0.0f);
+
+                mPushesLeftWall = true;
+            }
+            else
+                checkAgainLeft = true;
+        }
+        else
+            mPushesLeftWall = false;
+
+        var checkAgainRight = false;
+
+        //if we overlap a tile on the right then align the hero
+        if (mSpeed.x >= 0.0f && CollidesWithRightWall(mPosition, out rightWallX))
+        {
+            if (mOldPosition.x + mAABB.HalfSize.x + mAABBOffset.x <= rightWallX)
+            {
+                mPosition.x = rightWallX - mAABB.HalfSize.x - mAABBOffset.x;
+                mSpeed.x = Mathf.Min(mSpeed.x, 0.0f);
+
+                mPushesRightWall = true;
+            }
+            else
+                checkAgainRight = true;
+        }
+        else
+            mPushesRightWall = false;
+
+        //when we hit the ground
+        //we can't hit the ground if our speed is positive
+        if (HasGround(mPosition, out groundY) && mSpeed.y <= 0.0f
+            && mOldPosition.y - mAABB.HalfSize.y + mAABBOffset.y >= groundY - 0.5f)
+        {
+            //calculate the y position on top of the ground
+            mPosition.y = groundY + mAABB.HalfSize.y - mAABBOffset.y;
+
+            //stop falling
+            mSpeed.y = 0.0f;
+
+            //we are on the ground now
+            mOnGround = true;
+        }
+        else
+            mOnGround = false;
+
+        //check if the hero hit the ceiling
+        if (HasCeiling(mPosition, out ceilingY) && mSpeed.y >= 0.0f
+            && mOldPosition.y + mAABB.HalfSize.y + mAABBOffset.y + 1.0f <= ceilingY)
+        {
+            mPosition.y = ceilingY - mAABB.HalfSize.y - mAABBOffset.y - 1.0f;
+
+            //stop going up
+            mSpeed.y = 0.0f;
+
+            mAtCeiling = true;
+        }
+        else
+            mAtCeiling = false;
+
+        //if we are colliding with the block but we don't know from which side we had hit him, just prioritize the horizontal alignment
+        if (checkAgainLeft && !mOnGround && !mAtCeiling)
+        {
+            mPosition.x = leftWallX + mAABB.HalfSize.x;
+            mSpeed.x = Mathf.Max(mSpeed.x, 0.0f);
+
+            mPushesLeftWall = true;
+        }
+        else if (checkAgainRight && !mOnGround && !mAtCeiling)
+        {
+            mPosition.x = rightWallX - mAABB.HalfSize.x;
+            mSpeed.x = Mathf.Min(mSpeed.x, 0.0f);
+
+            mPushesRightWall = true;
+        }
+
+        //update the aabb
+        mAABB.Center = mPosition + mAABBOffset;
+
+        //apply the changes to the transform
+        transform.position = new Vector3((mPosition.x), (mPosition.y), mSpriteDepth);
+    }
 }

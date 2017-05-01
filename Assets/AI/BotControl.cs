@@ -30,12 +30,13 @@ public class BotControl : MonoBehaviour, DamageAcceptor
         target = GameObject.FindObjectOfType<PlayerTag>().gameObject;
         stats.currentHitPoints = stats.totalHitPoints;
         stats.currentArmorPoints = stats.totalArmorPoints;
-        InvokeRepeating("TargetUpdate", 0f, 1f);
+        float time = Random.Range(0.8f, 2f);
+        InvokeRepeating("TargetUpdate", 0f, time);
     }
 
     void TargetUpdate()
     {
-        agent.SetDestination((Vector2)target.transform.position);
+        agent.MoveTo((Vector2)target.transform.position);
     }
 
     float previousEngageTime = 0f;

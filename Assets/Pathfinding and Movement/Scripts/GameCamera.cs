@@ -50,16 +50,16 @@ public class GameCamera : MonoBehaviour
             cameraPos.y = targetPos.y;
 
         //make sure the camera doesn't go outside the map bounds on x axis
-        if (cameraPos.x < mMap.position.x + Camera.main.pixelWidth * 0.5f - Map.cTileSize / 2 + cOuterVisibilityX * Map.cTileSize)
-            cameraPos.x = mMap.position.x + Camera.main.pixelWidth * 0.5f - Map.cTileSize / 2 + cOuterVisibilityX * Map.cTileSize;
-        else if (cameraPos.x > mMap.position.x + mMap.mWidth * Map.cTileSize - Camera.main.pixelWidth * 0.5f - Map.cTileSize / 2 - cOuterVisibilityX * Map.cTileSize)
-            cameraPos.x = mMap.position.x + mMap.mWidth * Map.cTileSize - Camera.main.pixelWidth * 0.5f - Map.cTileSize / 2 - cOuterVisibilityX * Map.cTileSize;
+        if (cameraPos.x < mMap.position.x + Camera.main.pixelWidth * 0.5f - mMap.cTileSize / 2 + cOuterVisibilityX * mMap.cTileSize)
+            cameraPos.x = mMap.position.x + Camera.main.pixelWidth * 0.5f - mMap.cTileSize / 2 + cOuterVisibilityX * mMap.cTileSize;
+        else if (cameraPos.x > mMap.position.x + mMap.mWidth * mMap.cTileSize - Camera.main.pixelWidth * 0.5f - mMap.cTileSize / 2 - cOuterVisibilityX * mMap.cTileSize)
+            cameraPos.x = mMap.position.x + mMap.mWidth * mMap.cTileSize - Camera.main.pixelWidth * 0.5f - mMap.cTileSize / 2 - cOuterVisibilityX * mMap.cTileSize;
 
         //make sure the camera doesn't go outside the map bounds on y axis
-        if (cameraPos.y < mMap.position.y + Camera.main.pixelHeight * 0.5f - Map.cTileSize / 2 + cOuterVisibilityX * Map.cTileSize)
-            cameraPos.y = mMap.position.y + Camera.main.pixelHeight * 0.5f - Map.cTileSize / 2 + cOuterVisibilityX * Map.cTileSize;
-        else if (cameraPos.y > mMap.position.y + mMap.mHeight * Map.cTileSize - Camera.main.pixelHeight * 0.5f - Map.cTileSize / 2 - cOuterVisibilityX * Map.cTileSize)
-            cameraPos.y = mMap.position.y + mMap.mHeight * Map.cTileSize - Camera.main.pixelHeight * 0.5f - Map.cTileSize / 2 - cOuterVisibilityX * Map.cTileSize;
+        if (cameraPos.y < mMap.position.y + Camera.main.pixelHeight * 0.5f - mMap.cTileSize / 2 + cOuterVisibilityX * mMap.cTileSize)
+            cameraPos.y = mMap.position.y + Camera.main.pixelHeight * 0.5f - mMap.cTileSize / 2 + cOuterVisibilityX * mMap.cTileSize;
+        else if (cameraPos.y > mMap.position.y + mMap.mHeight * mMap.cTileSize - Camera.main.pixelHeight * 0.5f - mMap.cTileSize / 2 - cOuterVisibilityX * mMap.cTileSize)
+            cameraPos.y = mMap.position.y + mMap.mHeight * mMap.cTileSize - Camera.main.pixelHeight * 0.5f - mMap.cTileSize / 2 - cOuterVisibilityX * mMap.cTileSize;
 
 
 

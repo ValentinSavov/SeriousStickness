@@ -16,16 +16,19 @@ public class Character : MovingObject
     };
 
     [Header("Character")]
+    
+
+    public float mCharacterGravityMultiplyer = 1;
+    public const float cMaxFalingSpeed = -90.0f;
+    public const int cJumpFramesThreshold = 4;
+    public float mWalkSfxTimer = 0.0f;
+    public const float cWalkSfxTime = 0.25f;
+
     public AudioClip mHitWallSfx;
     public AudioClip mJumpSfx;
     public AudioClip mWalkSfx;
     public AudioSource mAudioSource;
 
-    public float mCharacterGravity = -1030.0f;
-    public const float cMaxFalingSpeed = -900.0f;
-    public const int cJumpFramesThreshold = 4;
-    public float mWalkSfxTimer = 0.0f;
-    public const float cWalkSfxTime = 0.25f;
     /// <summary>
     /// The current state.
     /// </summary>
@@ -45,11 +48,13 @@ public class Character : MovingObject
     /// <summary>
     /// The hero's vertical speed when he starts a jump
     /// </summary>
+    [HideInInspector]
     public float mJumpSpeed;
 
     /// <summary>
     /// The walk speed constant in pixels/second.
     /// </summary>
+    [HideInInspector]
     public float mWalkSpeed;
 
     public List<Vector2i> mPath = new List<Vector2i>();
@@ -68,16 +73,16 @@ public class Character : MovingObject
             var start = mPath[0];
 
             Gizmos.color = Color.blue;
-            Gizmos.DrawSphere(mMap.transform.position + new Vector3(start.x * Map.cTileSize, start.y * Map.cTileSize, -5.0f), 5.0f);
+            Gizmos.DrawSphere(mMap.transform.position + new Vector3(start.x * mMap.cTileSize, start.y * mMap.cTileSize, -5.0f), mMap.cTileSize/4);
 
             for (var i = 1; i < mPath.Count; ++i)
             {
                 var end = mPath[i];
                 Gizmos.color = Color.blue;
-                Gizmos.DrawSphere(mMap.transform.position + new Vector3(end.x * Map.cTileSize, end.y * Map.cTileSize, -5.0f), 5.0f);
+                Gizmos.DrawSphere(mMap.transform.position + new Vector3(end.x * mMap.cTileSize, end.y * mMap.cTileSize, -5.0f), mMap.cTileSize / 4);
                 Gizmos.color = Color.red;
-                Gizmos.DrawLine(mMap.transform.position + new Vector3(start.x * Map.cTileSize, start.y * Map.cTileSize, -5.0f),
-                                mMap.transform.position + new Vector3(end.x * Map.cTileSize, end.y * Map.cTileSize, -5.0f));
+                Gizmos.DrawLine(mMap.transform.position + new Vector3(start.x * mMap.cTileSize, start.y * mMap.cTileSize, -5.0f),
+                                mMap.transform.position + new Vector3(end.x * mMap.cTileSize, end.y * mMap.cTileSize, -5.0f));
                 start = end;
             }
         }
@@ -96,7 +101,7 @@ public class Character : MovingObject
             for (var i = 0; i < mPath.Count; ++i)
             {
                 lineRenderer.SetColors(Color.red, Color.red);
-                lineRenderer.SetPosition(i, mMap.transform.position + new Vector3(mPath[i].x * Map.cTileSize, mPath[i].y * Map.cTileSize, -5.0f));
+                lineRenderer.SetPosition(i, mMap.transform.position + new Vector3(mPath[i].x * mMap.cTileSize, mPath[i].y * mMap.cTileSize, -5.0f));
             }
         }
         else
@@ -124,7 +129,7 @@ public class Character : MovingObject
         //this should be applied at the beginning of the jump routine
         //because this way we can assure that when we hit the ground 
         //the speed.y will not change after we zero it
-        mSpeed.y += mCharacterGravity * Time.deltaTime;
+        mSpeed.y += Physics2D.gravity.y * mCharacterGravityMultiplyer * Time.deltaTime;
 
         mSpeed.y = Mathf.Max(mSpeed.y, cMaxFalingSpeed);
 
@@ -142,7 +147,7 @@ public class Character : MovingObject
         }
         else if (mInputs[(int)KeyInput.GoRight])	//if right key is pressed then accelerate right
         {
-            transform.localScale = new Vector3(-1.0f, 1.0f, 1.0f);
+            transform.localScale = new Vector3(-mScale.x, mScale.y, 1.0f);
             mSpeed.x = mWalkSpeed;
 
             //..W
@@ -153,7 +158,7 @@ public class Character : MovingObject
         }
         else if (mInputs[(int)KeyInput.GoLeft])	//if left key is pressed then accelerate left
         {
-            transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+            transform.localScale = new Vector3(mScale.x, mScale.y, 1.0f);
             mSpeed.x = -mWalkSpeed;
 
             //W..
@@ -223,12 +228,12 @@ public class Character : MovingObject
                 else if (mInputs[(int)KeyInput.GoRight])
                 {
                     mSpeed.x = mWalkSpeed;
-                    transform.localScale = new Vector3(-1.0f, 1.0f, 1.0f);
+                    transform.localScale = new Vector3(-mScale.x, mScale.y, 1.0f);
                 }
                 else if (mInputs[(int)KeyInput.GoLeft])
                 {
                     mSpeed.x = -mWalkSpeed;
-                    transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+                    transform.localScale = new Vector3(mScale.x, mScale.y, 1.0f);
                 }
 
                 //if there's no tile to walk on, fall
