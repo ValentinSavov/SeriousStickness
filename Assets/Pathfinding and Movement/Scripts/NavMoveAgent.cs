@@ -24,8 +24,8 @@ public class NavMoveAgent : Character
     public int mStuckFrames = 0;
 
     public float mMaxJumpHeight = 5;
-    public float mWidth = 1;
-    public float mHeight = 3;
+    public int mWidth = 1;
+    public int mHeight = 3;
 
     private StickStats stats;
 	
@@ -41,8 +41,7 @@ public class NavMoveAgent : Character
     }
     void CharacterInit(bool[] inputs, bool[] prevInputs)
     {
-        //mScale = Vector2.one;
-        mScale = new Vector3(mWidth, mHeight, 1f);
+        mScale = Vector2.one;
         mInputs = inputs;
         mPrevInputs = prevInputs;
 
@@ -102,8 +101,8 @@ public class NavMoveAgent : Character
         var path = mPathFinder.FindPath(
                         startTile, 
                         destination,
-                        /*Mathf.CeilToInt(mAABB.HalfSizeX * 2 * mMap.cTileSize),*/Mathf.CeilToInt(mAABB.HalfSizeX / 8.0f), 
-                        /*Mathf.CeilToInt(mAABB.HalfSizeY * 2 * mMap.cTileSize),*/Mathf.CeilToInt(mAABB.HalfSizeY / 8.0f), 
+                        mWidth/*Mathf.CeilToInt(mAABB.HalfSizeX * 2 * mMap.cTileSize),Mathf.CeilToInt(mAABB.HalfSizeX / 8.0f)*/, 
+                        mHeight/*Mathf.CeilToInt(mAABB.HalfSizeY * 2 * mMap.cTileSize),Mathf.CeilToInt(mAABB.HalfSizeY / 8.0f)*/, 
                         (short)mMaxJumpHeight);
 
 

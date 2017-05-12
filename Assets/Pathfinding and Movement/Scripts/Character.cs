@@ -154,7 +154,7 @@ public class Character : MovingObject
             //.H.     <- to not get stuck in these kind of situations we beed to advance
             //..W			the hero forward if he doesn't push a wall anymore
             if (mPushedRightWall && !mPushesRightWall)
-                mPosition.x += 1.0f;
+                mPosition.x += 0.1f;
         }
         else if (mInputs[(int)KeyInput.GoLeft])	//if left key is pressed then accelerate left
         {
@@ -165,7 +165,7 @@ public class Character : MovingObject
             //.H.     <- to not get stuck in these kind of situations we need to advance
             //W..			the hero forward if he doesn't push a wall anymore
             if (mPushedLeftWall && !mPushesLeftWall)
-                mPosition.x -= 1.0f;
+                mPosition.x -= 0.1f;
         }
 
         //if we just started falling and want to jump, then jump anyway

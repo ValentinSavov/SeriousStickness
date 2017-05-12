@@ -228,7 +228,7 @@ namespace Algorithms
 
         public List<Vector2i> FindPath(Vector2i start, Vector2i end, int characterWidth, int characterHeight, short maxCharacterJumpHeight)
         {
-            //lock(this)
+            lock(this)
             {
                 while (touchedLocations.Count > 0)
                     nodes[touchedLocations.Pop()].Clear();
