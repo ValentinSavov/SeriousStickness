@@ -1,8 +1,4 @@
 using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
-using System.Threading;
-using Algorithms;
 
 [System.Serializable]
 public enum TileType
@@ -50,9 +46,9 @@ public partial class Map : MonoBehaviour
 	public Transform mSpritesContainer;
 	
 	/// <summary>
-	/// The size of a tile in pixels.
+	/// The size of a tile in meters.
 	/// </summary>
-	public float cTileSize = 16;
+	public float cTileSize = 1;
 	
 	/// <summary>
 	/// The width of the map in tiles.
@@ -61,20 +57,15 @@ public partial class Map : MonoBehaviour
 	/// <summary>
 	/// The height of the map in tiles.
 	/// </summary>
-	public int mHeight = 42;
+	public int mHeight = 50;
 
-    public MapRoomData mapRoom;
+    //public MapRoomData mapRoom;
 
-    public Camera gameCamera;
-    public NavMoveAgent player;
+    //public Camera gameCamera;
+    //public NavMoveAgent player;
 
     int lastMouseTileX = -1;
     int lastMouseTileY = -1;
-
-    public KeyCode goLeftKey = KeyCode.A;
-    public KeyCode goRightKey = KeyCode.D;
-    public KeyCode goJumpKey = KeyCode.W;
-    public KeyCode goDownKey = KeyCode.S;
 
 	public TileType GetTile(int x, int y) 
 	{
@@ -120,8 +111,7 @@ public partial class Map : MonoBehaviour
 
         return (tiles[x, y] != TileType.Empty);
     }
-
-
+    
 	public bool IsOnMap(Vector3 point)
     {
         if( (point.x < (position.x + (mWidth * cTileSize))) && (point.y < (position.y + (mHeight * cTileSize))) )
@@ -133,9 +123,6 @@ public partial class Map : MonoBehaviour
         }
         return false;
     }
-
-
-	
 
 	public void GetMapTileAtPoint(Vector2 point, out int tileIndexX, out int tileIndexY)
 	{
@@ -239,79 +226,22 @@ public partial class Map : MonoBehaviour
         return false;
     }
 
-    public void SetTile(int x, int y, TileType type)
-    {
-        if (x <= 1 || x >= mWidth - 2 || y <= 1 || y >= mHeight - 2)
-            return;
-
-        tiles[x, y] = type;
-
-        if (type == TileType.Block)
-        {
-            mGrid[x, y] = 0;
-            AutoTile(type, x, y, 1, 8, 4, 4, 4, 4);
-            tilesSprites[x, y].enabled = true;
-        }
-        else if (type == TileType.OneWay)
-        {
-            mGrid[x, y] = 1;
-            tilesSprites[x, y].enabled = true;
-
-            tilesSprites[x, y].transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
-            tilesSprites[x, y].transform.eulerAngles = new Vector3(0.0f, 0.0f, 0.0f);
-            tilesSprites[x, y].sprite = mDirtSprites[25];
-        }
-        else
-        {
-            mGrid[x, y] = 1;
-            tilesSprites[x, y].enabled = false;
-        }
-
-        AutoTile(type, x - 1, y, 1, 8, 4, 4, 4, 4);
-        AutoTile(type, x + 1, y, 1, 8, 4, 4, 4, 4);
-        AutoTile(type, x, y - 1, 1, 8, 4, 4, 4, 4);
-        AutoTile(type, x, y + 1, 1, 8, 4, 4, 4, 4);
-    }
-
     public void Awake()
     {
-        mRandomNumber = new System.Random();
 
         //Application.targetFrameRate = 60;
 
         //set the position
         position = transform.position;
 
-        //mWidth = mapRoom.width;
-        //mHeight = mapRoom.height;
 
         tiles = new TileType[mWidth, mHeight];
-        tilesSprites = new SpriteRenderer[mapRoom.width, mapRoom.height];
+        tilesSprites = new SpriteRenderer[mWidth, mHeight];
 
         mGrid = new byte[Mathf.NextPowerOfTwo((int)mWidth), Mathf.NextPowerOfTwo((int)mHeight)];
 
         //Camera.main.orthographicSize = Camera.main.pixelHeight / 2;
 
-        /*
-        for (int y = 0; y < mHeight; ++y)
-        {
-            for (int x = 0; x < mWidth; ++x)
-            {
-                tilesSprites[x, y] = Instantiate<SpriteRenderer>(tilePrefab);
-                tilesSprites[x, y].transform.parent = transform;
-                tilesSprites[x, y].transform.position = position + new Vector3(cTileSize * x, cTileSize * y, 10.0f);
-                
-                SetTile(x, y, mapRoom.tileData[y * mWidth + x] == TileType.Empty ? TileType.Empty : TileType.Block);
-                //vsa
-                if(mapRoom.tileData[y * mWidth + x] == TileType.Block)
-                {
-                    tilesSprites[x, y].gameObject.AddComponent<BoxCollider2D>();
-                }
-                
-
-            }
-        }
-        */
 
         for (int y = 0; y < mHeight; ++y)
         {
@@ -391,7 +321,8 @@ public partial class Map : MonoBehaviour
         }
     }
 
-    void Update()
+    Camera gameCamera;
+    void UpdateBcp()
     {
         if (Input.GetKeyUp(KeyCode.Mouse0))
             lastMouseTileX = lastMouseTileY = -1;
@@ -403,143 +334,5 @@ public partial class Map : MonoBehaviour
         int mouseTileX, mouseTileY;
         GetMapTileAtPoint(mousePosInWorld, out mouseTileX, out mouseTileY);
 
-        //vsa tbr - this is for click and test the pathf and move
-        if (Input.GetKeyDown(KeyCode.Mouse0))
-        {
-            //player.TappedOnTile(new Vector2i(mouseTileX, mouseTileY));
-            //player.MoveTo(new Vector2i(mouseTileX, mouseTileY));
-            if(IsOnMap(mousePosInWorld))
-            {
-                player.MoveTo(mousePosInWorld);
-            }
-        }
-        ////////
-
-        if (Input.GetKey(KeyCode.Mouse1) || Input.GetKey(KeyCode.Mouse2))
-        {
-            if (mouseTileX != lastMouseTileX || mouseTileY != lastMouseTileY || Input.GetKeyDown(KeyCode.Mouse1) || Input.GetKeyDown(KeyCode.Mouse2))
-            {
-                if (!IsNotEmpty(mouseTileX, mouseTileY))
-                {
-                    SetTile(mouseTileX, mouseTileY, TileType.Block);
-                }
-                else
-                    SetTile(mouseTileX, mouseTileY, TileType.Empty);
-
-                lastMouseTileX = mouseTileX;
-                lastMouseTileY = mouseTileY;
-            }
-        }
     }
-
-    System.Random mRandomNumber;
-
-    void AutoTile(TileType type, int x, int y, int rand4NeighbourTiles, int rand3NeighbourTiles,
-        int rand2NeighbourPipeTiles, int rand2NeighbourCornerTiles, int rand1NeighbourTiles, int rand0NeighbourTiles)
-    {
-        if (x >= mWidth || x < 0 || y >= mHeight || y < 0)
-            return;
-
-        if (tiles[x, y] != TileType.Block)
-            return;
-
-        int tileOnLeft = tiles[x - 1, y] == tiles[x, y] ? 1 : 0;
-        int tileOnRight = tiles[x + 1, y] == tiles[x, y] ? 1 : 0;
-        int tileOnTop = tiles[x, y + 1] == tiles[x, y] ? 1 : 0;
-        int tileOnBottom = tiles[x, y - 1] == tiles[x, y] ? 1 : 0;
-
-        float scaleX = 1.0f;
-        float scaleY = 1.0f;
-        float rot = 0.0f;
-        int id = 0;
-
-        int sum = tileOnLeft + tileOnRight + tileOnTop + tileOnBottom;
-
-        switch (sum)
-        {
-            case 0:
-                id = 1 + mRandomNumber.Next(rand0NeighbourTiles);
-
-                break;
-            case 1:
-                id = 1 + rand0NeighbourTiles + mRandomNumber.Next(rand1NeighbourTiles);
-
-                if (tileOnRight == 1)
-                    scaleX = -1;
-                else if (tileOnTop == 1)
-                    rot = -1;
-                else if (tileOnBottom == 1)
-                {
-                    rot = 1;
-                    scaleY = -1;
-                }
-
-                break;
-            case 2:
-
-                if (tileOnLeft + tileOnBottom == 2)
-                {
-                    id = 1 + rand0NeighbourTiles + rand1NeighbourTiles + rand2NeighbourPipeTiles
-                        + mRandomNumber.Next(rand2NeighbourCornerTiles);
-                }
-                else if (tileOnRight + tileOnBottom == 2)
-                {
-                    id = 1 + rand0NeighbourTiles + rand1NeighbourTiles + rand2NeighbourPipeTiles
-                        + mRandomNumber.Next(rand2NeighbourCornerTiles);
-                    scaleX = -1;
-                }
-                else if (tileOnTop + tileOnLeft == 2)
-                {
-                    id = 1 + rand0NeighbourTiles + rand1NeighbourTiles + rand2NeighbourPipeTiles
-                        + mRandomNumber.Next(rand2NeighbourCornerTiles);
-                    scaleY = -1;
-                }
-                else if (tileOnTop + tileOnRight == 2)
-                {
-                    id = 1 + rand0NeighbourTiles + rand1NeighbourTiles + rand2NeighbourPipeTiles
-                        + mRandomNumber.Next(rand2NeighbourCornerTiles);
-                    scaleX = -1;
-                    scaleY = -1;
-                }
-                else if (tileOnTop + tileOnBottom == 2)
-                {
-                    id = 1 + rand0NeighbourTiles + rand1NeighbourTiles + mRandomNumber.Next(rand2NeighbourPipeTiles);
-                    rot = 1;
-                }
-                else if (tileOnRight + tileOnLeft == 2)
-                    id = 1 + rand0NeighbourTiles + rand1NeighbourTiles + mRandomNumber.Next(rand2NeighbourPipeTiles);
-
-                break;
-            case 3:
-                id = 1 + rand0NeighbourTiles + rand1NeighbourTiles + rand2NeighbourPipeTiles
-                    + rand2NeighbourCornerTiles + mRandomNumber.Next(rand3NeighbourTiles);
-
-                if (tileOnLeft == 0)
-                {
-                    rot = 1;
-                    scaleX = -1;
-                }
-                else if (tileOnRight == 0)
-                {
-                    rot = 1;
-                    scaleY = -1;
-                }
-                else if (tileOnBottom == 0)
-                    scaleY = -1;
-
-                break;
-
-            case 4:
-                id = 1 + rand0NeighbourTiles + rand1NeighbourTiles + rand2NeighbourPipeTiles
-                    + rand2NeighbourCornerTiles + rand3NeighbourTiles + mRandomNumber.Next(rand4NeighbourTiles);
-
-                break;
-        }
-
-        tilesSprites[x, y].transform.localScale = new Vector3(scaleX, scaleY, 1.0f);
-        tilesSprites[x, y].transform.eulerAngles = new Vector3(0.0f, 0.0f, rot * 90.0f);
-        tilesSprites[x, y].sprite = mDirtSprites[id - 1];
-    }
-
-    public List<Sprite> mDirtSprites;
 }
