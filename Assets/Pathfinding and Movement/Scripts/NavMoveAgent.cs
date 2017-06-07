@@ -92,14 +92,17 @@ public class NavMoveAgent : Character
                 startTile.x -= 1;
         }
 
-        /*PathFinderFast mPathFinder = new PathFinderFast(mMap);
+        List <Vector2i> path = new List<Vector2i>();
+        Pathfinding mPathfinding = new Pathfinding();
 
-        var path = mPathFinder.FindPath(
+        path = mPathfinding.FindPath(
                         startTile, 
                         destination,
+                        mMap.mGrid,
                         mWidth,
-                        mHeight, 
-                        (short)mMaxJumpHeight);
+                        mHeight,
+                        (short)mMaxJumpHeight
+                        );
 
         
         mPath.Clear();
@@ -125,7 +128,7 @@ public class NavMoveAgent : Character
 
         if (!Debug.isDebugBuild)
             DrawPathLines();
-        */
+        
     }
     public void MoveTo(Vector2 destination)
     {

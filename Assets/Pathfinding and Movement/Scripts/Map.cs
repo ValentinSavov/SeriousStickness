@@ -32,19 +32,8 @@ public partial class Map : MonoBehaviour
     /// <summary>
     /// The map's tile data.
     /// </summary>
-    [HideInInspector]
     private TileType[,] tiles;
 
-	/// <summary>
-	/// The map's sprites.
-	/// </summary>
-	private SpriteRenderer[,] tilesSprites;
-	
-	/// <summary>
-	/// A parent for all the sprites. Assigned from the inspector.
-	/// </summary>
-	public Transform mSpritesContainer;
-	
 	/// <summary>
 	/// The size of a tile in meters.
 	/// </summary>
@@ -59,10 +48,6 @@ public partial class Map : MonoBehaviour
 	/// </summary>
 	public int mHeight = 50;
 
-    //public MapRoomData mapRoom;
-
-    //public Camera gameCamera;
-    //public NavMoveAgent player;
 
     int lastMouseTileX = -1;
     int lastMouseTileY = -1;
@@ -228,21 +213,15 @@ public partial class Map : MonoBehaviour
 
     public void Awake()
     {
-
         //Application.targetFrameRate = 60;
 
-        //set the position
         position = transform.position;
-
-
+        
         tiles = new TileType[mWidth, mHeight];
-        tilesSprites = new SpriteRenderer[mWidth, mHeight];
-
         mGrid = new byte[Mathf.NextPowerOfTwo((int)mWidth), Mathf.NextPowerOfTwo((int)mHeight)];
 
         //Camera.main.orthographicSize = Camera.main.pixelHeight / 2;
-
-
+        
         for (int y = 0; y < mHeight; ++y)
         {
             for (int x = 0; x < mWidth; ++x)
@@ -257,18 +236,16 @@ public partial class Map : MonoBehaviour
                         break;
                     }
                 }
-
-                //if (Physics2D.OverlapPoint(position + new Vector3(cTileSize * x, cTileSize * y, 0)))
                 if (colFound)
                 {
                     Debug.DrawLine(position + new Vector3((cTileSize * x) - (cTileSize / 8), (cTileSize * y), 0), position + new Vector3((cTileSize * x) + (cTileSize / 8), (cTileSize * y), 0), Color.red, 1000f);
                     Debug.DrawLine(position + new Vector3((cTileSize * x), (cTileSize * y) - (cTileSize / 8), 0), position + new Vector3((cTileSize * x), (cTileSize * y) + (cTileSize / 8), 0), Color.red, 1000f);
                     tiles[x, y] = TileType.Block;
                     mGrid[x, y] = 0;
-                    tilesSprites[x, y] = Instantiate<SpriteRenderer>(tilePrefab);
-                    tilesSprites[x, y].transform.parent = transform;
-                    tilesSprites[x, y].transform.position = position + new Vector3(cTileSize * x, cTileSize * y, 10.0f);
-                    tilesSprites[x, y].transform.localScale *= cTileSize;
+                    SpriteRenderer sr = Instantiate<SpriteRenderer>(tilePrefab);
+                    sr.transform.parent = transform;
+                    sr.transform.position = position + new Vector3(cTileSize * x, cTileSize * y, 10.0f);
+                    sr.transform.localScale *= cTileSize;
 
                 }
                 else

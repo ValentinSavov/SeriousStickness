@@ -10,18 +10,16 @@ public class BotControl : MonoBehaviour, DamageAcceptor
     GameObject gpParent;
     StickStats stats;
     Registry registry;
-    NavMoveAgent agent;
+    //NavMoveAgent agent;
     RectTransform healthBar;
-    Node[] graph;
 
     GameObject target;
 
     void Start ()
 	{
-        //graph = GameObject.Find("Graph").GetComponentsInChildren<Node>();
         gpParent = GameObject.Find("GeneralPurposeParent");
         stats = GetComponent<StickStats>();
-        agent = GetComponent<NavMoveAgent>();
+        //agent = GetComponent<NavMoveAgent>();
         registry = GameObject.FindObjectOfType<Registry>().GetComponent<Registry>();
         stats.moveSpeed += Random.Range(-(stats.moveSpeed *0.2f), stats.moveSpeed *0.2f);
         registry.damageAcceptors.AddDamageAcceptor(this);
@@ -31,12 +29,12 @@ public class BotControl : MonoBehaviour, DamageAcceptor
         stats.currentHitPoints = stats.totalHitPoints;
         stats.currentArmorPoints = stats.totalArmorPoints;
         float time = Random.Range(0.8f, 2f);
-        InvokeRepeating("TargetUpdate", 0f, time);
+        //InvokeRepeating("TargetUpdate", 0f, time);
     }
 
     void TargetUpdate()
     {
-        agent.MoveTo((Vector2)target.transform.position);
+        //agent.MoveTo((Vector2)target.transform.position);
     }
 
     float previousEngageTime = 0f;
@@ -93,7 +91,7 @@ public class BotControl : MonoBehaviour, DamageAcceptor
                 }
                 
                 this.enabled = false;
-                GetComponent<GoapAgent>().enabled = false;
+                //GetComponent<GoapAgent>().enabled = false;
                 Destroy(this.gameObject/*, 10f*/);
                 
                 //anim.enabled = false;
