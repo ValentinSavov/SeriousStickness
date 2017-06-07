@@ -1,8 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using Algorithms;
-using UnityEngine.UI;
+
 
 public class NavMoveAgent : Character
 {
@@ -93,19 +92,19 @@ public class NavMoveAgent : Character
                 startTile.x -= 1;
         }
 
-        PathFinderFast mPathFinder = new PathFinderFast(mMap);
-        //Debug.Log("mAABB.HalfSize: " + mAABB.HalfSize);
-        //Debug.Log("mAABB.Center: " + mAABB.Center);
-        //Debug.Log("mAABBOffset: " + mAABBOffset);
-        //Debug.Log("startTile: " + startTile.x + " " + startTile.y);
-        var path = mPathFinder.FindPath(
+        List <Vector2i> path = new List<Vector2i>();
+        Pathfinding mPathfinding = new Pathfinding();
+
+        path = mPathfinding.FindPath(
                         startTile, 
                         destination,
-                        mWidth/*Mathf.CeilToInt(mAABB.HalfSizeX * 2 * mMap.cTileSize),Mathf.CeilToInt(mAABB.HalfSizeX / 8.0f)*/, 
-                        mHeight/*Mathf.CeilToInt(mAABB.HalfSizeY * 2 * mMap.cTileSize),Mathf.CeilToInt(mAABB.HalfSizeY / 8.0f)*/, 
-                        (short)mMaxJumpHeight);
+                        mMap.mGrid,
+                        mWidth,
+                        mHeight,
+                        (short)mMaxJumpHeight
+                        );
 
-
+        
         mPath.Clear();
 
         if (path != null && path.Count > 1)
@@ -115,7 +114,7 @@ public class NavMoveAgent : Character
 
             mCurrentNodeId = 1;
 
-            ChangeAction(BotAction.MoveTo);
+            //vsa ChangeAction(BotAction.MoveTo);
 
             mFramesOfJumping = GetJumpFramesForNode(0);
         }
@@ -129,6 +128,7 @@ public class NavMoveAgent : Character
 
         if (!Debug.isDebugBuild)
             DrawPathLines();
+        
     }
     public void MoveTo(Vector2 destination)
     {

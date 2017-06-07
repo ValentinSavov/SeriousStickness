@@ -137,17 +137,7 @@ public class AABB
 	}
 	
 	/// <summary>
-	/// Checks whether a Vector2i p lies inside AABB a.
-	/// </summary>
-	/// <returns>
-	/// True if the Vector2i is inside the aabb, otherwise false.
-	/// </returns>
-	/// <param name='a'>
-	/// If set to <c>true</c> a.
-	/// </param>
-	/// <param name='p'>
-	/// If set to <c>true</c> p.
-	/// </param>
+	/// Checks whether a point p lies inside AABB a.
 	public static bool PointInside(AABB a, Vector2 p)
 	{
 		if ( Mathf.Abs(a.center.x - p.x) > a.halfSize.x ) return false;

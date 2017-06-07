@@ -9,7 +9,7 @@ public class StickStats : MonoBehaviour
     public float attackSpeed = 20; // 0 - 100 = 0 - 1Hz ; it does not work for player, the player depends on weapon firerate and mouse click
     [Tooltip("m/s")]
     public float moveSpeed = 160.0f; // m/s
-    [Tooltip("m/s")]
+
     public float jumpSpeed = 410.0f; // m/s
 
     public float totalHitPoints = 1000f;

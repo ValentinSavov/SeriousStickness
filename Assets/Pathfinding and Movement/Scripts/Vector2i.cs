@@ -1,9 +1,5 @@
 ﻿using System;
 using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
-
-#region Vector2i
 
 [System.Serializable]
 public struct Vector2i : IEquatable<Vector2i>
@@ -41,18 +37,3 @@ public struct Vector2i : IEquatable<Vector2i>
         return x == other.x && y == other.y;
     }
 }
-
-class Vector2iEqualityComparer : IEqualityComparer<Vector2i>
-{
-	public bool Equals(Vector2i v1, Vector2i v2)
-	{
-		return (v1.x == v2.x && v1.y == v2.y);
-	}
-	
-	public int GetHashCode(Vector2i v)
-	{
-		return v.x*7 + v.y*13;
-	}
-}
-
-#endregion

@@ -4,7 +4,6 @@ using System.Collections.Generic;
 
 public class PlayerControl : MonoBehaviour, DamageAcceptor
 {
-    public int jumpForce = 1;
     public bool grounded = false;
     public bool wantToJumpDown = false;
     
@@ -18,14 +17,11 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor
     private List<SourcesAndCooldowns> damageSourcesInCooldown = new List<SourcesAndCooldowns>();
     Animator anim;
     PlayerGear gear;
-    Character character;
     void Start()
     {
         gear = GetComponent<PlayerGear>();
         anim = GetComponent<Animator>();
         stats = GetComponent<StickStats>();
-        character = GetComponent<Character>();
-        //CharacterInit();
         //cursor = GameObject.FindObjectOfType<Cursor>().gameObject;
         registry = GameObject.FindObjectOfType<Registry>().GetComponent<Registry>();
         registry.damageAcceptors.AddDamageAcceptor(this);
@@ -40,11 +36,6 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor
 
     void FixedUpdate()
     {
-        //character.mInputs[(int)KeyInput.GoRight] = false;
-        //character.mInputs[(int)KeyInput.GoLeft] = false;
-        //character.mInputs[(int)KeyInput.Jump] = false;
-        //character.mInputs[(int)KeyInput.GoDown] = false;
-
         UpdateDamageCooldowns();
 
         CheckGround();
@@ -62,29 +53,19 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor
         }
 
         transform.Translate(x, 0, 0);
-        //float x = Input.GetAxis("Horizontal");
-        if (x < 0)
-        {
-            //character.mInputs[(int)KeyInput.GoLeft] = true;
-        }
-        else if (x > 0)
-        {
-            //character.mInputs[(int)KeyInput.GoRight] = true;
-        }
 
         if (Input.GetAxis("Vertical") < -0.5f)
         {
-            //character.mInputs[(int)KeyInput.GoDown] = true;
             wantToJumpDown = true;
             transform.Translate(0, 0.001f, 0); // this is for trigger detection - if it does not move no trigger event is generated
         }
         else if (Input.GetButtonDown("Jump"))
         {
-            //character.mInputs[(int)KeyInput.Jump] = true;
             if (grounded)
             {
+                Debug.Log("Jump");
                 GetComponent<Rigidbody2D>().velocity = Vector2.zero;
-                GetComponent<Rigidbody2D>().AddForce(Vector2.up * jumpForce);
+                GetComponent<Rigidbody2D>().AddForce(Vector2.up * stats.jumpSpeed);
             }
         }
 
@@ -101,26 +82,6 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor
             gear.PrevWeapon();
         }
 
-        //if (gameObject.activeInHierarchy)
-            //character.CharacterUpdate();
-    }
-
-    void CharacterInit()
-    {
-        character.mInputs = new bool[(int)KeyInput.Count];
-        character.mPrevInputs = new bool[(int)KeyInput.Count];
-
-        character.mMap = GameObject.FindObjectOfType<Map>();
-        character.mAudioSource = GetComponent<AudioSource>();
-        character.mPosition = transform.position;
-        character.mAnimator = GetComponent<Animator>();
-        
-        character.mAABB.HalfSize = new Vector2(6.0f, 7.0f);
-        
-        character.mJumpSpeed = stats.jumpSpeed;// Constants.cJumpSpeed;
-        character.mWalkSpeed = stats.moveSpeed;// Constants.cWalkSpeed;
-
-        //transform.localScale = new Vector3(mAABB.HalfSizeX / 8.0f, mAABB.HalfSizeY / 8.0f, 1.0f);
     }
 
     #region damage stuff
