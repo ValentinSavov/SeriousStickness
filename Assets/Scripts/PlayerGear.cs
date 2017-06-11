@@ -16,6 +16,7 @@ public class PlayerGear : MonoBehaviour
     public List<InventoryWeapon> availableWeapons = new List<InventoryWeapon>();
 
     public int selectedWeapon = 0;
+
     GameObject cursor;
     GearDatabase gearDatabase;
     TextMesh ammotext;
@@ -55,8 +56,8 @@ public class PlayerGear : MonoBehaviour
         {
             ammotext.text = "Ammo: " + availableWeapons[selectedWeapon].bullets.ToString();
         }
-
     }
+
 
     void OnTriggerEnter2D(Collider2D other)
     {
@@ -135,6 +136,11 @@ public class PlayerGear : MonoBehaviour
         }
 
         //vsa do the same for UI
+    }
+
+    public GameObject GetSelectedWeapon()
+    {
+        return availableWeapons[selectedWeapon].weaponGO;
     }
 
     public void Engage()

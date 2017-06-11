@@ -10,7 +10,7 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor
     public List<string> groups { get; set; }
 
     private StickStats stats;
-    //private GameObject cursor;
+    private GameObject cursor;
     private Registry registry;
 
     RectTransform healthBar;
@@ -22,7 +22,7 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor
         gear = GetComponent<PlayerGear>();
         anim = GetComponent<Animator>();
         stats = GetComponent<StickStats>();
-        //cursor = GameObject.FindObjectOfType<Cursor>().gameObject;
+        cursor = GameObject.FindObjectOfType<Cursor>().gameObject;
         registry = GameObject.FindObjectOfType<Registry>().GetComponent<Registry>();
         registry.damageAcceptors.AddDamageAcceptor(this);
 
@@ -39,15 +39,19 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor
         UpdateDamageCooldowns();
 
         CheckGround();
+        
         float x = Input.GetAxis("Horizontal") * Time.deltaTime * stats.moveSpeed;
         if (anim != null) anim.SetFloat("Speed", Input.GetAxis("Horizontal"));
 
+        float degreesToRotate = Quaternion.FromToRotation(Vector3.right * Mathf.Sign(transform.localScale.x), cursor.transform.position - gear.GetSelectedWeapon().transform.position).eulerAngles.z;
+        gear.GetSelectedWeapon().transform.rotation = Quaternion.AngleAxis(degreesToRotate, Vector3.forward);
+        
         //turn to needed position
-        if (x > 0.05f)
+        if((cursor.transform.position.x - this.transform.position.x) > 0)
         {
             this.transform.localScale = new Vector3(1, 1, 1);
         }
-        if (x < -0.05f)
+        else
         {
             this.transform.localScale = new Vector3(-1, 1, 1);
         }
@@ -180,7 +184,7 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor
     void CheckGround()
     {
         grounded = false;
-        Collider2D[] colls = Physics2D.OverlapCircleAll(transform.position + Vector3.down, 0.1f );
+        Collider2D[] colls = Physics2D.OverlapCircleAll(transform.position + Vector3.down, 0.2f );
         foreach (Collider2D col in colls)
         {
             if (col.GetComponent<FloorTag>() != null)
