@@ -60,7 +60,7 @@ public class MachineGun : Weapon
 
                     GameObject bulletHitEffect = Instantiate(Resources.Load("BulletHitEffect", typeof(GameObject)), gpParent.transform) as GameObject;
                     bulletHitEffect.transform.position = new Vector3(hit.point.x, hit.point.y, -2f);
-                    bulletHitEffect.GetComponent<BulletHitEffect>().SetColorRed();
+                    bulletHitEffect.GetComponent<ParticleSystem>().startColor = Color.red;
                 }
             }
 

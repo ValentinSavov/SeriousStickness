@@ -5,22 +5,16 @@ using UnityEngine;
 public class BulletHitEffect : MonoBehaviour
 {
     ParticleSystem particle;
-	void Awake ()
+	void Start ()
     {
         particle = GetComponent<ParticleSystem>();
 	}
 	
 	void Update ()
     {
-		//if(!particle.IsAlive())
+		if(!particle.IsAlive())
         {
-            //Destroy(particle.gameObject);
-            //this.enabled = false;
+            Destroy(this.gameObject);
         }
 	}
-
-    public void SetColorRed()
-    {
-        particle.startColor = Color.red;
-    }
 }

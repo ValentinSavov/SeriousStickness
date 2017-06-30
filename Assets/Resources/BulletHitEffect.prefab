@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4877240450108110}
   - component: {fileID: 198108069168816756}
   - component: {fileID: 199430890962289002}
-  - component: {fileID: 114986285719549578}
+  - component: {fileID: 114312919615894326}
   m_Layer: 0
   m_Name: BulletHitEffect
   m_TagString: Untagged
@@ -42,7 +42,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &114986285719549578
+--- !u!114 &114312919615894326
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}

@@ -29,7 +29,7 @@ GameObject:
   - component: {fileID: 58968804949643336}
   - component: {fileID: 114635798022462074}
   m_Layer: 0
-  m_Name: Bot
+  m_Name: GOAPBot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -429,7 +429,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attackSpeed: 20
   moveSpeed: 4
-  jumpStartSpeed: 10
+  jumpSpeed: 410
   totalHitPoints: 200
   totalArmorPoints: 0
   currentHitPoints: 0
@@ -473,6 +473,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 274f4466376ec57428eaf8f0cbe4c4cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isAutomatic: 0
   range: 5
   groups: []
   damage: 20
