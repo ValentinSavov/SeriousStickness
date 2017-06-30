@@ -149,6 +149,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1db0875d431a6b41a280f460fb988cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isAutomatic: 0
   range: 10
   groups: []
   damage: 20
@@ -206,7 +207,7 @@ LineRenderer:
     colorGradient:
       key0:
         serializedVersion: 2
-        rgba: 4294967295
+        rgba: 4288427264
       key1:
         serializedVersion: 2
         rgba: 4294967295

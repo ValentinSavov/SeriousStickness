@@ -21,7 +21,7 @@ public class PlayerGear : MonoBehaviour
     GearDatabase gearDatabase;
     TextMesh ammotext;
 
-    void Start ()
+    void Start()
     {
         ammotext = GameObject.Find("Ammo").GetComponent<TextMesh>();
         Transform weaponSpot = GetComponentInChildren<WeaponSpot>().transform;
@@ -29,11 +29,11 @@ public class PlayerGear : MonoBehaviour
         gearDatabase = GameObject.FindObjectOfType<GearDatabase>();
 
         // get from database and instantiate all weapons that shall be available
-        if(availableWeapons.Count != 0)
+        if (availableWeapons.Count != 0)
         {
             selectedWeapon = (int)Mathf.Clamp(selectedWeapon, 0, availableWeapons.Count);
 
-            for(int i=0; i<availableWeapons.Count; i++)
+            for (int i = 0; i < availableWeapons.Count; i++)
             {
                 GameObject weap = Instantiate(gearDatabase.weapons.Find(x => x.gamePref.name == availableWeapons[i].name).gamePref, weaponSpot) as GameObject;
                 availableWeapons[i].weaponGO = weap;
@@ -44,20 +44,66 @@ public class PlayerGear : MonoBehaviour
 
                 //vsa do the same for UI prefabs
             }
-            
+
             availableWeapons[selectedWeapon].weaponGO.SetActive(true);
         }
-	}
-	
-	void Update ()
+    }
+
+    void Update()
     {
+        if (Input.GetButtonDown("Fire1"))
+        {
+            Engage();
+        }
+        else if (Input.GetButton("Fire1") == true)
+        {
+            Weapon activeWeap = availableWeapons[selectedWeapon].weaponGO.GetComponent<Weapon>();
+            if (activeWeap != null)
+            {
+                if (activeWeap.isAutomatic)
+                {
+                    Engage();
+                }
+            }
+        }
+
+
+        if (Input.GetAxis("Mouse ScrollWheel") > 0)
+        {
+            PrevWeapon();
+        }
+        else if (Input.GetAxis("Mouse ScrollWheel") < 0)
+        {
+            NextWeapon();
+        }
+
         //vsa javar takuv, mahni tva ot tuka
-        if(ammotext != null)
+        if (ammotext != null)
         {
             ammotext.text = "Ammo: " + availableWeapons[selectedWeapon].bullets.ToString();
         }
     }
 
+    void Engage()
+    {
+        Weapon activeWeap = availableWeapons[selectedWeapon].weaponGO.GetComponent<Weapon>();
+        if (activeWeap != null)
+        {
+            if ((availableWeapons[selectedWeapon].bullets > 0f) && (availableWeapons[selectedWeapon].durability > 0f))
+            {
+                if (activeWeap.Engage(cursor) == true)
+                {
+                    availableWeapons[selectedWeapon].bullets--;
+                    //vsa do something for durability
+                }
+            }
+            else
+            {
+                //vsa effect for no ammo
+            }
+        }
+    }
+    
 
     void OnTriggerEnter2D(Collider2D other)
     {
@@ -90,7 +136,7 @@ public class PlayerGear : MonoBehaviour
                         instantiatedWeap.transform.localScale = Vector3.one;
                         instantiatedWeap.SetActive(false);
 
-                        
+
                         newiw.weaponGO = instantiatedWeap;
                         newiw.bullets = 10f;
                         newiw.durability = 100f;
@@ -106,12 +152,11 @@ public class PlayerGear : MonoBehaviour
     {
         availableWeapons[selectedWeapon].weaponGO.SetActive(false);
         selectedWeapon++;
-        if(selectedWeapon >= (availableWeapons.Count))
+        if (selectedWeapon >= (availableWeapons.Count))
         {
             selectedWeapon = 0;
         }
         availableWeapons[selectedWeapon].weaponGO.SetActive(true);
-
         //vsa do the same for UI
     }
     public void PrevWeapon()
@@ -128,7 +173,7 @@ public class PlayerGear : MonoBehaviour
     }
     public void SetSelectedWeapon(int selected)
     {
-        if( (selected >= 0) && (selected < availableWeapons.Count) )
+        if ((selected >= 0) && (selected < availableWeapons.Count))
         {
             availableWeapons[selectedWeapon].weaponGO.SetActive(false);
             selectedWeapon = selected;
@@ -143,23 +188,5 @@ public class PlayerGear : MonoBehaviour
         return availableWeapons[selectedWeapon].weaponGO;
     }
 
-    public void Engage()
-    {
-        Weapon activeWeap = availableWeapons[selectedWeapon].weaponGO.GetComponent<Weapon>();
-        if (activeWeap != null)
-        {
-            if( (availableWeapons[selectedWeapon].bullets > 0f) && (availableWeapons[selectedWeapon].durability > 0f) )
-            {
-                if(activeWeap.Engage(cursor) == true)
-                {
-                    availableWeapons[selectedWeapon].bullets--;
-                    //vsa do something for durability
-                }
-            }
-            else
-            {
-                //vsa effect for no ammo
-            }
-        }
-    }
+
 }

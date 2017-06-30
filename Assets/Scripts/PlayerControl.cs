@@ -63,7 +63,7 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor
             wantToJumpDown = true;
             transform.Translate(0, 0.001f, 0); // this is for trigger detection - if it does not move no trigger event is generated
         }
-        else if (Input.GetButtonDown("Jump"))
+        else if (Input.GetButton("Jump") == true)
         {
             if (grounded)
             {
@@ -73,18 +73,7 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor
             }
         }
 
-        if (Input.GetButtonDown("Fire1"))
-        {
-            gear.Engage();
-        }
-        if (Input.GetAxis("Mouse ScrollWheel") > 0)
-        {
-            gear.NextWeapon();
-        }
-        if (Input.GetAxis("Mouse ScrollWheel") < 0)
-        {
-            gear.PrevWeapon();
-        }
+
 
     }
 
