@@ -8,7 +8,7 @@ public class RocketLauncher : Weapon
     bool done = false;
     //int shotsCounter = 0;
     AudioSource audioSource;
-
+    GameObject barrel;
     public RocketLauncher()
     {
         
@@ -21,6 +21,7 @@ public class RocketLauncher : Weapon
         //registry.weapons.AddWeapon(this.gameObject); //AddToRegistry();
         gpParent = GameObject.Find("GeneralPurposeParent");
         //fireRate += Random.Range(-(fireRate * 0.1f), fireRate * 0.1f);
+        barrel = transform.FindChild("barrel").gameObject;
     }
 
     public override bool isDone()
@@ -37,7 +38,7 @@ public class RocketLauncher : Weapon
         if ((Time.time - previousShotTime) >= (1f / fireRate))
         {
             GameObject proj = Instantiate(Resources.Load("Projectile", typeof(GameObject)),
-                this.transform.position, Quaternion.FromToRotation(Vector3.right,
+                barrel.transform.position, Quaternion.FromToRotation(Vector3.right,
                 newTarget.transform.position - this.transform.position)) 
                 as GameObject;
             previousShotTime = Time.time;

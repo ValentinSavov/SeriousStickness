@@ -68,8 +68,11 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor
             if (grounded)
             {
                 Debug.Log("Jump");
-                GetComponent<Rigidbody2D>().velocity = Vector2.zero;
-                GetComponent<Rigidbody2D>().AddForce(Vector2.up * stats.jumpSpeed);
+                if(GetComponent<Rigidbody2D>().velocity.y < 0.2f)
+                {
+                    GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+                    GetComponent<Rigidbody2D>().AddForce(Vector2.up * stats.jumpSpeed);
+                }
             }
         }
 
@@ -168,7 +171,7 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor
     }
     #endregion
 
-    #region old jump and coliders stuff
+    #region jump and coliders stuff
 
     void CheckGround()
     {

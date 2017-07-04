@@ -45,6 +45,9 @@ public class BotControl : MonoBehaviour, DamageAcceptor
         {
             if ((target.transform.position - this.transform.position).magnitude < weap.range)
             {
+                float degreesToRotate = Quaternion.FromToRotation(Vector3.right * Mathf.Sign(transform.localScale.x), target.transform.position - weap.transform.position).eulerAngles.z;
+                weap.transform.rotation = Quaternion.AngleAxis(degreesToRotate, Vector3.forward);
+
                 if ((Time.time - previousEngageTime) >= (1f / (GetComponent<StickStats>().attackSpeed / 100)))
                 {
                     previousEngageTime = Time.time;
@@ -92,9 +95,11 @@ public class BotControl : MonoBehaviour, DamageAcceptor
                 
                 this.enabled = false;
                 //GetComponent<GoapAgent>().enabled = false;
-                Destroy(this.gameObject/*, 10f*/);
+                Destroy(this.gameObject, 10f);
+
+                Animator anim = GetComponent<Animator>();
+                if(anim)anim.enabled = false;
                 
-                //anim.enabled = false;
                 SwitchToRagdoll();
                 AddForceToRandomBones(argInArgs.knockback);
             }
@@ -166,7 +171,7 @@ public class BotControl : MonoBehaviour, DamageAcceptor
         Rigidbody2D[] rbs = GetComponentsInChildren<Rigidbody2D>();
         foreach (Rigidbody2D rb in rbs)
         {
-            rb.transform.SetParent(this.transform);
+            //rb.transform.SetParent(this.transform);
             if (rb.isKinematic == true)
             {
                 rb.isKinematic = false;
