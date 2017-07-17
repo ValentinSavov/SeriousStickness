@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class SceneControl : MonoBehaviour 
 {
+    public string sceneToReload = "main";
 	//Object sceneController;
 	void Start () 
 	{
@@ -13,15 +14,15 @@ public class SceneControl : MonoBehaviour
 		//InvokeRepeating("ReloadScene", 5f, 5f);
 
 		//SceneManager.UnloadScene ("Round");
-		SceneManager.UnloadSceneAsync ("Round");
-		SceneManager.LoadScene ("Round", LoadSceneMode.Additive);
-	}
+		SceneManager.UnloadSceneAsync (sceneToReload);
+		SceneManager.LoadScene (sceneToReload, LoadSceneMode.Additive);
+    }
 	
 
 	public void ReloadScene()
 	{
 		//SceneManager.UnloadScene ("Round");
-		SceneManager.UnloadSceneAsync ("Round");
-		SceneManager.LoadScene ("Round", LoadSceneMode.Additive);
-	}
+		SceneManager.UnloadSceneAsync (sceneToReload);
+		SceneManager.LoadScene (sceneToReload, LoadSceneMode.Additive);
+    }
 }

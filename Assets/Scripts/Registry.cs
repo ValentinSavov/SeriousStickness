@@ -24,6 +24,19 @@ public class Registry : MonoBehaviour
     }
 }
 
+
+
+/// <summary>
+/// ---------------------------------------------------------------          DamageProviders
+/// </summary>
+/// 
+
+
+public interface DamageProvider
+{
+    void ReportKill(DamageAcceptor killed);
+}
+
 /// <summary>
 /// ---------------------------------------------------------------          DamageAcceptors
 /// </summary>
@@ -106,7 +119,10 @@ public class DamageAcceptorRegistry
                 if (Vector2.Distance(((Component)damageAcceptor).gameObject.transform.position, argInCentralPoint) < argInAffectRadius)
                 {
                     DamageArgs args = new DamageArgs();
-                    args.knockback = ( ((Vector2)((Component)damageAcceptor).gameObject.transform.position) - argInCentralPoint ).normalized * argInKnockBack;
+                    args.knockback = 
+                        ( ((Vector2)((Component)damageAcceptor).gameObject.transform.position) - argInCentralPoint ).normalized 
+                        * argInKnockBack *
+                        (((Vector2)((Component)damageAcceptor).gameObject.transform.position) - argInCentralPoint).magnitude / argInAffectRadius;
                     args.dmg = argInDmg;
                     args.source = argInSource;
                     args.type = argInDamageType;
@@ -142,6 +158,7 @@ public class DamageAcceptorRegistry
     }
 }
 
+#region Effects
 /// <summary>
 /// ---------------------------------------------------------------          Effects
 /// </summary>
@@ -199,7 +216,9 @@ public class EffectsRegistry
         effects.RemoveAll(x => x.passedDuration>x.duration);
     }
 }
+#endregion
 
+#region PlayerTarget
 /// <summary>
 /// ---------------------------------------------------------------          PlayerTarget
 /// </summary>
@@ -355,9 +374,9 @@ public class PlayerTargetsRegistry
         return bestTargetInv;
     }
 }
+#endregion
 
-
-
+#region Weapons
 /// <summary>
 /// ---------------------------------------------------------------          Weapons
 /// </summary>
@@ -409,4 +428,4 @@ public class WeaponsRegistry
         return weapons.Contains(weap);
     }
 }
-
+#endregion

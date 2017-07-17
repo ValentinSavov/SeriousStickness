@@ -34,7 +34,7 @@ public class Projectile : MonoBehaviour
         }
         else if ( (other.gameObject.GetComponent<BorderTag>() != null) || (other.gameObject.GetComponent<DamageAcceptor>() != null))
         {
-            registry.damageAcceptors.doAreaDamage(parent, (Vector2)transform.position, 2f, damage, "normal", 5000f);
+            registry.damageAcceptors.doAreaDamage(parent, (Vector2)transform.position, 5f, damage, "normal", 5000f);
             Explode();
         }
     }

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-
+using UnityEngine.UI;
 
 public class BotControl : MonoBehaviour, DamageAcceptor
 {
@@ -11,7 +11,6 @@ public class BotControl : MonoBehaviour, DamageAcceptor
     StickStats stats;
     Registry registry;
     //NavMoveAgent agent;
-    RectTransform healthBar;
 
     GameObject target;
 
@@ -28,16 +27,11 @@ public class BotControl : MonoBehaviour, DamageAcceptor
         target = GameObject.FindObjectOfType<PlayerTag>().gameObject;
         stats.currentHitPoints = stats.totalHitPoints;
         stats.currentArmorPoints = stats.totalArmorPoints;
-        float time = Random.Range(0.8f, 2f);
-        //InvokeRepeating("TargetUpdate", 0f, time);
     }
 
-    void TargetUpdate()
-    {
-        //agent.MoveTo((Vector2)target.transform.position);
-    }
 
     float previousEngageTime = 0f;
+    float continiousShootTime = 0f;
     void Update()
     {
         Weapon weap = GetComponentInChildren<Weapon>();
@@ -48,19 +42,33 @@ public class BotControl : MonoBehaviour, DamageAcceptor
                 float degreesToRotate = Quaternion.FromToRotation(Vector3.right * Mathf.Sign(transform.localScale.x), target.transform.position - weap.transform.position).eulerAngles.z;
                 weap.transform.rotation = Quaternion.AngleAxis(degreesToRotate, Vector3.forward);
 
+                if (weap.isAutomatic)
+                {
+                    continiousShootTime += Time.deltaTime;
+                    if(continiousShootTime < (1f / (GetComponent<StickStats>().attackSpeed / 100))/5 )
+                    {
+                        weap.Engage(target);
+                    }
+                }
                 if ((Time.time - previousEngageTime) >= (1f / (GetComponent<StickStats>().attackSpeed / 100)))
                 {
+                    continiousShootTime = 0f;
                     previousEngageTime = Time.time;
                     weap.Engage(target);
                 }
             }
         }
-                
     }
 
     #region  DamageAcceptor
     public void acceptDamage(DamageAcceptorRegistry.DamageArgs argInArgs)
     {
+        if(stats.isDead)
+        {
+            AddForceToRandomBones(argInArgs.knockback);
+            return;
+        }
+        //Debug.Log(this.gameObject.name);
         float locDamage = argInArgs.dmg;
         if (stats.currentArmorPoints > 0)
         {
@@ -86,6 +94,11 @@ public class BotControl : MonoBehaviour, DamageAcceptor
             {
                 stats.currentHitPoints = 0;
                 stats.isDead = true;
+                DamageProvider dp = argInArgs.source.GetComponent<DamageProvider>();
+                if (dp != null)
+                {
+                    dp.ReportKill(this);
+                }
                 Weapon weap = GetComponentInChildren<Weapon>();
                 if (weap != null)
                 {
@@ -105,16 +118,11 @@ public class BotControl : MonoBehaviour, DamageAcceptor
             }
         }
 
-
-        Transform[] children = GetComponentsInChildren<Transform>();
-        foreach (Transform child in children)
+        GameObject healthbar = transform.Find("HealthBar").gameObject;
+        if (healthbar != null)
         {
-            if (child.gameObject.name == "Foreground")
-            {
-                healthBar = child.gameObject.GetComponent<RectTransform>();
-            }
+            healthbar.transform.Find("Level").GetComponent<Image>().fillAmount = stats.currentHitPoints / stats.totalHitPoints;
         }
-        healthBar.sizeDelta = new Vector2(200 * stats.currentHitPoints / stats.totalHitPoints, healthBar.sizeDelta.y);
 
     }
     void OnDestroy()

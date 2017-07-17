@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerGear : MonoBehaviour
 {
@@ -10,6 +11,8 @@ public class PlayerGear : MonoBehaviour
         public string name;
         [HideInInspector]
         public GameObject weaponGO;
+        [HideInInspector]
+        public GameObject weaponUIGO;
         public float bullets;
         public float durability = 100f; // 0 - 100
     }
@@ -19,14 +22,15 @@ public class PlayerGear : MonoBehaviour
 
     GameObject cursor;
     GearDatabase gearDatabase;
-    TextMesh ammotext;
+    Text ammotext;
 
     void Start()
     {
-        ammotext = GameObject.Find("Ammo").GetComponent<TextMesh>();
+        ammotext = GameObject.Find("UI").transform.Find("Ammo").GetComponent<Text>();
         Transform weaponSpot = GetComponentInChildren<WeaponSpot>().transform;
         cursor = GameObject.FindObjectOfType<Cursor>().gameObject;
         gearDatabase = GameObject.FindObjectOfType<GearDatabase>();
+        RectTransform guiWeaponSpot = GameObject.Find("UI").transform.Find("ActiveWeapon").GetComponent<RectTransform>();
 
         // get from database and instantiate all weapons that shall be available
         if (availableWeapons.Count != 0)
@@ -42,10 +46,17 @@ public class PlayerGear : MonoBehaviour
                 weap.transform.localScale = Vector3.one;
                 weap.SetActive(false);
 
-                //vsa do the same for UI prefabs
+                //do the same for UI gameobjects
+                GameObject weapUI = Instantiate(gearDatabase.weapons.Find(x => x.guiPref.name == "UI"+availableWeapons[i].name).guiPref, guiWeaponSpot) as GameObject;
+                weapUI.GetComponent<RectTransform>().localPosition = Vector3.zero;
+                availableWeapons[i].weaponUIGO = weapUI;
+                weapUI.SetActive(false);
+
             }
 
             availableWeapons[selectedWeapon].weaponGO.SetActive(true);
+            availableWeapons[selectedWeapon].weaponUIGO.SetActive(true);
+
         }
     }
 
@@ -70,20 +81,20 @@ public class PlayerGear : MonoBehaviour
 
         if (Input.GetAxis("Mouse ScrollWheel") > 0)
         {
-            PrevWeapon();
+            NextWeapon();
         }
         else if (Input.GetAxis("Mouse ScrollWheel") < 0)
         {
-            NextWeapon();
+            PrevWeapon();
         }
 
         //vsa javar takuv, mahni tva ot tuka
         if (ammotext != null)
         {
-            ammotext.text = "Ammo: " + availableWeapons[selectedWeapon].bullets.ToString();
+            ammotext.text = availableWeapons[selectedWeapon].bullets.ToString();
         }
     }
-
+    
     void Engage()
     {
         Weapon activeWeap = availableWeapons[selectedWeapon].weaponGO.GetComponent<Weapon>();
@@ -151,36 +162,37 @@ public class PlayerGear : MonoBehaviour
     public void NextWeapon()
     {
         availableWeapons[selectedWeapon].weaponGO.SetActive(false);
+        availableWeapons[selectedWeapon].weaponUIGO.SetActive(false);
         selectedWeapon++;
         if (selectedWeapon >= (availableWeapons.Count))
         {
             selectedWeapon = 0;
         }
         availableWeapons[selectedWeapon].weaponGO.SetActive(true);
-        //vsa do the same for UI
+        availableWeapons[selectedWeapon].weaponUIGO.SetActive(true);
     }
     public void PrevWeapon()
     {
         availableWeapons[selectedWeapon].weaponGO.SetActive(false);
+        availableWeapons[selectedWeapon].weaponUIGO.SetActive(false);
         selectedWeapon--;
         if (selectedWeapon < 0)
         {
             selectedWeapon = availableWeapons.Count - 1;
         }
         availableWeapons[selectedWeapon].weaponGO.SetActive(true);
-
-        //vsa do the same for UI
+        availableWeapons[selectedWeapon].weaponUIGO.SetActive(true);
     }
     public void SetSelectedWeapon(int selected)
     {
         if ((selected >= 0) && (selected < availableWeapons.Count))
         {
             availableWeapons[selectedWeapon].weaponGO.SetActive(false);
+            availableWeapons[selectedWeapon].weaponUIGO.SetActive(false);
             selectedWeapon = selected;
             availableWeapons[selectedWeapon].weaponGO.SetActive(true);
+            availableWeapons[selectedWeapon].weaponUIGO.SetActive(true);
         }
-
-        //vsa do the same for UI
     }
 
     public GameObject GetSelectedWeapon()
