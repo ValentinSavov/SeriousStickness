@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
 {
     public bool grounded = false;
+    public bool sided = false;
     public bool wantToJumpDown = false;
     
     public List<string> groups { get; set; }
@@ -70,6 +71,7 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
             this.transform.localScale = new Vector3(-1, 1, 1);
         }
 
+        if(x!=0)
         transform.Translate(x, 0, 0);
         
         if (Input.GetAxis("Vertical") < -0.5f)
@@ -81,14 +83,22 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
         {
             if (grounded)
             {
-                //Debug.Log("Jump");
                 if(GetComponent<Rigidbody2D>().velocity.y < 0.2f)
                 {
                     GetComponent<Rigidbody2D>().velocity = Vector2.zero;
                     GetComponent<Rigidbody2D>().AddForce(Vector2.up * stats.jumpSpeed);
                 }
             }
+            else if (sided)
+            {
+                if (GetComponent<Rigidbody2D>().velocity.y < 0.2f)
+                {
+                    GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+                    GetComponent<Rigidbody2D>().AddForce(new Vector2(-0.5f, 0.5f) * stats.jumpSpeed);
+                }
+            }
         }
+        
     }
 
     float healTimeCounter = 0;
@@ -238,6 +248,17 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
             if (col.GetComponent<FloorTag>() != null)
             {
                 grounded = true;
+                break;
+            }
+        }
+
+        sided = false;
+        colls = Physics2D.OverlapCapsuleAll(transform.position + new Vector3(0, 1f, 0), new Vector2(2f, 1f), CapsuleDirection2D.Horizontal, 0f); 
+        foreach (Collider2D col in colls)
+        {
+            if (col.GetComponent<BorderTag>() != null)
+            {
+                sided = true;
                 break;
             }
         }

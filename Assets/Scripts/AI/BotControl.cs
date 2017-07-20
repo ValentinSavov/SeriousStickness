@@ -57,6 +57,10 @@ public class BotControl : MonoBehaviour, DamageAcceptor
                     weap.Engage(target);
                 }
             }
+            else
+            {
+                weap.transform.rotation = Quaternion.identity;
+            }
         }
     }
 
@@ -160,20 +164,23 @@ public class BotControl : MonoBehaviour, DamageAcceptor
         Rigidbody2D rbd = GetComponent<Rigidbody2D>();
         if (rbd)
         {
-            rbd.isKinematic = true;
-            Destroy(rbd);
+            //rbd.isKinematic = true;
+            //Destroy(rbd);
         }
         Collider2D[] colls = GetComponents<Collider2D>();
         for (int i = 0; i < colls.Length; i++)
         {
             //if(colls[i].isTrigger == false)
             {
-                colls[i].enabled = false;
-                Destroy(colls[i]);
+                //colls[i].enabled = false;
+                //Destroy(colls[i]);
                 //break;
             }
         }
         //////
+        this.enabled = false;
+
+
 
         //activate child colliders and rbs
         Rigidbody2D[] rbs = GetComponentsInChildren<Rigidbody2D>();
