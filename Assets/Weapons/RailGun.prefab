@@ -23,7 +23,7 @@ GameObject:
   - component: {fileID: 114158759952854172}
   - component: {fileID: 58624211456066060}
   - component: {fileID: 82179870538982762}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: RailGun
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38,7 +38,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4644974866692086}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: barrel
   m_TagString: Untagged
   m_Icon: {fileID: 0}

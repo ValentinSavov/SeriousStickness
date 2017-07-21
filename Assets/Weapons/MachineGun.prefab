@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4869198739713144}
   - component: {fileID: 199858580260962146}
   - component: {fileID: 198003830345139314}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: BarrelEffect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -40,7 +40,7 @@ GameObject:
   - component: {fileID: 114982919370800868}
   - component: {fileID: 82411118308125432}
   - component: {fileID: 61755909464414488}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: MachineGun
   m_TagString: Untagged
   m_Icon: {fileID: 0}

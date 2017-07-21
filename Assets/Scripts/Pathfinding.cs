@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Pathfinding
 {
-    
+    /*
     public List<Vector2i> FindPath(Vector2i start,  Vector2i end, Byte[,] mGrid, int characterWidth, int characterHeight, short maxCharacterJumpHeight)
     {
         List<Vector2i> path = new List<Vector2i>();
@@ -101,4 +101,5 @@ public class Pathfinding
         }
         return fits;
     }
+    */
 }
