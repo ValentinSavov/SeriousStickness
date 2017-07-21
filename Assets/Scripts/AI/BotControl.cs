@@ -10,7 +10,7 @@ public class BotControl : MonoBehaviour, DamageAcceptor
     GameObject gpParent;
     StickStats stats;
     Registry registry;
-    //NavMoveAgent agent;
+    MovementController movement;
 
     GameObject target;
 
@@ -18,9 +18,9 @@ public class BotControl : MonoBehaviour, DamageAcceptor
 	{
         gpParent = GameObject.Find("GeneralPurposeParent");
         stats = GetComponent<StickStats>();
-        //agent = GetComponent<NavMoveAgent>();
+        movement = GetComponent<MovementController>();
         registry = GameObject.FindObjectOfType<Registry>().GetComponent<Registry>();
-        stats.moveSpeed += Random.Range(-(stats.moveSpeed *0.2f), stats.moveSpeed *0.2f);
+        movement.moveSpeed += Random.Range(-(movement.moveSpeed *0.2f), movement.moveSpeed *0.2f);
         registry.damageAcceptors.AddDamageAcceptor(this);
         groups = new List<string>();
         groups.Add("bots");

@@ -5,46 +5,38 @@ using UnityEngine.UI;
 
 public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
 {
-    public bool grounded = false;
-    public bool sided = false;
-    public bool wantToJumpDown = false;
-    
     public List<string> groups { get; set; }
 
-    private StickStats stats;
-    private GameObject cursor;
-    private Registry registry;
-
-    private List<SourcesAndCooldowns> damageSourcesInCooldown = new List<SourcesAndCooldowns>();
-    Animator anim;
     PlayerGear gear;
-    GameObject gpParent;
-    GameObject ui;
-    Text health;
+    Animator anim;
+    StickStats stats;
+    MovementController movement;
+    GameObject cursor;
+    Registry registry;
     SticknessLevel slevel;
-
+    GameObject gpParent;
+    Text health;
+    List<SourcesAndCooldowns> damageSourcesInCooldown = new List<SourcesAndCooldowns>();
+    
     void Start()
     {
         gear = GetComponent<PlayerGear>();
         anim = GetComponent<Animator>();
         stats = GetComponent<StickStats>();
+        movement = GetComponent<MovementController>();
         cursor = GameObject.FindObjectOfType<Cursor>().gameObject;
         registry = GameObject.FindObjectOfType<Registry>().GetComponent<Registry>();
         registry.damageAcceptors.AddDamageAcceptor(this);
-
         slevel = GameObject.FindObjectOfType<SticknessLevel>() as SticknessLevel;
+
+        gpParent = GameObject.Find("GeneralPurposeParent");
+        health = GameObject.Find("UI").transform.Find("Health").GetComponent<Text>();
+        health.text = "+ " + ((int)(stats.currentHitPoints)).ToString();
+
         groups = new List<string>();
         groups.Add("players");
-
         stats.currentHitPoints = stats.totalHitPoints;
         stats.currentArmorPoints = stats.totalArmorPoints;
-        gpParent = GameObject.Find("GeneralPurposeParent");
-        ui = GameObject.Find("UI");
-        //if (ui != null)
-        {
-            health = ui.transform.Find("Health").GetComponent<Text>();
-            health.text = "+ " + ((int)(stats.currentHitPoints)).ToString();
-        }
     }
 
     
@@ -53,13 +45,12 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
         UpdateDamageCooldowns();
         SticknessLevelResponse();
         
-        CheckGround();
-        
-        float x = Input.GetAxis("Horizontal") * Time.deltaTime * stats.moveSpeed;
         if (anim != null) anim.SetFloat("Speed", Input.GetAxis("Horizontal"));
 
-        float degreesToRotate = Quaternion.FromToRotation(Vector3.right * Mathf.Sign(transform.localScale.x), cursor.transform.position - gear.GetSelectedWeapon().transform.position).eulerAngles.z;
-        gear.GetSelectedWeapon().transform.rotation = Quaternion.AngleAxis(degreesToRotate, Vector3.forward);
+        movement.MoveX(Input.GetAxis("Horizontal"));
+
+        float degreesToRotateWeapon = Quaternion.FromToRotation(Vector3.right * Mathf.Sign(transform.localScale.x), cursor.transform.position - gear.GetSelectedWeapon().transform.position).eulerAngles.z;
+        gear.GetSelectedWeapon().transform.rotation = Quaternion.AngleAxis(degreesToRotateWeapon, Vector3.forward);
         
         //turn to needed position
         if((cursor.transform.position.x - this.transform.position.x) > 0)
@@ -70,35 +61,15 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
         {
             this.transform.localScale = new Vector3(-1, 1, 1);
         }
-
-        if(x!=0)
-        transform.Translate(x, 0, 0);
         
         if (Input.GetAxis("Vertical") < -0.5f)
         {
-            wantToJumpDown = true;
-            transform.Translate(0, 0.001f, 0); // this is for trigger detection - if it does not move no trigger event is generated
+            movement.JumpDown();
         }
-        else if (Input.GetButton("Jump") == true)
+        else if ( (Input.GetButton("Jump") == true) || (Input.GetAxis("Vertical") > 0.5f) )
         {
-            if (grounded)
-            {
-                if(GetComponent<Rigidbody2D>().velocity.y < 0.2f)
-                {
-                    GetComponent<Rigidbody2D>().velocity = Vector2.zero;
-                    GetComponent<Rigidbody2D>().AddForce(Vector2.up * stats.jumpSpeed);
-                }
-            }
-            else if (sided)
-            {
-                if (GetComponent<Rigidbody2D>().velocity.y < 0.2f)
-                {
-                    GetComponent<Rigidbody2D>().velocity = Vector2.zero;
-                    GetComponent<Rigidbody2D>().AddForce(new Vector2(-0.5f, 0.5f) * stats.jumpSpeed);
-                }
-            }
+            movement.JumpUp();
         }
-        
     }
 
     float healTimeCounter = 0;
@@ -234,76 +205,6 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
         }
         damageSourcesInCooldown.Clear();
         damageSourcesInCooldown = newList;
-    }
-    #endregion
-
-    #region jump and coliders stuff
-
-    void CheckGround()
-    {
-        grounded = false;
-        Collider2D[] colls = Physics2D.OverlapCircleAll(transform.position, 0.2f );
-        foreach (Collider2D col in colls)
-        {
-            if (col.GetComponent<FloorTag>() != null)
-            {
-                grounded = true;
-                break;
-            }
-        }
-
-        sided = false;
-        colls = Physics2D.OverlapCapsuleAll(transform.position + new Vector3(0, 1f, 0), new Vector2(2f, 1f), CapsuleDirection2D.Horizontal, 0f); 
-        foreach (Collider2D col in colls)
-        {
-            if (col.GetComponent<BorderTag>() != null)
-            {
-                sided = true;
-                break;
-            }
-        }
-    }
-    
-    // stuff for jump down
-    void OnTriggerExit2D(Collider2D other)
-    {
-        if (other.gameObject.GetComponent<FloorTag>() != null)
-        {
-            if (Physics2D.GetIgnoreCollision(other, GetCollider()))
-            {
-                Physics2D.IgnoreCollision(other, GetCollider(), false);
-                wantToJumpDown = false;
-            }
-        }
-    }
-    void OnTriggerStay2D(Collider2D other)
-    {
-        if (wantToJumpDown)
-        if ((other.gameObject.GetComponent<FloorTag>() != null) && (other.gameObject.GetComponent<PlatformEffector2D>()))
-        {
-            if (other.transform.position.y < this.transform.position.y)
-            {
-                if (wantToJumpDown)
-                {
-                    Physics2D.IgnoreCollision(other, GetCollider(), true);
-                }
-            }
-        }
-    }
-    
-
-    Collider2D GetCollider()
-    {
-        Collider2D found = null;
-        Collider2D[] colls = GetComponents<Collider2D>();
-        foreach (Collider2D col in colls)
-        {
-            if (!col.isTrigger)
-            {
-                found = col;
-            }
-        }
-        return found;
     }
     #endregion
     

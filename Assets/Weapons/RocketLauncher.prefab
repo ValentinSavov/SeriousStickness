@@ -23,7 +23,7 @@ GameObject:
   - component: {fileID: 114331968049008852}
   - component: {fileID: 82582248325066946}
   - component: {fileID: 61471259893891332}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: RocketLauncher
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38,7 +38,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4057983492449840}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: barrel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
