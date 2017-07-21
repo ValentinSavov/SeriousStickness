@@ -315,11 +315,12 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4406497513537844}
-  - component: {fileID: 114156143614111882}
   - component: {fileID: 114612882602531216}
-  - component: {fileID: 58046795641309544}
-  - component: {fileID: 95522550081715798}
+  - component: {fileID: 114156143614111882}
+  - component: {fileID: 114438890183148452}
   - component: {fileID: 114973863679209072}
+  - component: {fileID: 95522550081715798}
+  - component: {fileID: 58046795641309544}
   - component: {fileID: 70698205371724856}
   - component: {fileID: 50883024164478210}
   m_Layer: 9
@@ -835,7 +836,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1500553565315092}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 6.441167, y: 3.64, z: 0}
+  m_LocalPosition: {x: 33.39903, y: 2.1611035, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4012960576974078}
@@ -1749,6 +1750,24 @@ MonoBehaviour:
   groups: []
   damage: 20
   fireRate: 4
+--- !u!114 &114438890183148452
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1500553565315092}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2fb679cb1e0b6f8488cd8ad172e1b017, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveSpeed: 9
+  jumpSpeed: 80000
+  grounded: 0
+  sideTouch: 0
+  layersToSense:
+    serializedVersion: 2
+    m_Bits: 1
 --- !u!114 &114612882602531216
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1761,8 +1780,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackSpeed: 20
-  moveSpeed: 2
-  jumpSpeed: 13
   totalHitPoints: 30
   totalArmorPoints: 0
   currentHitPoints: 0

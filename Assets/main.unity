@@ -7095,8 +7095,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackSpeed: 20
-  moveSpeed: 15
-  jumpSpeed: 80000
   totalHitPoints: 100
   totalArmorPoints: 0
   currentHitPoints: 0
@@ -7140,14 +7138,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fb679cb1e0b6f8488cd8ad172e1b017, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  moveSpeed: 15
+  jumpSpeed: 80000
   grounded: 0
   sideTouch: 0
-  wantToJumpDown: 0
-  sideJumpTimeConst: 0.5
   layersToSense:
     serializedVersion: 2
     m_Bits: 1
-  sideJumpControl: 0
 --- !u!1 &2137788537
 GameObject:
   m_ObjectHideFlags: 0

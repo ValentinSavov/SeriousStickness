@@ -5,14 +5,15 @@ using UnityEngine.UI;
 
 public class BotControl : MonoBehaviour, DamageAcceptor
 {
-
     public List<string> groups { get; set; }
+
     GameObject gpParent;
     StickStats stats;
-    Registry registry;
     MovementController movement;
-
+    Registry registry;
+    
     GameObject target;
+
 
     void Start ()
 	{
@@ -27,13 +28,37 @@ public class BotControl : MonoBehaviour, DamageAcceptor
         target = GameObject.FindObjectOfType<PlayerTag>().gameObject;
         stats.currentHitPoints = stats.totalHitPoints;
         stats.currentArmorPoints = stats.totalArmorPoints;
+
+
+        if (Random.Range(0,10) > 5)
+        {
+            direction = 1;
+        }
+        else
+        {
+            direction = -1;
+        }
+        Invoke("ChangeDirectionAndRandomizeNext", Random.Range(2, 10));
     }
 
 
     float previousEngageTime = 0f;
     float continiousShootTime = 0f;
+    float direction = 1;
+
+    
     void Update()
     {
+
+        if (CanMoveTo(direction))
+        {
+            movement.MoveX(direction);
+        }
+        else
+        {
+            direction *= -1;
+        }
+        
         Weapon weap = GetComponentInChildren<Weapon>();
         if (weap != null)
         {
@@ -64,10 +89,55 @@ public class BotControl : MonoBehaviour, DamageAcceptor
         }
     }
 
+    void ChangeDirectionAndRandomizeNext()
+    {
+        direction *= -1;
+        if(IsInvoking("ChangeDirectionAndRandomizeNext"))
+        {
+            CancelInvoke("ChangeDirectionAndRandomizeNext");
+        }
+        Invoke("ChangeDirectionAndRandomizeNext", Random.Range(2, 10));
+    }
+
+    bool CanMoveTo(float direction)
+    {
+        if(false == Physics2D.Raycast(transform.position + new Vector3(0, 1, 0), new Vector3(Mathf.Sign(direction) * 1, 0, 0), 0.5f, movement.layersToSense) )
+        {
+            if (true == Physics2D.Raycast(transform.position + new Vector3(Mathf.Sign(direction) * 1, 0.1f, 0), new Vector3(0, -1, 0), 0.5f, movement.layersToSense))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    #region weapon stuff
+    void OnTriggerStay2D(Collider2D other)
+    {
+        if ( (other.gameObject.GetComponent<Weapon>() != null) && (!stats.isDead) && (GetComponentInChildren<Weapon>() == null) )
+        {
+            if (other.gameObject.GetComponent<Weapon>().GetComponentInParent<WeaponSpot>() == null)
+            {
+                //Debug.Log("Collide with weapon");
+                //take weapon
+                other.transform.parent = this.transform;
+                other.transform.parent = GetComponentInChildren<WeaponSpot>().transform;
+                other.transform.localPosition = Vector3.zero;
+                other.transform.localRotation = Quaternion.identity;
+                other.transform.localScale = new Vector3(1, 1, 1);
+                other.gameObject.GetComponent<Weapon>().groups = groups;
+
+                //GetComponent<GoapAgent>().ResetAgent();
+            }
+        }
+    }
+    #endregion 
+
     #region  DamageAcceptor
     public void acceptDamage(DamageAcceptorRegistry.DamageArgs argInArgs)
     {
-        if(stats.isDead)
+        if (stats.isDead)
         {
             AddForceToRandomBones(argInArgs.knockback);
             return;
@@ -109,14 +179,14 @@ public class BotControl : MonoBehaviour, DamageAcceptor
                     weap.gameObject.transform.parent = gpParent.transform;
                     weap.transform.parent = gpParent.transform;
                 }
-                
+
                 this.enabled = false;
                 //GetComponent<GoapAgent>().enabled = false;
                 Destroy(this.gameObject, 10f);
 
                 Animator anim = GetComponent<Animator>();
-                if(anim)anim.enabled = false;
-                
+                if (anim) anim.enabled = false;
+
                 SwitchToRagdoll();
                 AddForceToRandomBones(argInArgs.knockback);
             }
@@ -134,28 +204,6 @@ public class BotControl : MonoBehaviour, DamageAcceptor
         registry.damageAcceptors.RemoveDamageAcceptor(this);
     }
     #endregion
-    
-    #region weapon stuff
-    void OnTriggerStay2D(Collider2D other)
-    {
-        if ( (other.gameObject.GetComponent<Weapon>() != null) && (!stats.isDead) && (GetComponentInChildren<Weapon>() == null) )
-        {
-            if (other.gameObject.GetComponent<Weapon>().GetComponentInParent<WeaponSpot>() == null)
-            {
-                //Debug.Log("Collide with weapon");
-                //take weapon
-                other.transform.parent = this.transform;
-                other.transform.parent = GetComponentInChildren<WeaponSpot>().transform;
-                other.transform.localPosition = Vector3.zero;
-                other.transform.localRotation = Quaternion.identity;
-                other.transform.localScale = new Vector3(1, 1, 1);
-                other.gameObject.GetComponent<Weapon>().groups = groups;
-
-                //GetComponent<GoapAgent>().ResetAgent();
-            }
-        }
-    }
-    #endregion 
 
     #region ragdoll stuff
     void SwitchToRagdoll()
@@ -213,5 +261,4 @@ public class BotControl : MonoBehaviour, DamageAcceptor
         }
     }
     #endregion
-
 }
