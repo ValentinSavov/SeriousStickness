@@ -6,14 +6,22 @@ using UnityEngine.UI;
 public class BotControl : MonoBehaviour, DamageAcceptor
 {
     public List<string> groups { get; set; }
+    public float range = 14f;
 
     GameObject gpParent;
     StickStats stats;
     MovementController movement;
     Registry registry;
-    
     GameObject target;
+    
+    FSM stateMachine;
+    FSM.FSMState idleState; // finds something to do
+    FSM.FSMState chaseInRangeState; // moves to a target
+    
+    float direction = 1;
+    float changeDirectionCooldown = 5f;
 
+    float previousEngageTime = 0f;
 
     void Start ()
 	{
@@ -28,6 +36,11 @@ public class BotControl : MonoBehaviour, DamageAcceptor
         target = GameObject.FindObjectOfType<PlayerTag>().gameObject;
         stats.currentHitPoints = stats.totalHitPoints;
         stats.currentArmorPoints = stats.totalArmorPoints;
+        stateMachine = new FSM();
+
+        createIdleState();
+        createChaseInRangeState();
+        stateMachine.pushState(idleState);
 
 
         if (Random.Range(0,10) > 5)
@@ -38,67 +51,140 @@ public class BotControl : MonoBehaviour, DamageAcceptor
         {
             direction = -1;
         }
-        Invoke("ChangeDirectionAndRandomizeNext", Random.Range(2, 10));
+        changeDirectionCooldown = Random.Range(2, 10);
     }
 
 
-    float previousEngageTime = 0f;
-    float continiousShootTime = 0f;
-    float direction = 1;
-
     
-    void Update()
+    void createIdleState()
     {
-
-        if (CanMoveTo(direction))
+        idleState = (fsm, gameObj) => 
         {
-            movement.MoveX(direction);
-        }
-        else
-        {
-            direction *= -1;
-        }
-        
-        Weapon weap = GetComponentInChildren<Weapon>();
-        if (weap != null)
-        {
-            if ((target.transform.position - this.transform.position).magnitude < weap.range)
+            changeDirectionCooldown -= Time.deltaTime;
+            if (changeDirectionCooldown <= 0)
             {
-                float degreesToRotate = Quaternion.FromToRotation(Vector3.right * Mathf.Sign(transform.localScale.x), target.transform.position - weap.transform.position).eulerAngles.z;
-                weap.transform.rotation = Quaternion.AngleAxis(degreesToRotate, Vector3.forward);
-
-                if (weap.isAutomatic)
-                {
-                    continiousShootTime += Time.deltaTime;
-                    if(continiousShootTime < (1f / (GetComponent<StickStats>().attackSpeed / 100))/5 )
-                    {
-                        weap.Engage(target);
-                    }
-                }
-                if ((Time.time - previousEngageTime) >= (1f / (GetComponent<StickStats>().attackSpeed / 100)))
-                {
-                    continiousShootTime = 0f;
-                    previousEngageTime = Time.time;
-                    weap.Engage(target);
-                }
+                changeDirectionCooldown = Random.Range(2, 10);
+                direction *= -1;
+            }
+            if ( (CanMoveTo(direction)) )
+            {
+                movement.MoveX(direction);
             }
             else
             {
-                weap.transform.rotation = Quaternion.identity;
+                direction *= -1;
+            }
+            
+            if ((target.transform.position - this.transform.position).magnitude < range)
+            {
+                fsm.pushState(chaseInRangeState);
+            }
+        };
+    }
+
+    void createChaseInRangeState()
+    {
+        chaseInRangeState = (fsm, gameObj) =>
+        {
+            Weapon weap = GetComponentInChildren<Weapon>();
+            if (weap != null)
+            {
+                if ((target.transform.position - this.transform.position).magnitude < weap.range)
+                {
+                    float degreesToRotate = Quaternion.FromToRotation(Vector3.right * Mathf.Sign(transform.localScale.x), target.transform.position - weap.transform.position).eulerAngles.z;
+                    weap.transform.rotation = Quaternion.AngleAxis(degreesToRotate, Vector3.forward);
+
+                    //move X stuff
+                    float absdistance = (target.transform.position - this.transform.position).magnitude;
+                    float deltaX = target.transform.position.x - this.transform.position.x;
+                    if (deltaX > weap.range/2)
+                    {
+                        direction = Mathf.Sign(deltaX);
+                        if (CanMoveTo(direction))
+                        {
+                            movement.MoveX(direction);
+                        }
+                        else
+                        {
+                            //vsa CanJumpForward() or something similiar...
+                        }
+                    }
+                    else if (deltaX < weap.range/3)
+                    {
+                        direction = Mathf.Sign(-deltaX);
+                        if (CanMoveTo(direction))
+                        {
+                            movement.MoveX(direction);
+                        }
+                    }
+
+                    //move Y stuff
+                    float deltaY = target.transform.position.y - this.transform.position.y;
+                    if ( Mathf.Abs(deltaY) > weap.range / 1.5f)
+                    {
+                        if(deltaY > 0)
+                        {
+                            //if there is something jump up to
+                            //movement.JumpUp();
+                        }
+                        else
+                        {
+                            //if there is something to jump down to
+                            //movement.JumpDown();
+                        }
+                    }
+
+
+                    //attacking stuff
+                    Attack();
+                }
+                else
+                {
+                    // out of weapon range but still in bot range
+                    weap.transform.rotation = Quaternion.identity;
+                    float deltaX = target.transform.position.x - this.transform.position.x;
+                    direction = Mathf.Sign(deltaX);
+                    if (CanMoveTo(direction))
+                    {
+                        movement.MoveX(direction);
+                    }
+                    else
+                    {
+                        //vsa CanJumpForward() or something similiar...
+                    }
+                }
+            }
+
+            if ((target.transform.position - this.transform.position).magnitude > range)
+            {
+                if (weap != null)
+                {
+                    weap.transform.rotation = Quaternion.identity;
+                }
+                fsm.popState();
+            }
+        };
+    }
+
+
+    void Attack()
+    {
+        Weapon weap = GetComponentInChildren<Weapon>();
+        if (weap != null)
+        {
+            if ((Time.time - previousEngageTime) >= (1f / (GetComponent<StickStats>().attackSpeed / 100)))
+            {
+                previousEngageTime = Time.time;
+                weap.Engage(target);
             }
         }
     }
 
-    void ChangeDirectionAndRandomizeNext()
+    void Update()
     {
-        direction *= -1;
-        if(IsInvoking("ChangeDirectionAndRandomizeNext"))
-        {
-            CancelInvoke("ChangeDirectionAndRandomizeNext");
-        }
-        Invoke("ChangeDirectionAndRandomizeNext", Random.Range(2, 10));
+        stateMachine.Update(this.gameObject);
     }
-
+    
     bool CanMoveTo(float direction)
     {
         if(false == Physics2D.Raycast(transform.position + new Vector3(0, 1, 0), new Vector3(Mathf.Sign(direction) * 1, 0, 0), 0.5f, movement.layersToSense) )
