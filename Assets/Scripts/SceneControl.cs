@@ -12,7 +12,7 @@ public class SceneControl : MonoBehaviour
         //sceneController = this.gameObject as Object;
         //Object.DontDestroyOnLoad(sceneController);
         //InvokeRepeating("ReloadScene", 5f, 5f);
-
+        SceneManager.LoadScene(sceneToReload, LoadSceneMode.Additive);
         //ReloadScene();
     }
 

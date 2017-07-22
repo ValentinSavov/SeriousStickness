@@ -180,8 +180,8 @@ MonoBehaviour:
   isAutomatic: 0
   range: 12
   groups: []
-  damage: 8
-  fireRate: 4
+  damage: 9
+  fireRate: 3
 --- !u!212 &212395433715327410
 SpriteRenderer:
   m_ObjectHideFlags: 1

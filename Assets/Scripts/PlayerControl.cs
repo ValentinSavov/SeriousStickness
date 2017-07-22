@@ -69,6 +69,7 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
         else if ( (Input.GetButton("Jump") == true) || (Input.GetAxis("Vertical") > 0.5f) )
         {
             movement.JumpUp();
+            //movement.JumpToSpecificPoint(100, cursor.transform.position);
         }
     }
 
@@ -82,17 +83,19 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
             args.source = slevel.gameObject;
             acceptDamage(args);
         }
-        else if (slevel.level > 65)
+        else if (slevel.level > 50)
         {
             healTimeCounter += Time.deltaTime;
             if (healTimeCounter >= 0.2)
             {
                 healTimeCounter = 0;
-                stats.currentHitPoints += 1;
+                int healAmount = 0;
+                healAmount += 2;
                 if(slevel.level > 80)
                 {
-                    stats.currentHitPoints += 1;
+                    healAmount += 1;
                 }
+                stats.currentHitPoints += healAmount;
                 if (stats.currentHitPoints > stats.totalHitPoints * 1.2f)
                 {
                     stats.currentHitPoints = stats.totalHitPoints * 1.2f;
@@ -102,7 +105,7 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
                     GameObject popup = Instantiate(Resources.Load("HealPopup", typeof(GameObject)),
                     this.transform.position, Quaternion.identity)
                     as GameObject;
-                    popup.GetComponent<Popup>().text = "+1";
+                    popup.GetComponent<Popup>().text = "+" + healAmount.ToString();
                     popup.transform.parent = gpParent.transform;
                 }
                 health.text = "+ " + ((int)(stats.currentHitPoints)).ToString();

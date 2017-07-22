@@ -122,15 +122,19 @@ public class BotControl : MonoBehaviour, DamageAcceptor
                     float deltaY = target.transform.position.y - this.transform.position.y;
                     if ( Mathf.Abs(deltaY) > weap.range / 1.5f)
                     {
-                        if(deltaY > 0)
+                        if(deltaY > 2f)
                         {
-                            //if there is something jump up to
-                            //movement.JumpUp();
+                            if (IsWhereToJumpUp())
+                            {
+                                movement.JumpUp();
+                            }
                         }
-                        else
+                        else if(deltaY < -2f)
                         {
-                            //if there is something to jump down to
-                            //movement.JumpDown();
+                            if (IsWhereToJumpDown())
+                            {
+                                movement.JumpDown();
+                            }
                         }
                     }
 
@@ -167,6 +171,10 @@ public class BotControl : MonoBehaviour, DamageAcceptor
     }
 
 
+    float initialAngle;
+
+
+
     void Attack()
     {
         Weapon weap = GetComponentInChildren<Weapon>();
@@ -195,6 +203,35 @@ public class BotControl : MonoBehaviour, DamageAcceptor
             }
         }
         return false;
+    }
+
+    bool IsWhereToJumpUp()
+    {
+        bool found = false;
+        RaycastHit2D[] hits = Physics2D.RaycastAll(this.transform.position + Vector3.up, Vector3.up, 7f);
+        foreach(RaycastHit2D hit in hits)
+        {
+            if(hit.collider.gameObject.GetComponent<FloorTag>() != null)
+            {
+                found = true;
+                break;
+            }
+        }
+        return found;
+    }
+    bool IsWhereToJumpDown()
+    {
+        bool found = false;
+        RaycastHit2D[] hits = Physics2D.RaycastAll(this.transform.position + (2*Vector3.down), Vector3.up, 15f);
+        foreach (RaycastHit2D hit in hits)
+        {
+            if (hit.collider.gameObject.GetComponent<FloorTag>() != null)
+            {
+                found = true;
+                break;
+            }
+        }
+        return found;
     }
 
 
@@ -294,25 +331,27 @@ public class BotControl : MonoBehaviour, DamageAcceptor
     #region ragdoll stuff
     void SwitchToRagdoll()
     {
+        this.enabled = false;
+        Destroy(movement);
         //remove the main colliders and rbs
         Rigidbody2D rbd = GetComponent<Rigidbody2D>();
         if (rbd)
         {
-            //rbd.isKinematic = true;
-            //Destroy(rbd);
+            rbd.isKinematic = true;
+            Destroy(rbd);
         }
         Collider2D[] colls = GetComponents<Collider2D>();
         for (int i = 0; i < colls.Length; i++)
         {
             //if(colls[i].isTrigger == false)
             {
-                //colls[i].enabled = false;
-                //Destroy(colls[i]);
+                colls[i].enabled = false;
+                Destroy(colls[i]);
                 //break;
             }
         }
         //////
-        this.enabled = false;
+        
 
 
 

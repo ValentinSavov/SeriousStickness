@@ -71,7 +71,7 @@ public class PlayerGear : MonoBehaviour
             Weapon activeWeap = availableWeapons[selectedWeapon].weaponGO.GetComponent<Weapon>();
             if (activeWeap != null)
             {
-                if (activeWeap.isAutomatic)
+                //if (activeWeap.isAutomatic)
                 {
                     Engage();
                 }
