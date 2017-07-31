@@ -24,7 +24,7 @@ public class RocketLauncher : Weapon
         barrel = transform.FindChild("barrel").gameObject;
     }
 
-    public override bool isDone()
+    public /*override*/ bool isDone()
     {
         bool tdone = done;
         done = false;

@@ -305,7 +305,7 @@ GameObject:
   - component: {fileID: 70698205371724856}
   - component: {fileID: 50883024164478210}
   m_Layer: 9
-  m_Name: StickyBot_RL
+  m_Name: StickyBot_RG
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -802,7 +802,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1500553565315092}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 9, y: 4.3, z: 0}
+  m_LocalPosition: {x: 33.39903, y: 2.1611035, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4012960576974078}
@@ -1578,8 +1578,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cffd20c728c4d694aafc056ac66a2258, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  range: 15
-  startWeapon: RocketLauncher
+  range: 17
+  startWeapon: RailGun
 --- !u!114 &114438890183148452
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1609,7 +1609,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8acf71b6313b8fa4ba499e10e186037d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackSpeed: 30
+  attackSpeed: 20
   totalHitPoints: 30
   totalArmorPoints: 0
   currentHitPoints: 0
