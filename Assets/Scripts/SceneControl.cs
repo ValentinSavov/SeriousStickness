@@ -6,13 +6,13 @@ using UnityEngine.SceneManagement;
 public class SceneControl : MonoBehaviour 
 {
     public string sceneToReload = "main";
-	//Object sceneController;
+
 	void Start () 
 	{
         //sceneController = this.gameObject as Object;
         //Object.DontDestroyOnLoad(sceneController);
         //InvokeRepeating("ReloadScene", 5f, 5f);
-        SceneManager.LoadScene(sceneToReload, LoadSceneMode.Additive);
+        //SceneManager.LoadScene(sceneToReload, LoadSceneMode.Additive);
         //ReloadScene();
     }
 

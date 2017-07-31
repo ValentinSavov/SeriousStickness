@@ -123,7 +123,8 @@ public class PlayerGear : MonoBehaviour
             if (other.gameObject.GetComponent<Weapon>().GetComponentInParent<WeaponSpot>() == null)
             {
                 //if it is a real weapon, existing in the database
-                GearItem otherGearItemFromDatabase = gearDatabase.weapons.Find(x => x.gamePref.name == other.gameObject.name);
+                //GearItem otherGearItemFromDatabase = gearDatabase.weapons.Find(x => x.gamePref.name == other.gameObject.name);
+                GearItem otherGearItemFromDatabase = gearDatabase.weapons.Find(x => other.gameObject.name.Contains(x.gamePref.name) );
                 if (otherGearItemFromDatabase != null)
                 {
                     Transform weaponSpot = GetComponentInChildren<WeaponSpot>().transform;

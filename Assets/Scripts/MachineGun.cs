@@ -5,7 +5,6 @@ public class MachineGun : Weapon
 {
     public float fireRate = 0.5f;
     float previousShotTime = 0f;
-    bool done = false;
     //int shotsCounter = 0;
     AudioSource audioSource;
     ParticleSystem mgShootEffect;
@@ -24,13 +23,6 @@ public class MachineGun : Weapon
         //fireRate += Random.Range(-(fireRate * 0.1f), fireRate * 0.1f);
     }
 
-    public override bool isDone()
-    {
-        bool tdone = done;
-        done = false;
-        return tdone;
-    }
-    
     public override bool Engage(GameObject newTarget)
     {
         bool result = false;
@@ -67,7 +59,6 @@ public class MachineGun : Weapon
             audioSource.Play();
             result = true;
         }
-        done = true;
 
         return result;
     }

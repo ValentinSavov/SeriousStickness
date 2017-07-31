@@ -7,7 +7,6 @@ public class RailGun : Weapon
 {
     public float fireRate = 1f;
     float previousShotTime = 0f;
-    bool done = false;
     
     private float timepassed = 0f;
     AudioSource audioSource;
@@ -45,8 +44,6 @@ public class RailGun : Weapon
 
 
             previousShotTime = Time.time;
-            done = true;
-            Invoke("ResetDone", 0.2f / fireRate);
             audioSource.Play();
             RaycastHit2D[] hits = Physics2D.RaycastAll(positions[0], positions[1] - positions[0]);
 
@@ -76,19 +73,6 @@ public class RailGun : Weapon
         return result;
     }
 
-    public override bool isDone()
-    {
-        bool tdone = done;
-        //done = false;
-        return tdone;
-    }
-    
-    void ResetDone()
-    {
-        done = false;
-    }
-
-
     public override void Arm()
     {
 
@@ -97,6 +81,4 @@ public class RailGun : Weapon
     {
 
     }
-
-
 }
