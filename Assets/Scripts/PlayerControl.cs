@@ -52,7 +52,7 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
             this.enabled = false;
             gear.enabled = false;
             if (anim) { anim.enabled = false; }
-            GameObject.FindObjectOfType<SceneControl>().Invoke("ReloadScene", 1f);
+            GameObject.FindObjectOfType<SceneControl>().Invoke("Die", 1f);
             return;
         }
 
@@ -175,7 +175,7 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
                     this.enabled = false;
                     gear.enabled = false;
                     if (anim) { anim.enabled = false; }
-                    GameObject.FindObjectOfType<SceneControl>().Invoke("ReloadScene", 1f);
+                    GameObject.FindObjectOfType<SceneControl>().Invoke("Die", 1f);
                 }
             }
 
