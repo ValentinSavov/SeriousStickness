@@ -45,6 +45,17 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
         UpdateDamageCooldowns();
         SticknessLevelResponse();
         
+        if(Input.GetKeyDown("k"))
+        {
+            stats.currentHitPoints = 0;
+            stats.isDead = true;
+            this.enabled = false;
+            gear.enabled = false;
+            if (anim) { anim.enabled = false; }
+            GameObject.FindObjectOfType<SceneControl>().Invoke("ReloadScene", 1f);
+            return;
+        }
+
         if (anim != null) anim.SetFloat("Speed", Input.GetAxis("Horizontal"));
 
         movement.MoveX(Input.GetAxis("Horizontal"));
@@ -162,8 +173,9 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
                     stats.currentHitPoints = 0;
                     stats.isDead = true;
                     this.enabled = false;
+                    gear.enabled = false;
                     if (anim) { anim.enabled = false; }
-                    GameObject.FindObjectOfType<SceneControl>().Invoke("ReloadScene", 1f); ;
+                    GameObject.FindObjectOfType<SceneControl>().Invoke("ReloadScene", 1f);
                 }
             }
 
