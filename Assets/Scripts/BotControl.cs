@@ -14,7 +14,8 @@ public class BotControl : MonoBehaviour, DamageAcceptor
     MovementController movement;
     Registry registry;
     GameObject target;
-    
+    Animator anim;
+
     FSM stateMachine;
     FSM.FSMState idleState; // finds something to do
     FSM.FSMState chaseInRangeState; // moves to a target
@@ -29,6 +30,7 @@ public class BotControl : MonoBehaviour, DamageAcceptor
         gpParent = GameObject.Find("GeneralPurposeParent");
         stats = GetComponent<StickStats>();
         movement = GetComponent<MovementController>();
+        anim = GetComponent<Animator>();
         registry = GameObject.FindObjectOfType<Registry>().GetComponent<Registry>();
         movement.moveSpeed += Random.Range(-(movement.moveSpeed *0.2f), movement.moveSpeed *0.2f);
         registry.damageAcceptors.AddDamageAcceptor(this);
@@ -363,6 +365,7 @@ public class BotControl : MonoBehaviour, DamageAcceptor
     {
         this.enabled = false;
         Destroy(movement);
+        if (anim != null) anim.enabled = false;
         //remove the main colliders and rbs
         Rigidbody2D rbd = GetComponent<Rigidbody2D>();
         if (rbd)

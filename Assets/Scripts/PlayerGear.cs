@@ -47,15 +47,15 @@ public class PlayerGear : MonoBehaviour
                 weap.SetActive(false);
 
                 //do the same for UI gameobjects
-                GameObject weapUI = Instantiate(gearDatabase.weapons.Find(x => x.guiPref.name == "UI"+availableWeapons[i].name).guiPref, guiWeaponSpot) as GameObject;
-                weapUI.GetComponent<RectTransform>().localPosition = Vector3.zero;
-                availableWeapons[i].weaponUIGO = weapUI;
-                weapUI.SetActive(false);
+                //GameObject weapUI = Instantiate(gearDatabase.weapons.Find(x => x.guiPref.name == "UI"+availableWeapons[i].name).guiPref, guiWeaponSpot) as GameObject;
+                //weapUI.GetComponent<RectTransform>().localPosition = Vector3.zero;
+                //availableWeapons[i].weaponUIGO = weapUI;
+                //weapUI.SetActive(false);
 
             }
 
             availableWeapons[selectedWeapon].weaponGO.SetActive(true);
-            availableWeapons[selectedWeapon].weaponUIGO.SetActive(true);
+            //availableWeapons[selectedWeapon].weaponUIGO.SetActive(true);
 
         }
     }
@@ -86,6 +86,19 @@ public class PlayerGear : MonoBehaviour
         else if (Input.GetAxis("Mouse ScrollWheel") < 0)
         {
             PrevWeapon();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            SetSelectedWeapon(0);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            SetSelectedWeapon(1);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            SetSelectedWeapon(2);
         }
 
         //vsa javar takuv, mahni tva ot tuka
@@ -163,36 +176,36 @@ public class PlayerGear : MonoBehaviour
     public void NextWeapon()
     {
         availableWeapons[selectedWeapon].weaponGO.SetActive(false);
-        availableWeapons[selectedWeapon].weaponUIGO.SetActive(false);
+        //availableWeapons[selectedWeapon].weaponUIGO.SetActive(false);
         selectedWeapon++;
         if (selectedWeapon >= (availableWeapons.Count))
         {
             selectedWeapon = 0;
         }
         availableWeapons[selectedWeapon].weaponGO.SetActive(true);
-        availableWeapons[selectedWeapon].weaponUIGO.SetActive(true);
+        //availableWeapons[selectedWeapon].weaponUIGO.SetActive(true);
     }
     public void PrevWeapon()
     {
         availableWeapons[selectedWeapon].weaponGO.SetActive(false);
-        availableWeapons[selectedWeapon].weaponUIGO.SetActive(false);
+        //availableWeapons[selectedWeapon].weaponUIGO.SetActive(false);
         selectedWeapon--;
         if (selectedWeapon < 0)
         {
             selectedWeapon = availableWeapons.Count - 1;
         }
         availableWeapons[selectedWeapon].weaponGO.SetActive(true);
-        availableWeapons[selectedWeapon].weaponUIGO.SetActive(true);
+        //availableWeapons[selectedWeapon].weaponUIGO.SetActive(true);
     }
     public void SetSelectedWeapon(int selected)
     {
         if ((selected >= 0) && (selected < availableWeapons.Count))
         {
             availableWeapons[selectedWeapon].weaponGO.SetActive(false);
-            availableWeapons[selectedWeapon].weaponUIGO.SetActive(false);
+            //availableWeapons[selectedWeapon].weaponUIGO.SetActive(false);
             selectedWeapon = selected;
             availableWeapons[selectedWeapon].weaponGO.SetActive(true);
-            availableWeapons[selectedWeapon].weaponUIGO.SetActive(true);
+            //availableWeapons[selectedWeapon].weaponUIGO.SetActive(true);
         }
     }
 
