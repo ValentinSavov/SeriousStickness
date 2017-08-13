@@ -62,7 +62,13 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
 
         float degreesToRotateWeapon = Quaternion.FromToRotation(Vector3.right * Mathf.Sign(transform.localScale.x), cursor.transform.position - gear.GetSelectedWeapon().transform.position).eulerAngles.z;
         gear.GetSelectedWeapon().transform.rotation = Quaternion.AngleAxis(degreesToRotateWeapon, Vector3.forward);
-        
+        float lookAngleForAnimator = gear.GetSelectedWeapon().transform.rotation.eulerAngles.z;
+        if (Mathf.Abs(lookAngleForAnimator) > 90)
+        {
+            lookAngleForAnimator -= 360;
+        }
+        lookAngleForAnimator *= Mathf.Sign(transform.localScale.x);
+        anim.SetFloat("LookAngle", lookAngleForAnimator);
         //turn to needed position
         if((cursor.transform.position.x - this.transform.position.x) > 0)
         {
