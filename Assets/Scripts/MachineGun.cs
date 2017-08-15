@@ -23,15 +23,14 @@ public class MachineGun : Weapon
         //fireRate += Random.Range(-(fireRate * 0.1f), fireRate * 0.1f);
     }
 
-    public override bool Engage(GameObject newTarget)
+    public override bool Engage(Vector3 newTarget)
     {
         bool result = false;
-        //this.transform.rotation = Quaternion.FromToRotation((this.transform.position).normalized, (this.transform.position + newTarget.transform.position).normalized);
         if ((Time.time - previousShotTime) >= (1f / fireRate))
         {
             previousShotTime = Time.time;
             mgShootEffect.Play();
-            RaycastHit2D[] hits = Physics2D.RaycastAll(this.transform.position, newTarget.transform.position - this.transform.position);
+            RaycastHit2D[] hits = Physics2D.RaycastAll(this.transform.position, newTarget - this.transform.position);
             foreach(RaycastHit2D hit in hits)
             {
                 if (hit.collider.GetComponent<BorderTag>())

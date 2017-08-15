@@ -31,15 +31,14 @@ public class RocketLauncher : Weapon
         return tdone;
     }
     
-    public override bool Engage(GameObject newTarget)
+    public override bool Engage(Vector3 newTarget)
     {
         bool result = false;
-        //this.transform.rotation = Quaternion.FromToRotation((this.transform.position).normalized, (this.transform.position + newTarget.transform.position).normalized);
         if ((Time.time - previousShotTime) >= (1f / fireRate))
         {
             GameObject proj = Instantiate(Resources.Load("Projectile", typeof(GameObject)),
                 barrel.transform.position, Quaternion.FromToRotation(Vector3.right,
-                newTarget.transform.position - this.transform.position)) 
+                newTarget - this.transform.position)) 
                 as GameObject;
             previousShotTime = Time.time;
             

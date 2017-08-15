@@ -79,6 +79,7 @@ public class BotControl : MonoBehaviour, DamageAcceptor
             if ( (CanMoveTo(direction)) )
             {
                 movement.MoveX(direction);
+                this.transform.localScale = new Vector3(direction, 1, 1);
             }
             else
             {
@@ -111,13 +112,23 @@ public class BotControl : MonoBehaviour, DamageAcceptor
     {
         chaseInRangeState = (fsm, gameObj) =>
         {
+            this.transform.localScale = new Vector3( Mathf.Sign(target.transform.position.x - this.transform.position.x), 1, 1);
             Weapon weap = GetComponentInChildren<Weapon>();
             if (weap != null)
             {
                 if ((target.transform.position - this.transform.position).magnitude < weap.range)
                 {
-                    float degreesToRotate = Quaternion.FromToRotation(Vector3.right * Mathf.Sign(transform.localScale.x), target.transform.position - weap.transform.position).eulerAngles.z;
+                    float degreesToRotate = Quaternion.FromToRotation(Vector3.right * Mathf.Sign(transform.localScale.x), (target.transform.position + Vector3.up) - weap.transform.position).eulerAngles.z;
                     weap.transform.rotation = Quaternion.AngleAxis(degreesToRotate, Vector3.forward);
+
+                    float lookAngleForAnimator = weap.transform.rotation.eulerAngles.z;
+                    if (Mathf.Abs(lookAngleForAnimator) > 90)
+                    {
+                        lookAngleForAnimator -= 360;
+                    }
+                    lookAngleForAnimator *= Mathf.Sign(transform.localScale.x);
+                    anim.SetFloat("LookAngle", lookAngleForAnimator);
+
 
                     //move X stuff
                     float deltaX = target.transform.position.x - this.transform.position.x;
@@ -169,6 +180,7 @@ public class BotControl : MonoBehaviour, DamageAcceptor
                 {
                     // out of weapon range but still in bot range
                     weap.transform.rotation = Quaternion.identity;
+                    anim.SetFloat("LookAngle", 0f);
                     float deltaX = target.transform.position.x - this.transform.position.x;
                     direction = Mathf.Sign(deltaX);
                     if (CanMoveTo(direction))
@@ -187,6 +199,7 @@ public class BotControl : MonoBehaviour, DamageAcceptor
                 if (weap != null)
                 {
                     weap.transform.rotation = Quaternion.identity;
+                    anim.SetFloat("LookAngle", 0f);
                 }
                 fsm.popState();
             }
@@ -203,7 +216,7 @@ public class BotControl : MonoBehaviour, DamageAcceptor
             if ((Time.time - previousEngageTime) >= (1f / (GetComponent<StickStats>().attackSpeed / 100)))
             {
                 previousEngageTime = Time.time;
-                weap.Engage(target);
+                weap.Engage(target.transform.position + Vector3.up);
                 autoShotsCounter = 0;
                 nextAutoShotsCount = Random.Range(5, 20);
             }
@@ -211,7 +224,7 @@ public class BotControl : MonoBehaviour, DamageAcceptor
             {
                 if ( (weap.isAutomatic) && (autoShotsCounter <= nextAutoShotsCount) )
                 {
-                    if (weap.Engage(target))
+                    if (weap.Engage(target.transform.position + Vector3.up))
                     {
                         autoShotsCounter++;
                     }

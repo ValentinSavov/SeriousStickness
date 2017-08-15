@@ -8,7 +8,7 @@ public class RailGun : Weapon
     public float fireRate = 1f;
     float previousShotTime = 0f;
     
-    private float timepassed = 0f;
+    //private float timepassed = 0f;
     AudioSource audioSource;
     GameObject barrel;
 
@@ -31,16 +31,15 @@ public class RailGun : Weapon
 
     
     
-    public override bool Engage(GameObject newTarget)
+    public override bool Engage(Vector3 newTarget)
     {
         bool result = false;
         if ((Time.time - previousShotTime) >= (1f / fireRate))
         {
-            //transform.rotation = Quaternion.FromToRotation(Vector3.right, newTarget.transform.position - this.transform.position);
-            LineRenderer lr = GetComponentInChildren<LineRenderer>();
+            //LineRenderer lr = GetComponentInChildren<LineRenderer>();
             Vector3[] positions = new Vector3[2];
             positions[0] = this.transform.position;
-            positions[1] = this.transform.position + ((newTarget.transform.position - this.transform.position).normalized * 100);
+            positions[1] = this.transform.position + ((newTarget - this.transform.position).normalized * 100);
 
 
             previousShotTime = Time.time;
@@ -48,10 +47,10 @@ public class RailGun : Weapon
             RaycastHit2D[] hits = Physics2D.RaycastAll(positions[0], positions[1] - positions[0]);
 
             //lazer effect
-            GameObject lazer = Instantiate(Resources.Load("Lazer", typeof(GameObject)),
+            /*GameObject lazer =*/ Instantiate(Resources.Load("Lazer", typeof(GameObject)),
                 barrel.transform.position, 
-                Quaternion.FromToRotation(Vector3.right, newTarget.transform.position - this.transform.position),
-                gpParent.transform) as GameObject;
+                Quaternion.FromToRotation(Vector3.right, newTarget- this.transform.position),
+                gpParent.transform)/* as GameObject*/;
             ////
 
             foreach (RaycastHit2D hit in hits)

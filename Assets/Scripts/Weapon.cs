@@ -20,5 +20,5 @@ public abstract class Weapon : MonoBehaviour
     public abstract void Disarm();
 
     //public abstract bool isDone();
-    public abstract bool Engage(GameObject newTarget);
+    public abstract bool Engage(Vector3 newTarget);
 }

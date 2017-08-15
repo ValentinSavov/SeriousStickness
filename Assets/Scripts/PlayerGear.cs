@@ -30,7 +30,7 @@ public class PlayerGear : MonoBehaviour
         Transform weaponSpot = GetComponentInChildren<WeaponSpot>().transform;
         cursor = GameObject.FindObjectOfType<Cursor>().gameObject;
         gearDatabase = GameObject.FindObjectOfType<GearDatabase>();
-        RectTransform guiWeaponSpot = GameObject.Find("UI").transform.Find("ActiveWeapon").GetComponent<RectTransform>();
+        //RectTransform guiWeaponSpot = GameObject.Find("UI").transform.Find("ActiveWeapon").GetComponent<RectTransform>();
 
         // get from database and instantiate all weapons that shall be available
         if (availableWeapons.Count != 0)
@@ -115,7 +115,7 @@ public class PlayerGear : MonoBehaviour
         {
             if ((availableWeapons[selectedWeapon].bullets > 0f) && (availableWeapons[selectedWeapon].durability > 0f))
             {
-                if (activeWeap.Engage(cursor) == true)
+                if (activeWeap.Engage(cursor.transform.position) == true)
                 {
                     availableWeapons[selectedWeapon].bullets--;
                     //vsa do something for durability

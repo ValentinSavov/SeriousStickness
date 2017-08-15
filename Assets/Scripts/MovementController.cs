@@ -42,21 +42,23 @@ public class MovementController : MonoBehaviour
     
     public void JumpUp()
     {
-        if (grounded)
+        if (sideTouch != 0)
+        {
+            if (rbd.velocity.y < 0.2f)
+            {
+                rbd.velocity = Vector2.zero;
+                rbd.AddForce(new Vector2(sideTouch, 1f) * jumpSpeed);
+                //vsa do something for side jump
+                Debug.Log("Sidejump");
+            }
+        }
+        else if (grounded)
         {
             if (rbd.velocity.y < 0.2f)
             {
                 rbd.velocity = Vector2.zero;
                 rbd.AddForce(Vector2.up * jumpSpeed);
-            }
-        }
-        //else if (sideTouch != 0)
-        {
-            //if (rbd.velocity.y < 0.2f)
-            {
-                //rbd.velocity = Vector2.zero;
-                //rbd.AddForce(new Vector2(sideTouch, 1f) * jumpSpeed);
-                //vsa do something for side jump
+                Debug.Log("jump");
             }
         }
     }

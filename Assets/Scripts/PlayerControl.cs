@@ -42,6 +42,7 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
     
     void FixedUpdate()
     {
+        //anim.SetBool("Jump", false);
         UpdateDamageCooldowns();
         SticknessLevelResponse();
         
@@ -69,6 +70,7 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
         }
         lookAngleForAnimator *= Mathf.Sign(transform.localScale.x);
         anim.SetFloat("LookAngle", lookAngleForAnimator);
+        
         //turn to needed position
         if((cursor.transform.position.x - this.transform.position.x) > 0)
         {
@@ -82,11 +84,12 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
         if (Input.GetAxis("Vertical") < -0.5f)
         {
             movement.JumpDown();
+            anim.SetTrigger("Fall");
         }
         else if ( (Input.GetButton("Jump") == true) || (Input.GetAxis("Vertical") > 0.5f) )
         {
             movement.JumpUp();
-            //movement.JumpToSpecificPoint(100, cursor.transform.position);
+            anim.SetTrigger("Jump");
         }
     }
 

@@ -68,7 +68,7 @@ public class AttackAction : GoapAction
             if ((Time.time - previousEngageTime) >= (1f / (GetComponent<StickStats>().attackSpeed/100) ))
             {
                 previousEngageTime = Time.time;
-                weapon.Engage(target);
+                weapon.Engage(target.transform.position);
             }  
             return true;
         }
