@@ -42,7 +42,10 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
     
     void FixedUpdate()
     {
-        //anim.SetBool("Jump", false);
+        anim.SetBool("Jump", false);
+        anim.SetBool("Fall", false);
+        anim.SetFloat("Slide", 0);
+
         UpdateDamageCooldowns();
         SticknessLevelResponse();
         
@@ -52,13 +55,13 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
             stats.isDead = true;
             this.enabled = false;
             gear.enabled = false;
-            if (anim) { anim.enabled = false; }
+            anim.enabled = false;
             GameObject.FindObjectOfType<SceneControl>().Invoke("Die", 1f);
             return;
         }
 
-        if (anim != null) anim.SetFloat("Speed", Input.GetAxis("Horizontal"));
-
+        
+        
         movement.MoveX(Input.GetAxis("Horizontal"));
 
         float degreesToRotateWeapon = Quaternion.FromToRotation(Vector3.right * Mathf.Sign(transform.localScale.x), cursor.transform.position - gear.GetSelectedWeapon().transform.position).eulerAngles.z;
@@ -70,9 +73,11 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
         }
         lookAngleForAnimator *= Mathf.Sign(transform.localScale.x);
         anim.SetFloat("LookAngle", lookAngleForAnimator);
-        
+
+        anim.SetFloat("Speed", Input.GetAxis("Horizontal") * Mathf.Sign(transform.localScale.x));
+
         //turn to needed position
-        if((cursor.transform.position.x - this.transform.position.x) > 0)
+        if ((cursor.transform.position.x - this.transform.position.x) > 0)
         {
             this.transform.localScale = new Vector3(1, 1, 1);
         }
@@ -81,15 +86,28 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
             this.transform.localScale = new Vector3(-1, 1, 1);
         }
         
+        if(!movement.grounded)
+        {
+            if (movement.sideTouch == 0)
+            {
+                anim.SetBool("Fall", true);
+            }
+            else
+            {
+                anim.SetFloat("Slide", movement.sideTouch);
+            }
+
+        }
+
         if (Input.GetAxis("Vertical") < -0.5f)
         {
             movement.JumpDown();
-            anim.SetTrigger("Fall");
+            anim.SetBool("Fall", true);
         }
         else if ( (Input.GetButton("Jump") == true) || (Input.GetAxis("Vertical") > 0.5f) )
         {
             movement.JumpUp();
-            anim.SetTrigger("Jump");
+            anim.SetBool("Jump", true);
         }
     }
 

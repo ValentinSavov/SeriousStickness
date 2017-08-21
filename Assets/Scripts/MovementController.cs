@@ -27,7 +27,7 @@ public class MovementController : MonoBehaviour
         mainCollider = GetComponent<CapsuleCollider2D>();
     }
 
-    void FixedUpdate()
+    void LateUpdate()
     {
         UpdateSenses();
     }
@@ -46,8 +46,9 @@ public class MovementController : MonoBehaviour
         {
             if (rbd.velocity.y < 0.2f)
             {
-                rbd.velocity = Vector2.zero;
-                rbd.AddForce(new Vector2(sideTouch, 1f) * jumpSpeed);
+                // rbd.velocity = Vector2.zero;
+                //rbd.AddForce(new Vector2(sideTouch, 1f) * jumpSpeed);
+                JumpToSpecificPoint(45, transform.position + Vector3.right * 10);
                 //vsa do something for side jump
                 Debug.Log("Sidejump");
             }
@@ -94,9 +95,11 @@ public class MovementController : MonoBehaviour
 
         // Fire!
         //rbd.velocity = finalVelocity;
-        rbd.velocity.Set(finalVelocity.x, finalVelocity.y);
+        //rbd.velocity.Set(finalVelocity.x, finalVelocity.y);
+        Debug.Log(finalVelocity.x);
+        Debug.Log(finalVelocity.y);
         // Alternative way:
-        //rbd.AddForce((Vector2)(finalVelocity * rbd.mass));
+        rbd.AddForce((Vector2)(finalVelocity * rbd.mass));
     }
 
     void UpdateSenses()
