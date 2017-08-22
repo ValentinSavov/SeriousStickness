@@ -42,7 +42,7 @@ public class MovementController : MonoBehaviour
     
     public void JumpUp()
     {
-        if (sideTouch != 0)
+        if ((sideTouch != 0) && (!grounded))
         {
             if (rbd.velocity.y < 0.2f)
             {
@@ -105,7 +105,7 @@ public class MovementController : MonoBehaviour
     void UpdateSenses()
     {
         grounded = false;
-        if (Physics2D.OverlapCircle(transform.position, GetComponent<CapsuleCollider2D>().size.x/4, layersToSense) != null)
+        if (Physics2D.OverlapPoint(transform.position - (Vector3.up * GetComponent<CapsuleCollider2D>().size.x / 10), layersToSense) != null)
         {
             grounded = true;
         }

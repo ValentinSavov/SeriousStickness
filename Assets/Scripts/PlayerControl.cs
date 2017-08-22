@@ -49,6 +49,7 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
         UpdateDamageCooldowns();
         SticknessLevelResponse();
         
+        //vsa suicide
         if(Input.GetKeyDown("k"))
         {
             stats.currentHitPoints = 0;
@@ -60,22 +61,10 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
             return;
         }
 
-        
-        
+        //actual move
         movement.MoveX(Input.GetAxis("Horizontal"));
 
-        float degreesToRotateWeapon = Quaternion.FromToRotation(Vector3.right * Mathf.Sign(transform.localScale.x), cursor.transform.position - gear.GetSelectedWeapon().transform.position).eulerAngles.z;
-        gear.GetSelectedWeapon().transform.rotation = Quaternion.AngleAxis(degreesToRotateWeapon, Vector3.forward);
-        float lookAngleForAnimator = gear.GetSelectedWeapon().transform.rotation.eulerAngles.z;
-        if (Mathf.Abs(lookAngleForAnimator) > 90)
-        {
-            lookAngleForAnimator -= 360;
-        }
-        lookAngleForAnimator *= Mathf.Sign(transform.localScale.x);
-        anim.SetFloat("LookAngle", lookAngleForAnimator);
-
-        anim.SetFloat("Speed", Input.GetAxis("Horizontal") * Mathf.Sign(transform.localScale.x));
-
+        
         //turn to needed position
         if ((cursor.transform.position.x - this.transform.position.x) > 0)
         {
@@ -95,9 +84,24 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
             else
             {
                 anim.SetFloat("Slide", movement.sideTouch);
+                this.transform.localScale = new Vector3(-movement.sideTouch, 1, 1);
             }
 
         }
+        
+        //look at
+        float degreesToRotateWeapon = Quaternion.FromToRotation(Vector3.right * Mathf.Sign(transform.localScale.x), cursor.transform.position - gear.GetSelectedWeapon().transform.position).eulerAngles.z;
+        gear.GetSelectedWeapon().transform.rotation = Quaternion.AngleAxis(degreesToRotateWeapon, Vector3.forward);
+        float lookAngleForAnimator = gear.GetSelectedWeapon().transform.rotation.eulerAngles.z;
+        if (Mathf.Abs(lookAngleForAnimator) > 90)
+        {
+            lookAngleForAnimator -= 360;
+        }
+        lookAngleForAnimator *= Mathf.Sign(transform.localScale.x);
+        anim.SetFloat("LookAngle", lookAngleForAnimator);
+
+        anim.SetFloat("Speed", Input.GetAxis("Horizontal") * Mathf.Sign(transform.localScale.x));
+
 
         if (Input.GetAxis("Vertical") < -0.5f)
         {
