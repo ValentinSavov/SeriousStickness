@@ -100,18 +100,20 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
         lookAngleForAnimator *= Mathf.Sign(transform.localScale.x);
         anim.SetFloat("LookAngle", lookAngleForAnimator);
 
+        
         anim.SetFloat("Speed", Input.GetAxis("Horizontal") * Mathf.Sign(transform.localScale.x));
 
 
         if (Input.GetAxis("Vertical") < -0.5f)
         {
             movement.JumpDown();
-            anim.SetBool("Fall", true);
         }
         else if ( (Input.GetButton("Jump") == true) || (Input.GetAxis("Vertical") > 0.5f) )
         {
-            movement.JumpUp();
-            anim.SetBool("Jump", true);
+            if (movement.JumpUp())
+            {
+                anim.SetBool("Jump", true);
+            }
         }
     }
 
@@ -160,7 +162,10 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
     public void ReportKill(DamageAcceptor killed)
     {
         slevel.IncreaseLevel(Random.Range(10,15));
-
+        GameObject popup = Instantiate(Resources.Load("KillPopup", typeof(GameObject)),
+                    ((Component)killed).gameObject.transform.position + new Vector3(0, ((Component)killed).gameObject.GetComponent<CapsuleCollider2D>().size.y, 0), Quaternion.identity)
+                    as GameObject;
+        popup.transform.parent = gpParent.transform;
     }
 
     public void acceptDamage(DamageAcceptorRegistry.DamageArgs argInArgs)

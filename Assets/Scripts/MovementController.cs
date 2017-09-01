@@ -39,29 +39,42 @@ public class MovementController : MonoBehaviour
             this.transform.Translate(new Vector3(horisontalSpeed * moveSpeed * Time.deltaTime, 0,0));
         }
     }
-    
-    public void JumpUp()
+
+    float jumpMomentInTime = 0f;
+    public bool JumpUp()
     {
+        if((Time.time - jumpMomentInTime) < 0.1f)
+        {
+            return false;
+        }
+        
         if ((sideTouch != 0) && (!grounded))
         {
-            if (rbd.velocity.y < 0.2f)
+            //side jump
+            //if (rbd.velocity.y < 0.2f)
             {
-                // rbd.velocity = Vector2.zero;
-                //rbd.AddForce(new Vector2(sideTouch, 1f) * jumpSpeed);
-                JumpToSpecificPoint(45, transform.position + Vector3.right * 10);
+                //rbd.velocity = Vector2.zero;
+                //rbd.velocity.Set(1*jumpSpeed, -sideTouch* jumpSpeed);
                 //vsa do something for side jump
-                Debug.Log("Sidejump");
+                //Debug.Log("Sidejump");
+                //jumpMomentInTime = Time.time;
+                //return true;
+                return false;
             }
         }
         else if (grounded)
         {
+            //up jump
             if (rbd.velocity.y < 0.2f)
             {
                 rbd.velocity = Vector2.zero;
                 rbd.AddForce(Vector2.up * jumpSpeed);
                 Debug.Log("jump");
+                jumpMomentInTime = Time.time;
+                return true;
             }
         }
+        return false;
     }
 
     public void JumpDown()

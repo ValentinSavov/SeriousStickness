@@ -4,7 +4,6 @@ using UnityEngine.SceneManagement;
 
 public class SceneControl : MonoBehaviour 
 {
-    public bool loadOnStart = false;
     public string startScene = "MainMenu";
     public string deadScene = "Dead";
 
@@ -12,7 +11,7 @@ public class SceneControl : MonoBehaviour
 	{
         SceneManager.sceneLoaded += OnSceneLoaded;
         SceneManager.sceneUnloaded += OnSceneUnloaded;
-        if(loadOnStart) SceneManager.LoadSceneAsync(startScene, LoadSceneMode.Additive);
+        SceneManager.LoadSceneAsync(startScene, LoadSceneMode.Additive);
     }
 
     void OnSceneUnloaded(Scene scene)

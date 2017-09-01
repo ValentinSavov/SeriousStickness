@@ -73,6 +73,11 @@ public class DamageAcceptorRegistry
         damageAcceptors.RemoveAll(x => x == argInDamageAcceptor);
     }
 
+    public List<DamageAcceptor> GetAcceptorsInRange(Vector3 point, float radius)
+    {
+        return damageAcceptors.FindAll(x => ( (((Component)x).gameObject.transform.position - point).magnitude < radius ));
+    }
+
     public void doTargetDamage(DamageAcceptor damageAcceptor, GameObject argInSource, float argInDmg, string argInDamageType, Vector2 argInKnockBack)
     {
         if (damageAcceptor != null)

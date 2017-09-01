@@ -1987,7 +1987,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 10.89
+  orthographic size: 14.5
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -2473,7 +2473,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &692587397
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2488,7 +2488,7 @@ MonoBehaviour:
   prefab: {fileID: 1500553565315092, guid: 352c61ca536ff5e4bbff0880a900a209, type: 2}
   spawnRadius: 10
   spawnPeriod: 5
-  spawnImmediately: 1
+  spawnImmediately: 0
 --- !u!4 &692587398
 Transform:
   m_ObjectHideFlags: 0
@@ -3317,7 +3317,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &959252743
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3332,7 +3332,7 @@ MonoBehaviour:
   prefab: {fileID: 1500553565315092, guid: ca34aff8e133ddd42ab9336e32d5f218, type: 2}
   spawnRadius: 10
   spawnPeriod: 5
-  spawnImmediately: 1
+  spawnImmediately: 0
 --- !u!4 &959252744
 Transform:
   m_ObjectHideFlags: 0
@@ -4078,11 +4078,11 @@ RectTransform:
   m_Father: {fileID: 1388090930}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0}
-  m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: -23, y: 224.4}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -81.83002, y: -79.600006}
   m_SizeDelta: {x: 148.5, y: 30}
-  m_Pivot: {x: 1, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1198265097
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4261,7 +4261,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1254423740
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4831,7 +4831,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 14.5, y: -21.8}
+  m_AnchoredPosition: {x: 22.400024, y: -44.100006}
   m_SizeDelta: {x: 72.9, y: 30}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1429558405
@@ -7301,7 +7301,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fb679cb1e0b6f8488cd8ad172e1b017, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 15
+  moveSpeed: 12
   jumpSpeed: 80000
   grounded: 0
   sideTouch: 0
