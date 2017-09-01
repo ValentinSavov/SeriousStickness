@@ -122,10 +122,10 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
     {
         if (slevel.level < 10)
         {
-            DamageAcceptorRegistry.DamageArgs args = new DamageAcceptorRegistry.DamageArgs();
-            args.dmg = Random.Range(2, 7);
-            args.source = slevel.gameObject;
-            acceptDamage(args);
+            //DamageAcceptorRegistry.DamageArgs args = new DamageAcceptorRegistry.DamageArgs();
+            //args.dmg = Random.Range(2, 7);
+            //args.source = slevel.gameObject;
+            //acceptDamage(args);
         }
         else if (slevel.level > 50)
         {
