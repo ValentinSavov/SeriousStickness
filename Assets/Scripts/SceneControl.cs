@@ -29,6 +29,7 @@ public class SceneControl : MonoBehaviour
     {
         RemoveLoadedScenes();
         SceneManager.LoadSceneAsync("main", LoadSceneMode.Additive);
+        SceneManager.LoadSceneAsync("Lvl1", LoadSceneMode.Additive);
     }
 
     public void Die()

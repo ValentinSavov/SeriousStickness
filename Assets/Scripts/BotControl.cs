@@ -92,7 +92,7 @@ public class BotControl : MonoBehaviour, DamageAcceptor
             }
 
             idleTime += Time.deltaTime;
-            if(idleTime >= 5f)
+            if(idleTime >= 2f)
             {
                 if (IsWhereToJumpUp())
                 {
