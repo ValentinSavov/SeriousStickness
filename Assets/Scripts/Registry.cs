@@ -6,41 +6,33 @@ using System.Collections.Generic;
 public class Registry : MonoBehaviour 
 {
     public DamageAcceptorRegistry damageAcceptors;
-    public PlayerTargetsRegistry playerTargets;
-    public EffectsRegistry effects;
-    public WeaponsRegistry weapons;
+    public ObjectivesRegistry objectives;
 
     void Awake () 
     {
         damageAcceptors = new DamageAcceptorRegistry();
-        playerTargets = new PlayerTargetsRegistry();
-        effects = new EffectsRegistry();
-        weapons = new WeaponsRegistry();
+        objectives = new ObjectivesRegistry();
     }
 	
 	void Update ()
     {
-        effects.updateEffects();
+        //effects.updateEffects();
     }
 }
 
 
 
+
+#region DamageAcceptor
 /// <summary>
-/// ---------------------------------------------------------------          DamageProviders
+/// ---------------------------------------------------------------          DamageAcceptors
 /// </summary>
 /// 
-
 
 public interface DamageProvider
 {
     void ReportKill(DamageAcceptor killed);
 }
-
-/// <summary>
-/// ---------------------------------------------------------------          DamageAcceptors
-/// </summary>
-/// 
 
 public interface DamageAcceptor
 {
@@ -71,6 +63,11 @@ public class DamageAcceptorRegistry
     public void RemoveDamageAcceptor(DamageAcceptor argInDamageAcceptor)
     {
         damageAcceptors.RemoveAll(x => x == argInDamageAcceptor);
+    }
+
+    public List<DamageAcceptor> GetAcceptorsInGroup(List<string> argInGroups)
+    {
+        return damageAcceptors.FindAll(x => (x.groups.Intersect(argInGroups).Any()) );
     }
 
     public List<DamageAcceptor> GetAcceptorsInRange(Vector3 point, float radius)
@@ -162,6 +159,42 @@ public class DamageAcceptorRegistry
         }
     }
 }
+#endregion
+
+#region Objectives
+public class Trigger
+{
+
+}
+public interface Objective
+{
+
+    void AddTrigger();
+    void RemoveTrigger();
+    void SetTrigger();
+    void ClearTrigger();
+    
+}
+
+public class ObjectivesRegistry
+{
+
+    private List<Objective> objectives = new List<Objective>();
+
+    public void AddObjective(Objective argInObjective)
+    {
+        objectives.Add(argInObjective);
+    }
+
+    public void RemoveObjective(Objective argInObjective)
+    {
+        objectives.RemoveAll(x => x == argInObjective);
+    }
+
+
+}
+
+#endregion
 
 #region Effects
 /// <summary>

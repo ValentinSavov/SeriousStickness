@@ -7,8 +7,11 @@ public class BotSpawner : MonoBehaviour
     public GameObject prefab;
     public float spawnRadius = 3f;
     public float spawnPeriod = 5f;
+    public int maxActiveSpawned = 5;
+    public int spawnLimit = 1000;
     public bool spawnImmediately = true;
     float previousSpawnTime;
+    int spawnedCounter = 0;
     Registry registry;
 
     void Start ()
@@ -25,12 +28,12 @@ public class BotSpawner : MonoBehaviour
     {
         if((Time.time - previousSpawnTime) >= spawnPeriod)
         {
-            List<DamageAcceptor> das = registry.damageAcceptors.GetAcceptorsInRange(this.transform.position, 20f);
-            foreach(DamageAcceptor da in das)
+            List<string> groups = new List<string>();
+            groups.Add(this.gameObject.name);
+            if (registry.damageAcceptors.GetAcceptorsInGroup(groups).Count < maxActiveSpawned)
             {
-                Debug.Log(((Component)da).gameObject.name);
+                Spawn();
             }
-            Spawn();
             previousSpawnTime = Time.time;
         }
     }
@@ -42,6 +45,11 @@ public class BotSpawner : MonoBehaviour
             Quaternion.identity
             ) as GameObject;
         spawned.transform.parent = this.transform;
-        //spawned.GetComponent<DamageAcceptor>().groups.Add(this.gameObject.name);
+        spawned.GetComponent<DamageAcceptor>().groups.Add(this.gameObject.name);
+        spawnedCounter++;
+        if(spawnedCounter >= spawnLimit)
+        {
+            this.enabled = false;
+        }
     }
 }

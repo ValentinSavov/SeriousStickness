@@ -5,6 +5,10 @@ using UnityEngine.UI;
 
 public class BotControl : MonoBehaviour, DamageAcceptor
 {
+    BotControl()
+    {
+        groups = new List<string>();
+    }
     public List<string> groups { get; set; }
     public float range = 14f;
     public string startWeapon = "RocketLauncher";
@@ -34,7 +38,6 @@ public class BotControl : MonoBehaviour, DamageAcceptor
         registry = GameObject.FindObjectOfType<Registry>().GetComponent<Registry>();
         movement.moveSpeed += Random.Range(-(movement.moveSpeed *0.2f), movement.moveSpeed *0.2f);
         registry.damageAcceptors.AddDamageAcceptor(this);
-        groups = new List<string>();
         groups.Add("bots");
         target = GameObject.FindObjectOfType<PlayerTag>().gameObject;
         stats.currentHitPoints = stats.totalHitPoints;
@@ -213,6 +216,9 @@ public class BotControl : MonoBehaviour, DamageAcceptor
         Weapon weap = GetComponentInChildren<Weapon>();
         if (weap != null)
         {
+            //vsa check if the bot sees the target
+            //RaycastHit2D[] hits = Physics2D.RaycastAll(weap.transform.position, target.transform.position - weap.transform.position);
+            
             if ((Time.time - previousEngageTime) >= (1f / (GetComponent<StickStats>().attackSpeed / 100)))
             {
                 previousEngageTime = Time.time;

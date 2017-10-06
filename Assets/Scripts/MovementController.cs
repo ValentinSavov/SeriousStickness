@@ -69,7 +69,7 @@ public class MovementController : MonoBehaviour
             {
                 rbd.velocity = Vector2.zero;
                 rbd.AddForce(Vector2.up * jumpSpeed);
-                Debug.Log("jump");
+                //Debug.Log("jump");
                 jumpMomentInTime = Time.time;
                 return true;
             }

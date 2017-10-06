@@ -21,7 +21,6 @@ public class RailGun : Weapon
     {
         audioSource = GetComponent<AudioSource>();
         registry = GameObject.FindObjectOfType<Registry>();
-        registry.weapons.AddWeapon(this.gameObject); //AddToRegistry();
         gpParent = GameObject.Find("GeneralPurposeParent");
         fireRate += Random.Range(-(fireRate*0.1f), fireRate*0.1f);
         barrel = transform.FindChild("barrel").gameObject;
