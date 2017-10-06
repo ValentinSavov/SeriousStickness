@@ -20,7 +20,7 @@ public class RocketLauncher : Weapon
         registry = GameObject.FindObjectOfType<Registry>();
         //registry.weapons.AddWeapon(this.gameObject); //AddToRegistry();
         gpParent = GameObject.Find("GeneralPurposeParent");
-        barrel = transform.FindChild("barrel").gameObject;
+        barrel = transform.Find("barrel").gameObject;
     }
 
     public /*override*/ bool isDone()

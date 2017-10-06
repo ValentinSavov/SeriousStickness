@@ -23,7 +23,7 @@ public class RailGun : Weapon
         registry = GameObject.FindObjectOfType<Registry>();
         gpParent = GameObject.Find("GeneralPurposeParent");
         fireRate += Random.Range(-(fireRate*0.1f), fireRate*0.1f);
-        barrel = transform.FindChild("barrel").gameObject;
+        barrel = transform.Find("barrel").gameObject;
     }
 
     
