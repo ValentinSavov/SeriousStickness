@@ -164,15 +164,57 @@ public class DamageAcceptorRegistry
 #region Objectives
 public class Trigger
 {
-
+    Trigger(string newName)
+    {
+        name = newName;
+        trigger = false;
+    }
+    bool trigger;
+    string name
+    {
+        set
+        {
+            name = value;
+        }
+        get
+        {
+            return name;
+        }
+    }
+    public void Set()
+    {
+        trigger = true;
+    }
+    public void Clear()
+    {
+        trigger = false;
+    }
+    public bool Get()
+    {
+        return trigger;
+    }
 }
-public interface Objective
+
+public class Objective
 {
 
-    void AddTrigger();
-    void RemoveTrigger();
-    void SetTrigger();
-    void ClearTrigger();
+    List<Trigger> triggers = new List<Trigger>();
+    void AddTrigger()
+    {
+        
+    }
+    void RemoveTrigger()
+    {
+
+    }
+    void SetTrigger()
+    {
+
+    }
+    void ClearTrigger()
+    {
+
+    }
     
 }
 
