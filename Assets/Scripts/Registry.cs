@@ -162,78 +162,68 @@ public class DamageAcceptorRegistry
 #endregion
 
 #region Objectives
-public class Trigger
+public class Trigger : MonoBehaviour
 {
-    Trigger(string newName)
+    public string objective;
+    Registry registry;
+    void Start()
     {
-        name = newName;
-        trigger = false;
-    }
-    bool trigger;
-    string name
-    {
-        set
-        {
-            name = value;
-        }
-        get
-        {
-            return name;
-        }
+        registry = GameObject.FindObjectOfType<Registry>().GetComponent<Registry>();
+        registry.objectives.GetObjective(objective).AddTrigger(this);
     }
     public void Set()
     {
-        trigger = true;
-    }
-    public void Clear()
-    {
-        trigger = false;
-    }
-    public bool Get()
-    {
-        return trigger;
+        registry.objectives.GetObjective(objective).RemoveTrigger(this);
     }
 }
 
-public class Objective
+public abstract class Objective : MonoBehaviour
 {
-
-    List<Trigger> triggers = new List<Trigger>();
-    void AddTrigger()
+    public string objectiveName;
+    public List<Trigger> unresolvedMandatoryTriggers = new List<Trigger>();
+    //public List<Trigger> reslovedOptionalTriggers = new List<Trigger>();
+    Registry registry;
+    void Awake()
     {
-        
+        registry = GameObject.FindObjectOfType<Registry>().GetComponent<Registry>();
+        registry.objectives.AddObjective(this);
     }
-    void RemoveTrigger()
+    public void AddTrigger(Trigger argInTrigger)
     {
-
+        unresolvedMandatoryTriggers.Add(argInTrigger);
     }
-    void SetTrigger()
+    public void RemoveTrigger(Trigger argInTrigger)
     {
-
+        unresolvedMandatoryTriggers.RemoveAll(x => x == argInTrigger);
+        if(unresolvedMandatoryTriggers.Count <= 0)
+        {
+            ProcessCompletionAction();
+        }
     }
-    void ClearTrigger()
-    {
-
-    }
-    
+    public abstract void ProcessCompletionAction();
 }
 
 public class ObjectivesRegistry
 {
 
-    private List<Objective> objectives = new List<Objective>();
+    List<Objective> objectives = new List<Objective>();
 
     public void AddObjective(Objective argInObjective)
     {
         objectives.Add(argInObjective);
     }
-
     public void RemoveObjective(Objective argInObjective)
     {
         objectives.RemoveAll(x => x == argInObjective);
     }
-
-
+    public Objective GetObjective(string name)
+    {
+        return objectives.Find(x => x.objectiveName == name);
+    }
+    public int GetObjectivesCount()
+    {
+        return objectives.Count;
+    }
 }
 
 #endregion
