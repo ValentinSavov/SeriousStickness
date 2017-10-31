@@ -4,22 +4,29 @@ using UnityEngine;
 
 public class SetStuffInChildren : MonoBehaviour
 {
+    public string sortingLayerName;
+    public bool setsortinglayer = false;
     public int orderInLayer = 0;
     public bool setorderinlayer = false;
 
-	void Start ()
-    {
-        
-	}
-	
 
     void OnDrawGizmos()
     {
-        if(setorderinlayer)
+        if (setsortinglayer)
+        {
+            setsortinglayer = false;
+            Renderer[] rends = GetComponentsInChildren<Renderer>();
+            foreach (Renderer rend in rends)
+            {
+                rend.sortingLayerName = sortingLayerName;
+            }
+        }
+
+        if (setorderinlayer)
         {
             setorderinlayer = false;
             Renderer[] rends = GetComponentsInChildren<Renderer>();
-            foreach(Renderer rend in rends)
+            foreach (Renderer rend in rends)
             {
                 rend.sortingOrder = orderInLayer;
             }
