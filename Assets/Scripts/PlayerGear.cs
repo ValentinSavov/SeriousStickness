@@ -30,7 +30,7 @@ public class PlayerGear : MonoBehaviour
         Transform weaponSpot = GetComponentInChildren<WeaponSpot>().transform;
         cursor = GameObject.FindObjectOfType<CursorTag>().gameObject;
         gearDatabase = GameObject.FindObjectOfType<GearDatabase>();
-        //RectTransform guiWeaponSpot = GameObject.Find("UI").transform.Find("ActiveWeapon").GetComponent<RectTransform>();
+        RectTransform guiWeaponSpot = GameObject.Find("UI").transform.Find("ActiveWeapon").GetComponent<RectTransform>();
 
         // get from database and instantiate all weapons that shall be available
         if (availableWeapons.Count != 0)
@@ -47,14 +47,14 @@ public class PlayerGear : MonoBehaviour
                 weap.SetActive(false);
 
                 //do the same for UI gameobjects
-                //GameObject weapUI = Instantiate(gearDatabase.weapons.Find(x => x.guiPref.name == "UI"+availableWeapons[i].name).guiPref, guiWeaponSpot) as GameObject;
-                //weapUI.GetComponent<RectTransform>().localPosition = Vector3.zero;
-                //availableWeapons[i].weaponUIGO = weapUI;
-                //weapUI.SetActive(false);
+                GameObject weapUI = Instantiate(gearDatabase.weapons.Find(x => x.guiPref.name == "UI"+availableWeapons[i].name).guiPref, guiWeaponSpot) as GameObject;
+                weapUI.GetComponent<RectTransform>().localPosition = Vector3.zero;
+                availableWeapons[i].weaponUIGO = weapUI;
+                weapUI.SetActive(false);
             }
 
             availableWeapons[selectedWeapon].weaponGO.SetActive(true);
-            //availableWeapons[selectedWeapon].weaponUIGO.SetActive(true);
+            availableWeapons[selectedWeapon].weaponUIGO.SetActive(true);
         }
     }
 
@@ -66,8 +66,8 @@ public class PlayerGear : MonoBehaviour
         }
         else if (Input.GetButton("Fire1") == true)
         {
-            Weapon activeWeap = availableWeapons[selectedWeapon].weaponGO.GetComponent<Weapon>();
-            if (activeWeap != null)
+            //Weapon activeWeap = availableWeapons[selectedWeapon].weaponGO.GetComponent<Weapon>();
+            //if (activeWeap != null)
             {
                 //if (activeWeap.isAutomatic)
                 {
@@ -178,36 +178,36 @@ public class PlayerGear : MonoBehaviour
     public void NextWeapon()
     {
         availableWeapons[selectedWeapon].weaponGO.SetActive(false);
-        //availableWeapons[selectedWeapon].weaponUIGO.SetActive(false);
+        availableWeapons[selectedWeapon].weaponUIGO.SetActive(false);
         selectedWeapon++;
         if (selectedWeapon >= (availableWeapons.Count))
         {
             selectedWeapon = 0;
         }
         availableWeapons[selectedWeapon].weaponGO.SetActive(true);
-        //availableWeapons[selectedWeapon].weaponUIGO.SetActive(true);
+        availableWeapons[selectedWeapon].weaponUIGO.SetActive(true);
     }
     public void PrevWeapon()
     {
         availableWeapons[selectedWeapon].weaponGO.SetActive(false);
-        //availableWeapons[selectedWeapon].weaponUIGO.SetActive(false);
+        availableWeapons[selectedWeapon].weaponUIGO.SetActive(false);
         selectedWeapon--;
         if (selectedWeapon < 0)
         {
             selectedWeapon = availableWeapons.Count - 1;
         }
         availableWeapons[selectedWeapon].weaponGO.SetActive(true);
-        //availableWeapons[selectedWeapon].weaponUIGO.SetActive(true);
+        availableWeapons[selectedWeapon].weaponUIGO.SetActive(true);
     }
     public void SetSelectedWeapon(int selected)
     {
         if ((selected >= 0) && (selected < availableWeapons.Count))
         {
             availableWeapons[selectedWeapon].weaponGO.SetActive(false);
-            //availableWeapons[selectedWeapon].weaponUIGO.SetActive(false);
+            availableWeapons[selectedWeapon].weaponUIGO.SetActive(false);
             selectedWeapon = selected;
             availableWeapons[selectedWeapon].weaponGO.SetActive(true);
-            //availableWeapons[selectedWeapon].weaponUIGO.SetActive(true);
+            availableWeapons[selectedWeapon].weaponUIGO.SetActive(true);
         }
     }
 

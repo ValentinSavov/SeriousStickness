@@ -32,7 +32,7 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
 
         gpParent = GameObject.Find("GeneralPurposeParent");
         health = GameObject.Find("UI").transform.Find("Health").GetComponent<Text>();
-        health.text = "+ " + ((int)(stats.currentHitPoints)).ToString();
+        health.text = ((int)(stats.currentHitPoints)).ToString();
 
         groups = new List<string>();
         groups.Add("players");
@@ -164,7 +164,7 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
                     popup.GetComponent<Popup>().text = "+" + healAmount.ToString();
                     popup.transform.parent = gpParent.transform;
                 }
-                health.text = "+ " + ((int)(stats.currentHitPoints)).ToString();
+                health.text = ((int)(stats.currentHitPoints)).ToString();
             }
         }
     }
@@ -234,7 +234,7 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
             }
         }
 
-        health.text = "+ " + ((int)(stats.currentHitPoints)).ToString();
+        health.text = ((int)(stats.currentHitPoints)).ToString();
 
     }
     

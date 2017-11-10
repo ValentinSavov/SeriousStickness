@@ -8,10 +8,15 @@ public class Registry : MonoBehaviour
     public DamageAcceptorRegistry damageAcceptors;
     public ObjectivesRegistry objectives;
 
-    void Awake () 
+    Registry()
     {
         damageAcceptors = new DamageAcceptorRegistry();
         objectives = new ObjectivesRegistry();
+    }
+    void Awake () 
+    {
+        //damageAcceptors = new DamageAcceptorRegistry();
+        //objectives = new ObjectivesRegistry();
     }
 	
 	void Update ()
@@ -169,10 +174,18 @@ public class Trigger : MonoBehaviour
     void Start()
     {
         registry = GameObject.FindObjectOfType<Registry>().GetComponent<Registry>();
-        registry.objectives.GetObjective(objective).AddTrigger(this);
+        if (registry.objectives.GetObjective(objective) != null)
+        {
+            registry.objectives.GetObjective(objective).AddTrigger(this);
+        }
+        else
+        {
+            this.Invoke("Start", 0.1f);
+        }   
     }
     public void Set()
     {
+        if(registry.objectives.GetObjective(objective))
         registry.objectives.GetObjective(objective).RemoveTrigger(this);
     }
 }
@@ -183,7 +196,7 @@ public abstract class Objective : MonoBehaviour
     public List<Trigger> unresolvedMandatoryTriggers = new List<Trigger>();
     //public List<Trigger> reslovedOptionalTriggers = new List<Trigger>();
     Registry registry;
-    void Awake()
+    void Start()
     {
         registry = GameObject.FindObjectOfType<Registry>().GetComponent<Registry>();
         registry.objectives.AddObjective(this);
