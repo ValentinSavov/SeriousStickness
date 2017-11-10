@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: faba6be689928434db0234c4dd92fdac
+timeCreated: 1510152893
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: SchoolNotes
+  fontNames:
+  - SchoolNotes
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

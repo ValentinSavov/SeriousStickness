@@ -14,6 +14,14 @@ public class SceneControl : MonoBehaviour
         SceneManager.LoadSceneAsync(startScene, LoadSceneMode.Additive);
     }
 
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Time.timeScale = 0;
+        }
+    }
+
     void OnSceneUnloaded(Scene scene)
     {
         Debug.Log("Unloaded scene: " + scene.name);
@@ -29,9 +37,16 @@ public class SceneControl : MonoBehaviour
     {
         RemoveLoadedScenes();
         SceneManager.LoadSceneAsync("main", LoadSceneMode.Additive);
-        SceneManager.LoadSceneAsync("Lvl1", LoadSceneMode.Additive);
+        SceneManager.LoadSceneAsync("Lvl0", LoadSceneMode.Additive);
     }
 
+    public void PlayTutorial()
+    {
+        //RemoveLoadedScenes();
+        //SceneManager.LoadSceneAsync("main", LoadSceneMode.Additive);
+        //SceneManager.LoadSceneAsync("LvlTutorial", LoadSceneMode.Additive);
+    }
+    
     public void Die()
     {
         RemoveLoadedScenes();

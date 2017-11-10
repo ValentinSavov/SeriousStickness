@@ -14,7 +14,7 @@ public class PlayerGear : MonoBehaviour
         [HideInInspector]
         public GameObject weaponUIGO;
         public float bullets;
-        public float durability = 100f; // 0 - 100
+        //public float durability = 100f; // 0 - 100
     }
     public List<InventoryWeapon> availableWeapons = new List<InventoryWeapon>();
 
@@ -28,7 +28,7 @@ public class PlayerGear : MonoBehaviour
     {
         ammotext = GameObject.Find("UI").transform.Find("Ammo").GetComponent<Text>();
         Transform weaponSpot = GetComponentInChildren<WeaponSpot>().transform;
-        cursor = GameObject.FindObjectOfType<Cursor>().gameObject;
+        cursor = GameObject.FindObjectOfType<CursorTag>().gameObject;
         gearDatabase = GameObject.FindObjectOfType<GearDatabase>();
         //RectTransform guiWeaponSpot = GameObject.Find("UI").transform.Find("ActiveWeapon").GetComponent<RectTransform>();
 
@@ -51,12 +51,10 @@ public class PlayerGear : MonoBehaviour
                 //weapUI.GetComponent<RectTransform>().localPosition = Vector3.zero;
                 //availableWeapons[i].weaponUIGO = weapUI;
                 //weapUI.SetActive(false);
-
             }
 
             availableWeapons[selectedWeapon].weaponGO.SetActive(true);
             //availableWeapons[selectedWeapon].weaponUIGO.SetActive(true);
-
         }
     }
 
@@ -81,11 +79,11 @@ public class PlayerGear : MonoBehaviour
 
         if (Input.GetAxis("Mouse ScrollWheel") > 0)
         {
-            NextWeapon();
+            PrevWeapon();
         }
         else if (Input.GetAxis("Mouse ScrollWheel") < 0)
         {
-            PrevWeapon();
+            NextWeapon();
         }
 
         if (Input.GetKeyDown(KeyCode.Alpha1))
@@ -100,6 +98,10 @@ public class PlayerGear : MonoBehaviour
         {
             SetSelectedWeapon(2);
         }
+        if (Input.GetKeyDown(KeyCode.Alpha4))
+        {
+            SetSelectedWeapon(3);
+        }
 
         //vsa javar takuv, mahni tva ot tuka
         if (ammotext != null)
@@ -113,7 +115,7 @@ public class PlayerGear : MonoBehaviour
         Weapon activeWeap = availableWeapons[selectedWeapon].weaponGO.GetComponent<Weapon>();
         if (activeWeap != null)
         {
-            if ((availableWeapons[selectedWeapon].bullets > 0f) && (availableWeapons[selectedWeapon].durability > 0f))
+            if ((availableWeapons[selectedWeapon].bullets > 0f) /*&& (availableWeapons[selectedWeapon].durability > 0f)*/)
             {
                 if (activeWeap.Engage(cursor.transform.position) == true)
                 {
@@ -150,7 +152,7 @@ public class PlayerGear : MonoBehaviour
                     {
                         //just add some stuff to the existing
                         contained.bullets += 10f;
-                        contained.durability = 100f;
+                        //contained.durability = 100f;
                     }
                     else
                     {
@@ -164,7 +166,7 @@ public class PlayerGear : MonoBehaviour
 
                         newiw.weaponGO = instantiatedWeap;
                         newiw.bullets = 10f;
-                        newiw.durability = 100f;
+                        //newiw.durability = 100f;
                         availableWeapons.Add(newiw);
                     }
                     Destroy(other.gameObject);

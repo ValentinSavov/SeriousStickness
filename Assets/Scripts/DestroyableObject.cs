@@ -1,18 +1,21 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-[RequireComponent(typeof(CapsuleCollider2D))]
+[RequireComponent(typeof(Collider2D))]
 [RequireComponent(typeof(Rigidbody2D))]
 
 public class DestroyableObject : MonoBehaviour , DamageAcceptor
 {
+    public GameObject effectOnDestroy;
+    GameObject gpParent;
     Registry registry;
-
     public void acceptDamage(DamageAcceptorRegistry.DamageArgs argInArgs)
     {
         if(argInArgs.dmg > 0)
         {
-            Destroy(this.gameObject);
+            {
+                Destroy(this.gameObject);
+            }
         }
     }
     public List<string> groups { get; set; }
@@ -23,6 +26,7 @@ public class DestroyableObject : MonoBehaviour , DamageAcceptor
         registry.damageAcceptors.AddDamageAcceptor(this);
         groups = new List<string>();
         groups.Add("level");
+        gpParent = GameObject.Find("GeneralPurposeParent");
     }
 	
 	void Update ()
@@ -32,6 +36,12 @@ public class DestroyableObject : MonoBehaviour , DamageAcceptor
 
     void OnDestroy()
     {
+        if ( (effectOnDestroy != null) && (gpParent != null) )
+        {
+            GameObject effect = Instantiate(effectOnDestroy, gpParent.transform);
+            effect.transform.position = this.transform.position;
+            Destroy(effect, 2f);
+        }
         registry.damageAcceptors.RemoveDamageAcceptor(this);
     }
 }

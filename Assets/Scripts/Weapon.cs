@@ -16,6 +16,14 @@ public abstract class Weapon : MonoBehaviour
         
     }
 
+    void OnEnable()
+    {
+        Arm();
+    }
+    void OnDisable()
+    {
+        Disarm();
+    }
     public abstract void Arm();
     public abstract void Disarm();
 

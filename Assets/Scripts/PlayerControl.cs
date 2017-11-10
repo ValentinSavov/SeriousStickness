@@ -17,17 +17,18 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
     GameObject gpParent;
     Text health;
     List<SourcesAndCooldowns> damageSourcesInCooldown = new List<SourcesAndCooldowns>();
-    
+
     void Start()
     {
         gear = GetComponent<PlayerGear>();
         anim = GetComponent<Animator>();
         stats = GetComponent<StickStats>();
         movement = GetComponent<MovementController>();
-        cursor = GameObject.FindObjectOfType<Cursor>().gameObject;
+        cursor = GameObject.FindObjectOfType<CursorTag>().gameObject;
         registry = GameObject.FindObjectOfType<Registry>().GetComponent<Registry>();
         registry.damageAcceptors.AddDamageAcceptor(this);
         slevel = GameObject.FindObjectOfType<SticknessLevel>() as SticknessLevel;
+
 
         gpParent = GameObject.Find("GeneralPurposeParent");
         health = GameObject.Find("UI").transform.Find("Health").GetComponent<Text>();
@@ -49,6 +50,17 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
         UpdateDamageCooldowns();
         SticknessLevelResponse();
         
+        if(Input.GetButton("Fire2"))
+        {
+            if (slevel.level >= 80)
+            {
+                Time.timeScale = 0.4f;
+            }
+        }
+        else
+        {
+            Time.timeScale = 1f;
+        }
         //vsa suicide
         if(Input.GetKeyDown("k"))
         {

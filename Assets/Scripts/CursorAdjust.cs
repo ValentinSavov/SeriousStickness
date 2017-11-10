@@ -19,7 +19,7 @@ public class CursorAdjust : MonoBehaviour
 	void Start()
 	{
 		player = GameObject.FindObjectOfType<PlayerTag>().gameObject;
-		cursorr = GameObject.FindObjectOfType<Cursor>().gameObject;
+		cursorr = GameObject.FindObjectOfType<CursorTag>().gameObject;
 		UnityEngine.Cursor.visible = false;
 		UnityEngine.Cursor.lockState = CursorLockMode.Confined;
 	}

@@ -5,6 +5,7 @@ using UnityEngine;
 public class BotSpawner : MonoBehaviour
 {
     public GameObject prefab;
+    public string startWeapon = "RocketLauncher";
     public float spawnRadius = 3f;
     public float spawnPeriod = 5f;
     public int maxActiveSpawned = 5;
@@ -44,6 +45,8 @@ public class BotSpawner : MonoBehaviour
             this.transform.position + new Vector3(Random.Range(-spawnRadius, spawnRadius), Random.Range(-spawnRadius, spawnRadius), 0),
             Quaternion.identity
             ) as GameObject;
+        //Debug.Log("Spawned");
+        spawned.GetComponent<BotControl>().startWeapon = startWeapon;
         spawned.transform.parent = this.transform;
         spawned.GetComponent<DamageAcceptor>().groups.Add(this.gameObject.name);
         spawnedCounter++;

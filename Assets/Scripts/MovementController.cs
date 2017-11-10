@@ -43,7 +43,8 @@ public class MovementController : MonoBehaviour
     float jumpMomentInTime = 0f;
     public bool JumpUp()
     {
-        if((Time.time - jumpMomentInTime) < 0.1f)
+        wantToJumpDown = false;
+        if ((Time.time - jumpMomentInTime) < 0.1f)
         {
             return false;
         }

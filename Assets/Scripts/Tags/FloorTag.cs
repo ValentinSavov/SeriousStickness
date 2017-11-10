@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-public class FloorTag : MonoBehaviour
+﻿public class FloorTag : Tag
 {
 
 }

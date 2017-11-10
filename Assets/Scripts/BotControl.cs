@@ -31,6 +31,7 @@ public class BotControl : MonoBehaviour, DamageAcceptor
 
     void Start ()
 	{
+        //Debug.Log("BotStart");
         gpParent = GameObject.Find("GeneralPurposeParent");
         stats = GetComponent<StickStats>();
         movement = GetComponent<MovementController>();
@@ -287,7 +288,7 @@ public class BotControl : MonoBehaviour, DamageAcceptor
 
 
     #region weapon stuff
-    void OnTriggerStay2D(Collider2D other)
+    /*void OnTriggerStay2D(Collider2D other)
     {
         if ( (other.gameObject.GetComponent<Weapon>() != null) && (!stats.isDead) && (GetComponentInChildren<Weapon>() == null) )
         {
@@ -305,7 +306,7 @@ public class BotControl : MonoBehaviour, DamageAcceptor
                 //GetComponent<GoapAgent>().ResetAgent();
             }
         }
-    }
+    }*/
     #endregion 
 
     #region  DamageAcceptor
@@ -313,7 +314,7 @@ public class BotControl : MonoBehaviour, DamageAcceptor
     {
         if (stats.isDead)
         {
-            AddForceToRandomBones(argInArgs.knockback);
+            //AddForceToRandomBones(argInArgs.knockback);
             return;
         }
         //Debug.Log(this.gameObject.name);
@@ -362,7 +363,7 @@ public class BotControl : MonoBehaviour, DamageAcceptor
                 if (anim) anim.enabled = false;
 
                 SwitchToRagdoll();
-                AddForceToRandomBones(argInArgs.knockback);
+                AddForceToRandomBones(argInArgs.knockback * 1000);
             }
         }
 

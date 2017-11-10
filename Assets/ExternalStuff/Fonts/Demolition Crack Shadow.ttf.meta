@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 861ca96e9d05d8e46879c62920a0c097
+timeCreated: 1510152893
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Demolition Crack Shadow
+  fontNames:
+  - Demolition Crack Shadow
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
