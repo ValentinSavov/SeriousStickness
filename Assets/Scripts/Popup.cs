@@ -8,12 +8,15 @@ public class Popup : MonoBehaviour
     float speed = 1.1f;
     void Update ()
     {
-
-        speed -= 0.03f;
+        if(speed > 0.03f)
+        {
+            speed -= 0.03f;
+        }
+        
         this.transform.Translate(0, speed * 7 * Time.deltaTime, 0);
         this.transform.localScale *= 1 - Time.deltaTime/3;
         lifetimeLeft -= Time.deltaTime;
-        if( (lifetimeLeft <= 0) || (speed <= 0) )
+        if( (lifetimeLeft <= 0) /*|| (speed <= 0)*/ )
         {
             Destroy(this.gameObject);
         } 

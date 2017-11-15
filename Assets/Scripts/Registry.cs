@@ -119,7 +119,7 @@ public class DamageAcceptorRegistry
 
     public void doAreaDamage(GameObject argInSource, Vector2 argInCentralPoint, float argInAffectRadius, float argInDmg, string argInDamageType, float argInKnockBack)
     {
-        foreach(DamageAcceptor damageAcceptor in damageAcceptors)
+        foreach(DamageAcceptor damageAcceptor in damageAcceptors.ToList())
         {
             //if (((Component)damageAcceptor).gameObject != argInSource)
             {
@@ -142,7 +142,7 @@ public class DamageAcceptorRegistry
 
     public void doAreaDamage(GameObject argInSource, Vector2 argInCentralPoint, float argInAffectRadius, float argInDmg, string argInDamageType, float argInKnockBack, List<string> argInIgnoreGroups)
     {
-        foreach (DamageAcceptor damageAcceptor in damageAcceptors)
+        foreach (DamageAcceptor damageAcceptor in damageAcceptors.ToList())
         {
             //if (((Component)damageAcceptor).gameObject != argInSource)
             {

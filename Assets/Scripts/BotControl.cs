@@ -356,14 +356,16 @@ public class BotControl : MonoBehaviour, DamageAcceptor
                 }
 
                 this.enabled = false;
-                //GetComponent<GoapAgent>().enabled = false;
-                Destroy(this.gameObject, 10f);
-
-                Animator anim = GetComponent<Animator>();
-                if (anim) anim.enabled = false;
-
+                registry.damageAcceptors.RemoveDamageAcceptor(this);
                 SwitchToRagdoll();
                 AddForceToRandomBones(argInArgs.knockback * 1000);
+
+                Destroy(this.gameObject);
+                //Animator anim = GetComponent<Animator>();
+                //if (anim) anim.enabled = false;
+
+                
+                
             }
         }
 
@@ -426,6 +428,9 @@ public class BotControl : MonoBehaviour, DamageAcceptor
                 }
             }
         }
+        GameObject stickBody = transform.Find("StickBody").gameObject;
+        stickBody.transform.SetParent(gpParent.transform);
+        Destroy(stickBody, 10f);
         /////
     }
     void AddForceToRandomBones(Vector2 knockback)
@@ -433,8 +438,9 @@ public class BotControl : MonoBehaviour, DamageAcceptor
         Rigidbody2D[] rbs = GetComponentsInChildren<Rigidbody2D>();
         if (rbs != null)
         {
+            Debug.Log(knockback);
             int rand1 = 0;//Random.Range(0, rbs.Length);
-            rbs[rand1].velocity = new Vector2(0, 0);
+            //rbs[rand1].velocity = new Vector2(0, 0);
             rbs[rand1].AddForce(knockback);
         }
     }
