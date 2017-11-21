@@ -32,33 +32,42 @@ public class MovementController : MonoBehaviour
         UpdateSenses();
     }
 
+
     public void MoveX(float horisontalSpeed)
     {
         if (horisontalSpeed != 0)
         {
-            this.transform.Translate(new Vector3(horisontalSpeed * moveSpeed * Time.deltaTime, 0,0));
+            Vector2 velocity = rbd.velocity;
+            //if(grounded)
+            {
+                //velocity.x = 0;
+            }
+
+            velocity.x = horisontalSpeed * moveSpeed;
+            //velocity.x = Mathf.Clamp(velocity.x, -moveSpeed, moveSpeed);
+
+            if(sideTouch == Mathf.Sign(horisontalSpeed))
+            {
+                velocity.x = 0;
+            }
+            //this.transform.Translate(new Vector3(horisontalSpeed * moveSpeed * Time.fixedDeltaTime, 0,0));
+            //rbd.MovePosition(rbd.position + new Vector2(horisontalSpeed * moveSpeed * Time.deltaTime, 0));
+            rbd.velocity = new Vector2(velocity.x, velocity.y);
+            //rbd.AddForce(velocity - rbd.velocity, ForceMode2D.Impulse);
         }
     }
 
-    float jumpMomentInTime = 0f;
     public bool JumpUp()
     {
         wantToJumpDown = false;
-        if ((Time.time - jumpMomentInTime) < 0.1f)
-        {
-            return false;
-        }
-        
+
         if ((sideTouch != 0) && (!grounded))
         {
             //side jump
-            //if (rbd.velocity.y < 0.2f)
+            if (rbd.velocity.y < 0.2f)
             {
-                //rbd.velocity = Vector2.zero;
-                //rbd.velocity.Set(1*jumpSpeed, -sideTouch* jumpSpeed);
-                //vsa do something for side jump
+                //rbd.velocity = new Vector2((jumpSpeed * -sideTouch)/2, jumpSpeed);
                 //Debug.Log("Sidejump");
-                //jumpMomentInTime = Time.time;
                 //return true;
                 return false;
             }
@@ -66,12 +75,10 @@ public class MovementController : MonoBehaviour
         else if (grounded)
         {
             //up jump
-            if (rbd.velocity.y < 0.2f)
+            if (rbd.velocity.y < 1f)
             {
-                rbd.velocity = Vector2.zero;
-                rbd.AddForce(Vector2.up * jumpSpeed);
+                rbd.velocity = new Vector2(rbd.velocity.x, jumpSpeed);
                 //Debug.Log("jump");
-                jumpMomentInTime = Time.time;
                 return true;
             }
         }
@@ -84,6 +91,7 @@ public class MovementController : MonoBehaviour
         transform.Translate(0, 0.001f, 0); // this is for trigger detection - if it does not move no trigger event is generated
     }
 
+    /*
     public void JumpToSpecificPoint(float initialAngle, Vector3 p)
     {
         float gravity = Physics2D.gravity.magnitude;
@@ -115,7 +123,7 @@ public class MovementController : MonoBehaviour
         // Alternative way:
         rbd.AddForce((Vector2)(finalVelocity * rbd.mass));
     }
-
+    */
     void UpdateSenses()
     {
         grounded = false;
@@ -126,12 +134,14 @@ public class MovementController : MonoBehaviour
 
         sideTouch = 0f;
         //check right touch
-        if (Physics2D.OverlapCircle(transform.position + new Vector3(mainCollider.size.x/2, mainCollider.size.y/2, 0), mainCollider.size.x/4, layersToSense) != null)
+        if (Physics2D.OverlapCapsule(transform.position + new Vector3(mainCollider.size.x / 2, mainCollider.size.y / 2, 0), new Vector2(mainCollider.size.x, mainCollider.size.y*0.8f), CapsuleDirection2D.Vertical, 0f, layersToSense) != null)
+        //if (Physics2D.OverlapCircle(transform.position + new Vector3(mainCollider.size.x / 2, mainCollider.size.y / 4, 0), mainCollider.size.x / 4, layersToSense) != null)
         {
             sideTouch += 1;
         }
         //check left touch
-        if (Physics2D.OverlapCircle(transform.position + new Vector3(-(mainCollider.size.x/2), mainCollider.size.y/2, 0), mainCollider.size.x/4, layersToSense) != null)
+        if (Physics2D.OverlapCapsule(transform.position + new Vector3(-(mainCollider.size.x / 2), mainCollider.size.y / 2, 0), new Vector2(mainCollider.size.x, mainCollider.size.y * 0.8f), CapsuleDirection2D.Vertical, 0f, layersToSense) != null)
+        //if (Physics2D.OverlapCircle(transform.position + new Vector3(-(mainCollider.size.x/2), mainCollider.size.y/4, 0), mainCollider.size.x/4, layersToSense) != null)
         {
             sideTouch -= 1;
         }

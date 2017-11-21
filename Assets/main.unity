@@ -1305,7 +1305,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 60
+  field of view: 43
   orthographic: 0
   orthographic size: 14.5
   m_Depth: -1
@@ -1494,7 +1494,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: -0.000061035156, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 109.22, y: 47.32}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &659086036
@@ -2033,7 +2033,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 324.31998, y: 23.660034}
+  m_AnchoredPosition: {x: 324.3203, y: 23.660034}
   m_SizeDelta: {x: 144.03998, y: 47.320007}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1010256602
@@ -4026,7 +4026,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 109.21997, y: 0}
+  m_AnchoredPosition: {x: 109.2207, y: 0}
   m_SizeDelta: {x: 143.08, y: 47.32}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &2079671249
@@ -4104,7 +4104,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 9
-  jumpSpeed: 60000
+  jumpSpeed: 23
   grounded: 0
   sideTouch: 0
   layersToSense:
@@ -4228,7 +4228,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2137443433}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1370.2, y: 55.5, z: 0}
+  m_LocalPosition: {x: 1355.1, y: 100.2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 387257860}

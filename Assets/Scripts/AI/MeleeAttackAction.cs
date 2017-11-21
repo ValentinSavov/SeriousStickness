@@ -62,9 +62,9 @@ public class MeleeAttackAction : GoapAction
             previousEngageTime = Time.time;
 
             registry.damageAcceptors.doTargetDamage(
-            target.GetComponent<DamageAcceptor>(),
-            this.gameObject,
-            100f, "melee", new Vector2(0, 0), GetComponent<DamageAcceptor>().groups);
+                target.GetComponent<DamageAcceptor>(),
+                this.gameObject,
+                100f, "melee", new Vector2(0, 0), GetComponent<DamageAcceptor>().groups);
 
             done = true;
         }

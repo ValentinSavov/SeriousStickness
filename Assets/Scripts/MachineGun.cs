@@ -30,6 +30,7 @@ public class MachineGun : Weapon
         {
             previousShotTime = Time.time;
             mgShootEffect.Play();
+            float localdmg = damage;
             RaycastHit2D[] hits = Physics2D.RaycastAll(this.transform.position, newTarget - this.transform.position);
             foreach(RaycastHit2D hit in hits)
             {
@@ -44,14 +45,15 @@ public class MachineGun : Weapon
                     registry.damageAcceptors.doTargetDamage(
                         acceptor,
                         GetComponentInParent<Tag>().gameObject,
-                        damage,
+                        localdmg,
                         "normal",
-                        new Vector2(0, 0),
+                        transform.right * 2000f,
                         groups);
 
                     GameObject bulletHitEffect = Instantiate(Resources.Load("BulletHitEffect", typeof(GameObject)), gpParent.transform) as GameObject;
                     bulletHitEffect.transform.position = new Vector3(hit.point.x, hit.point.y, -2f);
                     bulletHitEffect.GetComponent<ParticleSystem>().startColor = Color.red;
+                    
                 }
             }
 

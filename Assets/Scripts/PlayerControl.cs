@@ -223,14 +223,18 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
                     this.enabled = false;
                     gear.enabled = false;
                     if (anim) { anim.enabled = false; }
-                    GameObject.FindObjectOfType<SceneControl>().Invoke("Die", 1f);
+
+                    SceneControl sceneControl = GameObject.FindObjectOfType<SceneControl>();
+                    if (sceneControl != null)
+                    {
+                        sceneControl.Invoke("Die", 1f);
+                    }
                 }
             }
 
             if (argInArgs.knockback != new Vector2(0, 0))
             {
                 // vsa do something for knockback
-                //firstPersonControllerRef.inertia = argInArgs.knockback;
             }
         }
 

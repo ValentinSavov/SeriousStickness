@@ -51,7 +51,7 @@ public class DamageAcceptorRegistry
     {
         public float dmg = 0;
         public string type = "";
-        public GameObject affectedBodypart;
+        public GameObject affectedPart;
         public Vector2 knockback = new Vector2(0,0);
         public GameObject source;
         public List<string> affectedGroups;
@@ -79,7 +79,7 @@ public class DamageAcceptorRegistry
     {
         return damageAcceptors.FindAll(x => ( (((Component)x).gameObject.transform.position - point).magnitude < radius ));
     }
-
+    /*
     public void doTargetDamage(DamageAcceptor damageAcceptor, GameObject argInSource, float argInDmg, string argInDamageType, Vector2 argInKnockBack)
     {
         if (damageAcceptor != null)
@@ -95,9 +95,9 @@ public class DamageAcceptorRegistry
                     damageAcceptor.acceptDamage(args);
             }
         }
-    }
-
-    public void doTargetDamage(DamageAcceptor damageAcceptor, GameObject argInSource, float argInDmg, string argInDamageType, Vector2 argInKnockBack, List<string> argInIgnoreGroups)
+    }*/
+    
+    public void doTargetDamage(DamageAcceptor damageAcceptor, GameObject argInSource, float argInDmg, string argInDamageType, Vector2 argInKnockBack,  List<string> argInIgnoreGroups)
     {
         if (damageAcceptor != null)
         {
@@ -126,10 +126,10 @@ public class DamageAcceptorRegistry
                 if (Vector2.Distance(((Component)damageAcceptor).gameObject.transform.position, argInCentralPoint) < argInAffectRadius)
                 {
                     DamageArgs args = new DamageArgs();
-                    args.knockback = 
-                        ( ((Vector2)((Component)damageAcceptor).gameObject.transform.position) - argInCentralPoint ).normalized 
-                        * argInKnockBack *
-                        (((Vector2)((Component)damageAcceptor).gameObject.transform.position) - argInCentralPoint).magnitude / argInAffectRadius;
+                    args.knockback =
+                        (((Vector2)((Component)damageAcceptor).gameObject.transform.position) - argInCentralPoint).normalized 
+                        * argInKnockBack
+                        * (1 - (((Vector2)((Component)damageAcceptor).gameObject.transform.position) - argInCentralPoint).magnitude / argInAffectRadius );
                     args.dmg = argInDmg;
                     args.source = argInSource;
                     args.type = argInDamageType;
@@ -140,6 +140,7 @@ public class DamageAcceptorRegistry
         }
     }
 
+    /*
     public void doAreaDamage(GameObject argInSource, Vector2 argInCentralPoint, float argInAffectRadius, float argInDmg, string argInDamageType, float argInKnockBack, List<string> argInIgnoreGroups)
     {
         foreach (DamageAcceptor damageAcceptor in damageAcceptors.ToList())
@@ -162,7 +163,7 @@ public class DamageAcceptorRegistry
                 }
             }
         }
-    }
+    }*/
 }
 #endregion
 
