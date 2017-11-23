@@ -151,7 +151,7 @@ public class PlayerGear : MonoBehaviour
                     if (contained != null)
                     {
                         //just add some stuff to the existing
-                        contained.bullets += 10f;
+                        contained.bullets += Random.Range(5, 50);
                         //contained.durability = 100f;
                     }
                     else

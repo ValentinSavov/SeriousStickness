@@ -47,7 +47,7 @@ public class MachineGun : Weapon
                         GetComponentInParent<Tag>().gameObject,
                         localdmg,
                         "normal",
-                        transform.right * 2000f,
+                        (newTarget - this.transform.position).normalized * 2000f,
                         groups);
 
                     GameObject bulletHitEffect = Instantiate(Resources.Load("BulletHitEffect", typeof(GameObject)), gpParent.transform) as GameObject;

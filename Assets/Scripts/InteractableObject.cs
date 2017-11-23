@@ -80,11 +80,9 @@ public class InteractableObject : MonoBehaviour, DamageAcceptor
             DamageAcceptor acceptor = collision.collider.GetComponent<DamageAcceptor>();
             if (acceptor != null)
             {
-                Debug.Log("relative: " + collision.relativeVelocity.magnitude + "rbd.vel: " + rbd.velocity.magnitude);
-
+                //Debug.Log("relative: " + collision.relativeVelocity.magnitude + "rbd.vel: " + rbd.velocity.magnitude);
                 if ((collision.relativeVelocity.magnitude > 15f) && ((rbd.velocity.magnitude > 5) || (rbd.angularVelocity > 120)))
                 {
-                    //Debug.Log("SmashDamage");
                     registry.damageAcceptors.doTargetDamage(acceptor, this.gameObject, damage, "normal", Vector2.zero, new List<string>());
                     if(explodeOnSmash)
                     {
