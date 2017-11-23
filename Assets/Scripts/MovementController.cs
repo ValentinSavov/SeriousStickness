@@ -14,6 +14,7 @@ public class MovementController : MonoBehaviour
     public bool grounded = false;
     [Tooltip("-1 = left, 1 = right, 0 = no touch")]
     public float sideTouch = 0;
+    
     bool wantToJumpDown = false;
 
     public LayerMask layersToSense;
@@ -48,6 +49,7 @@ public class MovementController : MonoBehaviour
 
             if(sideTouch == Mathf.Sign(horisontalSpeed))
             {
+                PushColliders();
                 velocity.x = 0;
             }
             //this.transform.Translate(new Vector3(horisontalSpeed * moveSpeed * Time.fixedDeltaTime, 0,0));
@@ -124,6 +126,9 @@ public class MovementController : MonoBehaviour
         rbd.AddForce((Vector2)(finalVelocity * rbd.mass));
     }
     */
+
+    Collider2D[] colsR;
+    Collider2D[] colsL;
     void UpdateSenses()
     {
         grounded = false;
@@ -132,18 +137,43 @@ public class MovementController : MonoBehaviour
             grounded = true;
         }
 
+        colsR = Physics2D.OverlapCapsuleAll(transform.position + new Vector3(mainCollider.size.x / 2, mainCollider.size.y / 2, 0), new Vector2(mainCollider.size.x, mainCollider.size.y * 0.8f), CapsuleDirection2D.Vertical, 0f, layersToSense);
+        colsL = Physics2D.OverlapCapsuleAll(transform.position + new Vector3(-(mainCollider.size.x / 2), mainCollider.size.y / 2, 0), new Vector2(mainCollider.size.x, mainCollider.size.y * 0.8f), CapsuleDirection2D.Vertical, 0f, layersToSense);
+        
         sideTouch = 0f;
         //check right touch
-        if (Physics2D.OverlapCapsule(transform.position + new Vector3(mainCollider.size.x / 2, mainCollider.size.y / 2, 0), new Vector2(mainCollider.size.x, mainCollider.size.y*0.8f), CapsuleDirection2D.Vertical, 0f, layersToSense) != null)
-        //if (Physics2D.OverlapCircle(transform.position + new Vector3(mainCollider.size.x / 2, mainCollider.size.y / 4, 0), mainCollider.size.x / 4, layersToSense) != null)
+        if(colsR.Length != 0)
         {
             sideTouch += 1;
         }
         //check left touch
-        if (Physics2D.OverlapCapsule(transform.position + new Vector3(-(mainCollider.size.x / 2), mainCollider.size.y / 2, 0), new Vector2(mainCollider.size.x, mainCollider.size.y * 0.8f), CapsuleDirection2D.Vertical, 0f, layersToSense) != null)
-        //if (Physics2D.OverlapCircle(transform.position + new Vector3(-(mainCollider.size.x/2), mainCollider.size.y/4, 0), mainCollider.size.x/4, layersToSense) != null)
+        if (colsL.Length != 0)
         {
             sideTouch -= 1;
+        }
+    }
+
+    void PushColliders()
+    {
+        if (sideTouch == 1)
+        {
+            foreach (Collider2D col in colsR)
+            {
+                if (col.GetComponent<InteractableObject>())
+                {
+                    col.GetComponent<Rigidbody2D>().velocity += new Vector2(rbd.velocity.x / 4, 0);
+                }
+            }
+        }
+        if(sideTouch == -1)
+        {
+            foreach (Collider2D col in colsL)
+            {
+                if (col.GetComponent<InteractableObject>())
+                {
+                    col.GetComponent<Rigidbody2D>().velocity += new Vector2(rbd.velocity.x / 4, 0);
+                }
+            }
         }
     }
 

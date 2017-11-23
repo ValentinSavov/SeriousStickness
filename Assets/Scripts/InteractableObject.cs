@@ -37,6 +37,7 @@ public class InteractableObject : MonoBehaviour, DamageAcceptor
     {
         if (destroyOnHit)
         {
+            Invoke("Explode", 0f);
             Destroy(this.gameObject);
         }
         else
@@ -54,25 +55,18 @@ public class InteractableObject : MonoBehaviour, DamageAcceptor
     {
         if (effectOnDestroy != null)
         {
-            //if (explodeOnDestroy)
-            {
-                registry.damageAcceptors.doAreaDamage(this.gameObject, (Vector2)transform.position, damageRadius, damage, "normal", knockback);
+            registry.damageAcceptors.doAreaDamage(this.gameObject, (Vector2)transform.position, damageRadius, damage, "normal", knockback);
 
-                GameObject effect = Instantiate(effectOnDestroy, gpParent.transform);
-                effect.transform.position = this.transform.position;
-                effect.transform.localScale *= damageRadius;
-                Destroy(effect, 2f);
-            }
+            GameObject effect = Instantiate(effectOnDestroy, gpParent.transform);
+            effect.transform.position = this.transform.position;
+            effect.transform.localScale *= damageRadius;
+            Destroy(effect, 2f);
         }
     }
 
     void OnDestroy()
     {
-        if (registry != null)
-        {
-            if (explodeOnDestroy)  Explode();
-            registry.damageAcceptors.RemoveDamageAcceptor(this);
-        }
+        registry.damageAcceptors.RemoveDamageAcceptor(this);
     }
 
     void OnCollisionEnter2D(Collision2D collision)
@@ -86,12 +80,15 @@ public class InteractableObject : MonoBehaviour, DamageAcceptor
             DamageAcceptor acceptor = collision.collider.GetComponent<DamageAcceptor>();
             if (acceptor != null)
             {
-                if ((collision.relativeVelocity.magnitude > 5f) && ((rbd.velocity.magnitude > 1) || (rbd.angularVelocity > 1)))
+                Debug.Log("relative: " + collision.relativeVelocity.magnitude + "rbd.vel: " + rbd.velocity.magnitude);
+
+                if ((collision.relativeVelocity.magnitude > 15f) && ((rbd.velocity.magnitude > 5) || (rbd.angularVelocity > 120)))
                 {
                     //Debug.Log("SmashDamage");
-                    //registry.damageAcceptors.doTargetDamage(acceptor, this.gameObject, 1000f, "", Vector2.zero, new List<string>());
+                    registry.damageAcceptors.doTargetDamage(acceptor, this.gameObject, damage, "normal", Vector2.zero, new List<string>());
                     if(explodeOnSmash)
                     {
+                        Invoke("Explode", 0f);
                         Destroy(this.gameObject);
                     }
                 }

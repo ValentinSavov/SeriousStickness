@@ -19,6 +19,7 @@ public class BotControl : MonoBehaviour, DamageAcceptor
     Registry registry;
     GameObject target;
     Animator anim;
+    GameObject stickBody;
 
     FSM stateMachine;
     FSM.FSMState idleState; // finds something to do
@@ -36,6 +37,7 @@ public class BotControl : MonoBehaviour, DamageAcceptor
         stats = GetComponent<StickStats>();
         movement = GetComponent<MovementController>();
         anim = GetComponent<Animator>();
+        stickBody = transform.Find("StickBody").gameObject;
         registry = GameObject.FindObjectOfType<Registry>().GetComponent<Registry>();
         movement.moveSpeed += Random.Range(-(movement.moveSpeed *0.2f), movement.moveSpeed *0.2f);
         registry.damageAcceptors.AddDamageAcceptor(this);
@@ -352,12 +354,14 @@ public class BotControl : MonoBehaviour, DamageAcceptor
                 if (weap != null)
                 {
                     weap.gameObject.transform.parent = gpParent.transform;
+                    weap.Disarm();
                     weap.transform.parent = gpParent.transform;
                 }
 
                 this.enabled = false;
                 registry.damageAcceptors.RemoveDamageAcceptor(this);
                 SwitchToRagdoll();
+                
                 AddForceToRandomBones(argInArgs.knockback * 1000);
 
                 Destroy(this.gameObject);
@@ -428,20 +432,23 @@ public class BotControl : MonoBehaviour, DamageAcceptor
                 }
             }
         }
-        GameObject stickBody = transform.Find("StickBody").gameObject;
         stickBody.transform.SetParent(gpParent.transform);
         Destroy(stickBody, 10f);
         /////
     }
     void AddForceToRandomBones(Vector2 knockback)
     {
-        Rigidbody2D[] rbs = GetComponentsInChildren<Rigidbody2D>();
+        Rigidbody2D[] rbs = stickBody.GetComponentsInChildren<Rigidbody2D>();
         if (rbs != null)
         {
             Debug.Log(knockback);
-            int rand1 = 0;//Random.Range(0, rbs.Length);
+            int rand1 = Random.Range(0, rbs.Length);
+            int rand2 = Random.Range(0, rbs.Length);
+            int rand3 = Random.Range(0, rbs.Length);
             //rbs[rand1].velocity = new Vector2(0, 0);
-            rbs[rand1].AddForce(knockback);
+            rbs[rand1].AddForce(knockback / 3000);
+            rbs[rand2].AddForce(knockback / 4000);
+            rbs[rand3].AddForce(knockback / 5000);
         }
     }
     #endregion

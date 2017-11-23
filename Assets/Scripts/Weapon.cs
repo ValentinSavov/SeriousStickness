@@ -24,6 +24,7 @@ public abstract class Weapon : MonoBehaviour
     {
         Disarm();
     }
+
     public abstract void Arm();
     public abstract void Disarm();
 
