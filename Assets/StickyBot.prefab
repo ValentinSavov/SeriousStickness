@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 50837298898871678}
   - component: {fileID: 61018750119842370}
   - component: {fileID: 233121567838225778}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: RLeg
   m_TagString: Untagged
   m_Icon: {fileID: -3114416830163030229, guid: 0000000000000000d000000000000000, type: 0}
@@ -38,7 +38,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4497994434240818}
   - component: {fileID: 212197909790411162}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Renderer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -53,7 +53,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4149057252035838}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: RFoot
   m_TagString: Untagged
   m_Icon: {fileID: -3114416830163030229, guid: 0000000000000000d000000000000000, type: 0}
@@ -69,7 +69,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4157251999738844}
   - component: {fileID: 212295506846797544}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Renderer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -85,7 +85,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4747054943237504}
   - component: {fileID: 212318043306474514}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Renderer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -101,7 +101,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4401756667491116}
   - component: {fileID: 212150874035825404}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Renderer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -119,7 +119,7 @@ GameObject:
   - component: {fileID: 50037548809456268}
   - component: {fileID: 61090537304745434}
   - component: {fileID: 233362065816661042}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: RForeArm
   m_TagString: Untagged
   m_Icon: {fileID: -3114416830163030229, guid: 0000000000000000d000000000000000, type: 0}
@@ -137,7 +137,7 @@ GameObject:
   - component: {fileID: 50137185508036468}
   - component: {fileID: 61093143945106314}
   - component: {fileID: 233671689410281706}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: RUpArm
   m_TagString: Untagged
   m_Icon: {fileID: -3114416830163030229, guid: 0000000000000000d000000000000000, type: 0}
@@ -153,7 +153,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4726044424303216}
   - component: {fileID: 212716705721873938}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Renderer (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -169,7 +169,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4307434015088292}
   - component: {fileID: 212865310674670558}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Renderer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -203,7 +203,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4899850588475972}
   - component: {fileID: 212457684429120756}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Renderer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -236,7 +236,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4528248220535744}
   - component: {fileID: 212727218769277142}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Renderer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -252,7 +252,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4412589110430148}
   - component: {fileID: 212701317483428116}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Renderer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -270,7 +270,7 @@ GameObject:
   - component: {fileID: 50431476778046544}
   - component: {fileID: 61193134808468360}
   - component: {fileID: 233775202112566194}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: RUpLeg
   m_TagString: Untagged
   m_Icon: {fileID: -3114416830163030229, guid: 0000000000000000d000000000000000, type: 0}
@@ -288,7 +288,7 @@ GameObject:
   - component: {fileID: 50174604787977440}
   - component: {fileID: 61308047224223398}
   - component: {fileID: 233647450081113242}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: LUpLeg
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -304,7 +304,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4106330177296540}
   - component: {fileID: 212851075410516968}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Renderer (8)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -320,7 +320,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4265610968460370}
   - component: {fileID: 212531222693008016}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Renderer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -353,7 +353,8 @@ GameObject:
   - component: {fileID: 4741284241714284}
   - component: {fileID: 50938895320588774}
   - component: {fileID: 61446434140718514}
-  m_Layer: 9
+  - component: {fileID: 114985387089231512}
+  m_Layer: 0
   m_Name: StickBody
   m_TagString: Untagged
   m_Icon: {fileID: -3114416830163030229, guid: 0000000000000000d000000000000000, type: 0}
@@ -368,7 +369,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4495825346624518}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: LFoot
   m_TagString: Untagged
   m_Icon: {fileID: -3114416830163030229, guid: 0000000000000000d000000000000000, type: 0}
@@ -386,7 +387,7 @@ GameObject:
   - component: {fileID: 50399676553940720}
   - component: {fileID: 61566571948459822}
   - component: {fileID: 233318887964747598}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: LForeArm
   m_TagString: Untagged
   m_Icon: {fileID: -3114416830163030229, guid: 0000000000000000d000000000000000, type: 0}
@@ -402,7 +403,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4690373175803896}
   - component: {fileID: 212160820035694908}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Renderer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -417,7 +418,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4637747864313590}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: RHand
   m_TagString: Untagged
   m_Icon: {fileID: -3114416830163030229, guid: 0000000000000000d000000000000000, type: 0}
@@ -435,7 +436,7 @@ GameObject:
   - component: {fileID: 50917916852268234}
   - component: {fileID: 61350681397510992}
   - component: {fileID: 233910714109770842}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: LLeg
   m_TagString: Untagged
   m_Icon: {fileID: -3114416830163030229, guid: 0000000000000000d000000000000000, type: 0}
@@ -450,7 +451,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4675025443920502}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: LHand
   m_TagString: Untagged
   m_Icon: {fileID: -3114416830163030229, guid: 0000000000000000d000000000000000, type: 0}
@@ -468,7 +469,7 @@ GameObject:
   - component: {fileID: 50653872777638422}
   - component: {fileID: 61523513509418800}
   - component: {fileID: 233424051802461760}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: LUpArm
   m_TagString: Untagged
   m_Icon: {fileID: -3114416830163030229, guid: 0000000000000000d000000000000000, type: 0}
@@ -486,7 +487,7 @@ GameObject:
   - component: {fileID: 50161831750305446}
   - component: {fileID: 58030067827671770}
   - component: {fileID: 233091123532126354}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Head
   m_TagString: Untagged
   m_Icon: {fileID: -3114416830163030229, guid: 0000000000000000d000000000000000, type: 0}
@@ -502,7 +503,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4584043835471306}
   - component: {fileID: 212512189146729270}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Renderer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -543,7 +544,7 @@ GameObject:
   - component: {fileID: 50123453839126464}
   - component: {fileID: 61264070398588162}
   - component: {fileID: 233874988531546062}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: UpBody
   m_TagString: Untagged
   m_Icon: {fileID: -3114416830163030229, guid: 0000000000000000d000000000000000, type: 0}
@@ -576,7 +577,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4825814186976562}
   - component: {fileID: 212325484557949736}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Renderer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -592,7 +593,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4308008767665406}
   - component: {fileID: 212601635051390694}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Renderer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -608,7 +609,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4073635075170216}
   - component: {fileID: 212694422226027972}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Renderer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -624,7 +625,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4251536700670900}
   - component: {fileID: 212962889115370424}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Renderer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1809,6 +1810,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   range: 15
   startWeapon: MachineGun
+--- !u!114 &114985387089231512
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1408916149793458}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97fb8b7f399c75f4fa9198d3b3486940, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114989889615869700
 MonoBehaviour:
   m_ObjectHideFlags: 1

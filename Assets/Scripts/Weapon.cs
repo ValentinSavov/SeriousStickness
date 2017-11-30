@@ -11,22 +11,10 @@ public abstract class Weapon : MonoBehaviour
     public List<string> groups = new List<string>();
     public float damage = 100f;
 
-    public Weapon()
-    {
-        
-    }
+    public Weapon(){}
 
-    void OnEnable()
-    {
-        Arm();
-    }
-    void OnDisable()
-    {
-        Disarm();
-    }
     public abstract void Arm();
     public abstract void Disarm();
 
-    //public abstract bool isDone();
     public abstract bool Engage(Vector3 newTarget);
 }

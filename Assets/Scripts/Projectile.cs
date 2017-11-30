@@ -4,6 +4,7 @@ using System.Collections.Generic;
 public class Projectile : MonoBehaviour 
 {
 	public float damage = 100;
+    public float explosionArea = 5f;
 	public float speed = 5f;
 	public float distance = 100f;
 	Vector3 startPosition;
@@ -35,7 +36,9 @@ public class Projectile : MonoBehaviour
         else if ( (other.gameObject.GetComponent<BorderTag>() != null) 
             || (other.gameObject.GetComponentInParent<DamageAcceptor>() != null))
         {
-            registry.damageAcceptors.doAreaDamage(parent, (Vector2)transform.position, 5f, damage, "normal", 5000f);
+            registry.damageAcceptors.doTargetDamage(other.gameObject.GetComponentInParent<DamageAcceptor>(), parent, damage, "normal",
+                (transform.right + (other.transform.position - transform.position).normalized) * 5000f, new List<string>());
+            registry.damageAcceptors.doAreaDamage(parent, (Vector2)transform.position, explosionArea, damage, "normal", 5000f);
             Explode();
         }
     }
@@ -44,6 +47,7 @@ public class Projectile : MonoBehaviour
     {
         GameObject explosion = Instantiate(Resources.Load("Explosion", typeof(GameObject)), this.transform.position, Quaternion.identity) as GameObject;
         explosion.transform.parent = this.transform.parent;
+        explosion.transform.localScale *= explosionArea;
         Destroy(this.gameObject);
         Destroy(explosion, 2f);
     }

@@ -27,7 +27,7 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
         cursor = GameObject.FindObjectOfType<CursorTag>().gameObject;
         registry = GameObject.FindObjectOfType<Registry>().GetComponent<Registry>();
         registry.damageAcceptors.AddDamageAcceptor(this);
-        slevel = GameObject.FindObjectOfType<SticknessLevel>() as SticknessLevel;
+        slevel = GetComponent<SticknessLevel>();
 
 
         gpParent = GameObject.Find("GeneralPurposeParent");
@@ -132,7 +132,11 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
     float healTimeCounter = 0;
     void SticknessLevelResponse()
     {
-        if (slevel.level < 10)
+        if(slevel.level <= 0)
+        {
+
+        }
+        else if (slevel.level < 10)
         {
             //DamageAcceptorRegistry.DamageArgs args = new DamageAcceptorRegistry.DamageArgs();
             //args.dmg = Random.Range(2, 7);
@@ -169,13 +173,20 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
         }
     }
 
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if(other.GetComponent<Checkpoint>() != null)
+        {
+            slevel.Restart();
+        }
+    }
     #region damage stuff
 
     public void ReportKill(DamageAcceptor killed)
     {
         slevel.IncreaseLevel(Random.Range(10,15));
         GameObject popup = Instantiate(Resources.Load("KillPopup", typeof(GameObject)),
-                    ((Component)killed).gameObject.transform.position + new Vector3(0, ((Component)killed).gameObject.GetComponent<CapsuleCollider2D>().size.y, 0), Quaternion.identity)
+                    ((Component)killed).gameObject.transform.position + Vector3.up*2, Quaternion.identity)
                     as GameObject;
         popup.transform.parent = gpParent.transform;
     }
@@ -184,8 +195,11 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
     {
         if (damageSourcesInCooldown.Find(x => x.source == argInArgs.source) == null)
         {
+            if(stats.isDead)
+            {
+                return;
+            }
             float locDamage = argInArgs.dmg;
-            //argInArgs.cbIsAccepted = true;
 
             damageSourcesInCooldown.Add(new SourcesAndCooldowns(argInArgs.source));
 
@@ -223,14 +237,28 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
                     this.enabled = false;
                     gear.enabled = false;
                     if (anim) { anim.enabled = false; }
-                    GameObject.FindObjectOfType<SceneControl>().Invoke("Die", 1f);
+                    
+                    Ragdoll ragdoll = GetComponentInChildren<Ragdoll>();
+                    //if (ragdoll != null)
+                    {
+                        ragdoll.Activate();
+                        ragdoll.Push(argInArgs.knockback);
+                    }
+                    registry.damageAcceptors.RemoveDamageAcceptor(this);
+
+                    //Destroy(this);
+                    SceneControl sceneControl = GameObject.FindObjectOfType<SceneControl>();
+                    if (sceneControl != null)
+                    {
+
+                        sceneControl.Invoke("Die", 3f);
+                    }
                 }
             }
 
             if (argInArgs.knockback != new Vector2(0, 0))
             {
                 // vsa do something for knockback
-                //firstPersonControllerRef.inertia = argInArgs.knockback;
             }
         }
 
@@ -270,5 +298,4 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
         damageSourcesInCooldown = newList;
     }
     #endregion
-    
 }

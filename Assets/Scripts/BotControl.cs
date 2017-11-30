@@ -21,17 +21,18 @@ public class BotControl : MonoBehaviour, DamageAcceptor
     Animator anim;
 
     FSM stateMachine;
-    FSM.FSMState idleState; // finds something to do
-    FSM.FSMState chaseInRangeState; // moves to a target
+    FSM.FSMState idleState;
+    FSM.FSMState chaseInRangeState;
     
     float direction = 1;
     float changeDirectionCooldown = 5f;
-
     float previousEngageTime = 0f;
-
+    float idleTime = 0f;
+    int autoShotsCounter = 0;
+    int nextAutoShotsCount = 10;
+    
     void Start ()
 	{
-        //Debug.Log("BotStart");
         gpParent = GameObject.Find("GeneralPurposeParent");
         stats = GetComponent<StickStats>();
         movement = GetComponent<MovementController>();
@@ -69,7 +70,7 @@ public class BotControl : MonoBehaviour, DamageAcceptor
     }
 
 
-    float idleTime = 0f;
+    
     void createIdleState()
     {
         idleState = (fsm, gameObj) => 
@@ -111,7 +112,6 @@ public class BotControl : MonoBehaviour, DamageAcceptor
             }
         };
     }
-
     void createChaseInRangeState()
     {
         chaseInRangeState = (fsm, gameObj) =>
@@ -209,9 +209,7 @@ public class BotControl : MonoBehaviour, DamageAcceptor
             }
         };
     }
-
-    int autoShotsCounter = 0;
-    int nextAutoShotsCount = 10;
+    
     void Attack()
     {
         Weapon weap = GetComponentInChildren<Weapon>();
@@ -256,7 +254,6 @@ public class BotControl : MonoBehaviour, DamageAcceptor
         }
         return false;
     }
-
     bool IsWhereToJumpUp()
     {
         bool found = false;
@@ -287,37 +284,13 @@ public class BotControl : MonoBehaviour, DamageAcceptor
     }
 
 
-    #region weapon stuff
-    /*void OnTriggerStay2D(Collider2D other)
-    {
-        if ( (other.gameObject.GetComponent<Weapon>() != null) && (!stats.isDead) && (GetComponentInChildren<Weapon>() == null) )
-        {
-            if (other.gameObject.GetComponent<Weapon>().GetComponentInParent<WeaponSpot>() == null)
-            {
-                //Debug.Log("Collide with weapon");
-                //take weapon
-                other.transform.parent = this.transform;
-                other.transform.parent = GetComponentInChildren<WeaponSpot>().transform;
-                other.transform.localPosition = Vector3.zero;
-                other.transform.localRotation = Quaternion.identity;
-                other.transform.localScale = new Vector3(1, 1, 1);
-                other.gameObject.GetComponent<Weapon>().groups = groups;
-
-                //GetComponent<GoapAgent>().ResetAgent();
-            }
-        }
-    }*/
-    #endregion 
-
     #region  DamageAcceptor
     public void acceptDamage(DamageAcceptorRegistry.DamageArgs argInArgs)
     {
         if (stats.isDead)
         {
-            //AddForceToRandomBones(argInArgs.knockback);
             return;
         }
-        //Debug.Log(this.gameObject.name);
         float locDamage = argInArgs.dmg;
         if (stats.currentArmorPoints > 0)
         {
@@ -351,24 +324,15 @@ public class BotControl : MonoBehaviour, DamageAcceptor
                 Weapon weap = GetComponentInChildren<Weapon>();
                 if (weap != null)
                 {
-                    weap.gameObject.transform.parent = gpParent.transform;
                     weap.transform.parent = gpParent.transform;
+                    Destroy(weap.gameObject, 4f);
                 }
-
-                this.enabled = false;
-                registry.damageAcceptors.RemoveDamageAcceptor(this);
-                SwitchToRagdoll();
-                AddForceToRandomBones(argInArgs.knockback * 1000);
-
-                Destroy(this.gameObject);
-                //Animator anim = GetComponent<Animator>();
-                //if (anim) anim.enabled = false;
-
-                
-                
+                Ragdoll ragdoll = GetComponentInChildren<Ragdoll>();
+                ragdoll.Activate();
+                ragdoll.Push(argInArgs.knockback);
+                Destroy(this.gameObject, 0.1f);
             }
         }
-
         GameObject healthbar = transform.Find("HealthBar").gameObject;
         if (healthbar != null)
         {
@@ -379,70 +343,6 @@ public class BotControl : MonoBehaviour, DamageAcceptor
     void OnDestroy()
     {
         registry.damageAcceptors.RemoveDamageAcceptor(this);
-    }
-    #endregion
-
-    #region ragdoll stuff
-    void SwitchToRagdoll()
-    {
-        this.enabled = false;
-        Destroy(movement);
-        if (anim != null) anim.enabled = false;
-        //remove the main colliders and rbs
-        Rigidbody2D rbd = GetComponent<Rigidbody2D>();
-        if (rbd)
-        {
-            rbd.isKinematic = true;
-            Destroy(rbd);
-        }
-        Collider2D[] colls = GetComponents<Collider2D>();
-        for (int i = 0; i < colls.Length; i++)
-        {
-            //if(colls[i].isTrigger == false)
-            {
-                colls[i].enabled = false;
-                Destroy(colls[i]);
-                //break;
-            }
-        }
-        //////
-        
-
-
-
-        //activate child colliders and rbs
-        Rigidbody2D[] rbs = GetComponentsInChildren<Rigidbody2D>();
-        foreach (Rigidbody2D rb in rbs)
-        {
-            //rb.transform.SetParent(this.transform);
-            if (rb.isKinematic == true)
-            {
-                rb.isKinematic = false;
-                Collider2D col = rb.GetComponent<Collider2D>();
-                if (col != null)
-                {
-                    if (col.isTrigger == true)
-                    {
-                        col.isTrigger = false;
-                    }
-                }
-            }
-        }
-        GameObject stickBody = transform.Find("StickBody").gameObject;
-        stickBody.transform.SetParent(gpParent.transform);
-        Destroy(stickBody, 10f);
-        /////
-    }
-    void AddForceToRandomBones(Vector2 knockback)
-    {
-        Rigidbody2D[] rbs = GetComponentsInChildren<Rigidbody2D>();
-        if (rbs != null)
-        {
-            Debug.Log(knockback);
-            int rand1 = 0;//Random.Range(0, rbs.Length);
-            //rbs[rand1].velocity = new Vector2(0, 0);
-            rbs[rand1].AddForce(knockback);
-        }
     }
     #endregion
 }
