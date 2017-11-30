@@ -35,10 +35,15 @@ public class InteractableObject : MonoBehaviour, DamageAcceptor
 
     public void acceptDamage(DamageAcceptorRegistry.DamageArgs argInArgs)
     {
-        if (destroyOnHit)
+        if (destroyOnHit && (argInArgs.dmg > 2))
         {
             Invoke("Explode", 0f);
             Destroy(this.gameObject);
+            DamageProvider dp = argInArgs.source.GetComponent<DamageProvider>();
+            if (dp != null)
+            {
+                dp.ReportKill(this);
+            }
         }
         else
         {

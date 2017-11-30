@@ -117,7 +117,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 30
+  m_Mass: 40
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 3
@@ -185,12 +185,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   destroyOnHit: 1
   explodeOnDestroy: 1
-  damage: 50
+  damage: 30
   damageRadius: 8
   knockback: 30000
   effectOnDestroy: {fileID: 139366, guid: b185c1a9cf067374586d095111b15bd1, type: 2}
   smashOnCollision: 1
-  explodeOnSmash: 1
+  explodeOnSmash: 0
 --- !u!212 &212816682851023466
 SpriteRenderer:
   m_ObjectHideFlags: 1

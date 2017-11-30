@@ -330,7 +330,7 @@ public class BotControl : MonoBehaviour, DamageAcceptor
                 Ragdoll ragdoll = GetComponentInChildren<Ragdoll>();
                 ragdoll.Activate();
                 ragdoll.Push(argInArgs.knockback);
-                Destroy(this.gameObject);
+                Destroy(this.gameObject, 0.1f);
             }
         }
         GameObject healthbar = transform.Find("HealthBar").gameObject;

@@ -1546,6 +1546,7 @@ GameObject:
   - component: {fileID: 664896319}
   - component: {fileID: 664896320}
   - component: {fileID: 664896321}
+  - component: {fileID: 664896322}
   m_Layer: 8
   m_Name: StickBody
   m_TagString: Untagged
@@ -1617,6 +1618,17 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.15, y: 0.3}
   m_EdgeRadius: 0
+--- !u!114 &664896322
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 664896318}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97fb8b7f399c75f4fa9198d3b3486940, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &689837381
 GameObject:
   m_ObjectHideFlags: 0
@@ -2686,7 +2698,6 @@ GameObject:
   - component: {fileID: 1429558404}
   - component: {fileID: 1429558406}
   - component: {fileID: 1429558405}
-  - component: {fileID: 1429558407}
   m_Layer: 0
   m_Name: SticknessLevel
   m_TagString: Untagged
@@ -2755,19 +2766,6 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1429558403}
---- !u!114 &1429558407
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1429558403}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b6600a542c11b5946a005aeee76dd269, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  level: 100
-  decreaseRate: 3
 --- !u!1 &1518642017
 GameObject:
   m_ObjectHideFlags: 0
@@ -4080,11 +4078,12 @@ GameObject:
   - component: {fileID: 2137443440}
   - component: {fileID: 2137443439}
   - component: {fileID: 2137443436}
+  - component: {fileID: 2137443444}
   - component: {fileID: 2137443438}
   - component: {fileID: 2137443437}
+  - component: {fileID: 2137443434}
   - component: {fileID: 2137443443}
   - component: {fileID: 2137443435}
-  - component: {fileID: 2137443434}
   m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
@@ -4144,11 +4143,11 @@ MonoBehaviour:
   - name: RailGun
     weaponGO: {fileID: 0}
     weaponUIGO: {fileID: 0}
-    bullets: 100
+    bullets: 50
   - name: MachineGun
     weaponGO: {fileID: 0}
     weaponUIGO: {fileID: 0}
-    bullets: 100
+    bullets: 400
   selectedWeapon: 0
 --- !u!95 &2137443437
 Animator:
@@ -4228,7 +4227,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2137443433}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1393.6, y: 108.8, z: 0}
+  m_LocalPosition: {x: 1380.4, y: 105.8, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 387257860}
@@ -4257,6 +4256,19 @@ Rigidbody2D:
   m_SleepingMode: 0
   m_CollisionDetection: 1
   m_Constraints: 4
+--- !u!114 &2137443444
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2137443433}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6600a542c11b5946a005aeee76dd269, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  level: 0
+  decreaseRate: 3
 --- !u!1 &2137788537
 GameObject:
   m_ObjectHideFlags: 0

@@ -43,7 +43,7 @@ public class RailGun : Weapon
 
             previousShotTime = Time.time;
             audioSource.Play();
-            RaycastHit2D[] hits = Physics2D.RaycastAll(positions[0], positions[1] - positions[0]);
+            RaycastHit2D[] hits = Physics2D.RaycastAll(positions[0], positions[1] - positions[0], range);
 
             //lazer effect
             /*GameObject lazer =*/ Instantiate(Resources.Load("Lazer", typeof(GameObject)),

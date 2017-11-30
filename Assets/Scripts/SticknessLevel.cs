@@ -6,19 +6,18 @@ public class SticknessLevel : MonoBehaviour
 {
     public int level = 50;
 
-    [Tooltip("points per secomd. 100 points is max level")]
+    [Tooltip("points per second. 100 points is max level")]
     public int decreaseRate = 5;
     Image amountImage;
 
 	void Awake ()
     {
-        amountImage = transform.Find("Level").GetComponent<Image>();
+        amountImage = GameObject.Find("UI").transform.Find("SticknessLevel").transform.Find("Level").GetComponent<Image>();
         InvokeRepeating("AutoDecrease", 1, 1);
     }
 	
 	void Update ()
     {
-
         amountImage.fillAmount = level / 100f;
 	}
 
@@ -38,6 +37,11 @@ public class SticknessLevel : MonoBehaviour
     {
         level += amount;
         if (level > 100) level = 100;
+    }
+
+    public void Restart()
+    {
+        level = 100;
     }
 
     void OnDestroy()

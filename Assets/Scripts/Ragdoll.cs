@@ -47,8 +47,7 @@ public class Ragdoll : MonoBehaviour, DamageAcceptor
             }
         }
         transform.SetParent(gpParent.transform);
-        Destroy(this.gameObject, 30f);
-        /////
+        Destroy(this.gameObject, 10f);
     }
 
     public void Push(Vector2 knockback)
