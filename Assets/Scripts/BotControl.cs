@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 
-public class BotControl : MonoBehaviour, DamageAcceptor
+public class BotControl : MonoBehaviour, DamageAcceptor, DamageProvider
 {
     BotControl()
     {
@@ -132,10 +132,10 @@ public class BotControl : MonoBehaviour, DamageAcceptor
                     }
                     lookAngleForAnimator *= Mathf.Sign(transform.localScale.x);
                     anim.SetFloat("LookAngle", lookAngleForAnimator);
-
-
+                    
                     //move X stuff
                     float deltaX = target.transform.position.x - this.transform.position.x;
+                    
                     if (Mathf.Abs(deltaX) > weap.range/2)
                     {
                         direction = Mathf.Sign(deltaX);
@@ -146,6 +146,10 @@ public class BotControl : MonoBehaviour, DamageAcceptor
                         else
                         {
                             //vsa CanJumpForward() or something similiar...
+                            //if(CanJumpForward(direction))
+                            {
+
+                            }
                         }
                     }
                     else if (Mathf.Abs(deltaX) < weap.range/3)
@@ -194,6 +198,10 @@ public class BotControl : MonoBehaviour, DamageAcceptor
                     else
                     {
                         //vsa CanJumpForward() or something similiar...
+                        //if (CanJumpForward(direction))
+                        {
+
+                        }
                     }
                 }
             }
@@ -282,9 +290,25 @@ public class BotControl : MonoBehaviour, DamageAcceptor
         }
         return found;
     }
-
+    bool CanJumpForward(float direction)
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            if(true == Physics2D.CircleCast(this.transform.position + (i * direction * Vector3.right), 0.5f, Vector3.down, 2f, movement.layersToSense))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 
     #region  DamageAcceptor
+
+    public void ReportKill(DamageAcceptor killed)
+    {
+
+    }
+
     public void acceptDamage(DamageAcceptorRegistry.DamageArgs argInArgs)
     {
         if (stats.isDead)
@@ -327,9 +351,11 @@ public class BotControl : MonoBehaviour, DamageAcceptor
                     weap.transform.parent = gpParent.transform;
                     Destroy(weap.gameObject, 4f);
                 }
-                Ragdoll ragdoll = GetComponentInChildren<Ragdoll>();
-                ragdoll.Activate();
-                ragdoll.Push(argInArgs.knockback);
+
+                GameObject ragdoll = Instantiate(Resources.Load("Ragdoll", typeof(GameObject)),
+                this.transform.position, Quaternion.identity, gpParent.transform) as GameObject;
+                
+                ragdoll.GetComponent<Ragdoll>().Push(argInArgs.knockback);
                 Destroy(this.gameObject, 0.1f);
             }
         }
@@ -338,7 +364,6 @@ public class BotControl : MonoBehaviour, DamageAcceptor
         {
             healthbar.transform.Find("Level").GetComponent<Image>().fillAmount = stats.currentHitPoints / stats.totalHitPoints;
         }
-
     }
     void OnDestroy()
     {

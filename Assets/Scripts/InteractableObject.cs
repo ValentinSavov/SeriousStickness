@@ -6,16 +6,16 @@ using UnityEngine;
 public class InteractableObject : MonoBehaviour, DamageAcceptor
 {
     public bool destroyOnHit = false;
-    public bool explodeOnDestroy = true;
     public float damage = 100f;
-    public float damageRadius = 5f;
+    [Tooltip("Applicable only if explodes")]
+    public float explDamageRadius = 5f;
     public float knockback = 10000f;
 
     [Tooltip("Leave it empty for no effect")]
     public GameObject effectOnDestroy;
 
     public bool smashOnCollision = false;
-    public bool explodeOnSmash = false;
+    public bool destroyOnSmash = false;
 
     GameObject gpParent;
     Registry registry;
@@ -60,11 +60,11 @@ public class InteractableObject : MonoBehaviour, DamageAcceptor
     {
         if (effectOnDestroy != null)
         {
-            registry.damageAcceptors.doAreaDamage(this.gameObject, (Vector2)transform.position, damageRadius, damage, "normal", knockback);
+            registry.damageAcceptors.doAreaDamage(this.gameObject, (Vector2)transform.position, explDamageRadius, damage, "normal", knockback);
 
             GameObject effect = Instantiate(effectOnDestroy, gpParent.transform);
             effect.transform.position = this.transform.position;
-            effect.transform.localScale *= damageRadius;
+            effect.transform.localScale *= explDamageRadius;
             Destroy(effect, 2f);
         }
     }
@@ -85,11 +85,11 @@ public class InteractableObject : MonoBehaviour, DamageAcceptor
             DamageAcceptor acceptor = collision.collider.GetComponent<DamageAcceptor>();
             if (acceptor != null)
             {
-                //Debug.Log("relative: " + collision.relativeVelocity.magnitude + "rbd.vel: " + rbd.velocity.magnitude);
+               // Debug.Log("relative: " + collision.relativeVelocity.magnitude + "rbd.vel: " + rbd.velocity.magnitude);
                 if ((collision.relativeVelocity.magnitude > 15f) && ((rbd.velocity.magnitude > 5) || (rbd.angularVelocity > 120)))
                 {
                     registry.damageAcceptors.doTargetDamage(acceptor, this.gameObject, damage, "normal", Vector2.zero, new List<string>());
-                    if(explodeOnSmash)
+                    if(destroyOnSmash)
                     {
                         Invoke("Explode", 0f);
                         Destroy(this.gameObject);

@@ -15,6 +15,8 @@ public class Ragdoll : MonoBehaviour, DamageAcceptor
         registry = GameObject.FindObjectOfType<Registry>().GetComponent<Registry>();
         groups = new List<string>();
         groups.Add("level");
+        registry.damageAcceptors.AddDamageAcceptor(this);
+        Destroy(this.gameObject, 10f);
     }
 
     void OnDestroy()
@@ -27,29 +29,6 @@ public class Ragdoll : MonoBehaviour, DamageAcceptor
         Push(argInArgs.knockback);
     }
 
-    public void Activate()
-    {
-        registry.damageAcceptors.AddDamageAcceptor(this);
-        Rigidbody2D[] rbs = GetComponentsInChildren<Rigidbody2D>();
-        foreach (Rigidbody2D rb in rbs)
-        {
-            if (rb.isKinematic == true)
-            {
-                rb.isKinematic = false;
-                Collider2D col = rb.GetComponent<Collider2D>();
-                if (col != null)
-                {
-                    if (col.isTrigger == true)
-                    {
-                        col.isTrigger = false;
-                    }
-                }
-            }
-        }
-        transform.SetParent(gpParent.transform);
-        Destroy(this.gameObject, 10f);
-    }
-
     public void Push(Vector2 knockback)
     {
         AddForceToRandomBones(knockback);
@@ -58,7 +37,7 @@ public class Ragdoll : MonoBehaviour, DamageAcceptor
     void AddForceToRandomBones(Vector2 knockback)
     {
         Rigidbody2D[] rbs = this.GetComponentsInChildren<Rigidbody2D>();
-        if (rbs != null)
+        if (rbs.Length > 2)
         {
             int rand1 = Random.Range(0, rbs.Length);
             int rand2 = Random.Range(0, rbs.Length);

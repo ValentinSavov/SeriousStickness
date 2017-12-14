@@ -132,24 +132,39 @@ public class MovementController : MonoBehaviour
     void UpdateSenses()
     {
         grounded = false;
-        if (Physics2D.OverlapPoint(transform.position - (Vector3.up * GetComponent<CapsuleCollider2D>().size.x / 10), layersToSense) != null)
+        Collider2D[] colsG = Physics2D.OverlapPointAll(transform.position - (Vector3.up * GetComponent<CapsuleCollider2D>().size.x / 10), layersToSense);
+        foreach(Collider2D col in colsG)
         {
-            grounded = true;
+            if(col.isTrigger == false)
+            {
+                grounded = true;
+            }
         }
 
         colsR = Physics2D.OverlapCapsuleAll(transform.position + new Vector3(mainCollider.size.x / 2, mainCollider.size.y / 2, 0), new Vector2(mainCollider.size.x, mainCollider.size.y * 0.8f), CapsuleDirection2D.Vertical, 0f, layersToSense);
         colsL = Physics2D.OverlapCapsuleAll(transform.position + new Vector3(-(mainCollider.size.x / 2), mainCollider.size.y / 2, 0), new Vector2(mainCollider.size.x, mainCollider.size.y * 0.8f), CapsuleDirection2D.Vertical, 0f, layersToSense);
-        
         sideTouch = 0f;
-        //check right touch
-        if(colsR.Length != 0)
+        foreach (Collider2D col in colsR)
         {
-            sideTouch += 1;
+            if(col.isTrigger == false)
+            {
+                if (!col.usedByEffector)
+                {
+                    sideTouch += 1;
+                    break;
+                }
+            }
         }
-        //check left touch
-        if (colsL.Length != 0)
+        foreach (Collider2D col in colsL)
         {
-            sideTouch -= 1;
+            if (col.isTrigger == false)
+            {
+                if (!col.usedByEffector)
+                {
+                    sideTouch -= 1;
+                    break;
+                }
+            }
         }
     }
 
@@ -159,6 +174,7 @@ public class MovementController : MonoBehaviour
         {
             foreach (Collider2D col in colsR)
             {
+                if(col)
                 if (col.GetComponent<InteractableObject>())
                 {
                     col.GetComponent<Rigidbody2D>().velocity += new Vector2(rbd.velocity.x / 4, 0);

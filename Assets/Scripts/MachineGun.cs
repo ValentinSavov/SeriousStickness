@@ -41,7 +41,9 @@ public class MachineGun : Weapon
             {
                 DamageAcceptor acceptor = hit.collider.gameObject.GetComponent<DamageAcceptor>();
 
-                if ( (hit.collider.isTrigger) || ((acceptor != null) && (acceptor == this.GetComponentInParent<DamageAcceptor>())) )
+                if ( (hit.collider.isTrigger) || 
+                    ((acceptor != null) && (acceptor == this.GetComponentInParent<DamageAcceptor>())) ||
+                    (hit.collider.usedByEffector))
                 {
                     continue;
                 }

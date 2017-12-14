@@ -25,7 +25,7 @@ public class Spawner : MonoBehaviour
 
 	void Update()
     {
-        if (transform.childCount > maxActiveSpawned)
+        if (transform.childCount >= maxActiveSpawned)
         {
             previousSpawnTime = Time.time;
         }

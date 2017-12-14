@@ -8,7 +8,7 @@ public class Projectile : MonoBehaviour
 	public float speed = 5f;
 	public float distance = 100f;
 	Vector3 startPosition;
-    public GameObject parent;
+    public GameObject damageSource;
     Registry registry;
 
 	void Start () 
@@ -25,20 +25,28 @@ public class Projectile : MonoBehaviour
 		{
 			Destroy(this.gameObject);
 		}
+        if(damageSource == null)
+        {
+            damageSource = this.gameObject;
+        }
 	}
 
 	void OnTriggerEnter2D(Collider2D other)
 	{
-        if( (other.gameObject == parent.gameObject) || (other.transform.IsChildOf(parent.transform)) )
+        if(other.gameObject == null)
+        {
+            return;
+        }
+        if( (other.gameObject == damageSource.gameObject) || (other.transform.IsChildOf(damageSource.transform)) )
         {
             return;
         }
         else if ( (other.gameObject.GetComponent<BorderTag>() != null) 
             || (other.gameObject.GetComponentInParent<DamageAcceptor>() != null))
         {
-            registry.damageAcceptors.doTargetDamage(other.gameObject.GetComponentInParent<DamageAcceptor>(), parent, damage, "normal",
+            registry.damageAcceptors.doTargetDamage(other.gameObject.GetComponentInParent<DamageAcceptor>(), damageSource, damage, "normal",
                 (transform.right + (other.transform.position - transform.position).normalized) * 5000f, new List<string>());
-            registry.damageAcceptors.doAreaDamage(parent, (Vector2)transform.position, explosionArea, damage, "normal", 5000f);
+            registry.damageAcceptors.doAreaDamage(damageSource, (Vector2)transform.position, explosionArea, damage, "normal", 5000f);
             Explode();
         }
     }

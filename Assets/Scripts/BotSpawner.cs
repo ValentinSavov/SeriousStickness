@@ -13,10 +13,12 @@ public class BotSpawner : MonoBehaviour
     public bool spawnImmediately = true;
     float previousSpawnTime;
     int spawnedCounter = 0;
+    string dinamicSpawnerID = "";
     Registry registry;
 
     void Start ()
     {
+        dinamicSpawnerID = Random.Range(0, 9999).ToString();
         registry = GameObject.FindObjectOfType<Registry>().GetComponent<Registry>();
         if (spawnImmediately)
         {
@@ -30,7 +32,7 @@ public class BotSpawner : MonoBehaviour
         if((Time.time - previousSpawnTime) >= spawnPeriod)
         {
             List<string> groups = new List<string>();
-            groups.Add(this.gameObject.name);
+            groups.Add(dinamicSpawnerID);
             if (registry.damageAcceptors.GetAcceptorsInGroup(groups).Count < maxActiveSpawned)
             {
                 Spawn();
@@ -48,7 +50,7 @@ public class BotSpawner : MonoBehaviour
         //Debug.Log("Spawned");
         spawned.GetComponent<BotControl>().startWeapon = startWeapon;
         spawned.transform.parent = this.transform;
-        spawned.GetComponent<DamageAcceptor>().groups.Add(this.gameObject.name);
+        spawned.GetComponent<DamageAcceptor>().groups.Add(dinamicSpawnerID);
         spawnedCounter++;
         if(spawnedCounter >= spawnLimit)
         {

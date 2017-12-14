@@ -42,7 +42,7 @@ public class RocketLauncher : Weapon
             previousShotTime = Time.time;
             
             proj.transform.parent = gpParent.transform;
-            proj.GetComponent<Projectile>().parent = ((Component)GetComponentInParent<DamageProvider>()).gameObject;
+            proj.GetComponent<Projectile>().damageSource = ((Component)GetComponentInParent<DamageProvider>()).gameObject;
             proj.GetComponent<Projectile>().damage = damage;
             audioSource.Play();
 

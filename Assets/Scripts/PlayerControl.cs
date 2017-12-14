@@ -132,11 +132,7 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
     float healTimeCounter = 0;
     void SticknessLevelResponse()
     {
-        if(slevel.level <= 0)
-        {
-
-        }
-        else if (slevel.level < 10)
+        if (slevel.level < 10)
         {
             //DamageAcceptorRegistry.DamageArgs args = new DamageAcceptorRegistry.DamageArgs();
             //args.dmg = Random.Range(2, 7);
@@ -165,7 +161,7 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
                     GameObject popup = Instantiate(Resources.Load("HealPopup", typeof(GameObject)),
                     this.transform.position, Quaternion.identity)
                     as GameObject;
-                    popup.GetComponent<Popup>().text = "+" + healAmount.ToString();
+                    popup.GetComponent<Popup>().text = "" + healAmount.ToString();
                     popup.transform.parent = gpParent.transform;
                 }
                 health.text = ((int)(stats.currentHitPoints)).ToString();
@@ -175,20 +171,29 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if(other.GetComponent<Checkpoint>() != null)
+        Checkpoint cp = other.GetComponent<Checkpoint>();
+        if (cp != null)
         {
-            slevel.Restart();
+            if(cp.isFirst)
+            {
+                slevel.StartDecreasing();
+            }
+            else
+            {
+                slevel.Restart();
+            }
         }
     }
+
     #region damage stuff
 
     public void ReportKill(DamageAcceptor killed)
     {
-        slevel.IncreaseLevel(Random.Range(10,15));
+        //slevel.IncreaseLevel(Random.Range(10,15));
         GameObject popup = Instantiate(Resources.Load("KillPopup", typeof(GameObject)),
-                    ((Component)killed).gameObject.transform.position + Vector3.up*2, Quaternion.identity)
+                    ((Component)killed).gameObject.transform.position + Vector3.up*2, Quaternion.identity,
+                    gpParent.transform)
                     as GameObject;
-        popup.transform.parent = gpParent.transform;
     }
 
     public void acceptDamage(DamageAcceptorRegistry.DamageArgs argInArgs)
@@ -237,13 +242,9 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
                     this.enabled = false;
                     gear.enabled = false;
                     if (anim) { anim.enabled = false; }
+
+                    //vsa ragdoll stuff here...
                     
-                    Ragdoll ragdoll = GetComponentInChildren<Ragdoll>();
-                    //if (ragdoll != null)
-                    {
-                        ragdoll.Activate();
-                        ragdoll.Push(argInArgs.knockback);
-                    }
                     registry.damageAcceptors.RemoveDamageAcceptor(this);
 
                     //Destroy(this);

@@ -24,7 +24,7 @@ GameObject:
   - component: {fileID: 50571245546935438}
   - component: {fileID: 114434822810211374}
   m_Layer: 0
-  m_Name: explosionbox
+  m_Name: TNT
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -83,6 +83,7 @@ MeshRenderer:
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -98,6 +99,7 @@ MeshRenderer:
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
+  m_StitchLightmapSeams: 0
   m_SelectedEditorRenderState: 3
   m_MinimumChartSize: 4
   m_AutoUVMaxDistance: 0.5
@@ -184,13 +186,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   destroyOnHit: 1
-  explodeOnDestroy: 1
   damage: 30
-  damageRadius: 8
+  explDamageRadius: 5
   knockback: 30000
   effectOnDestroy: {fileID: 139366, guid: b185c1a9cf067374586d095111b15bd1, type: 2}
-  smashOnCollision: 1
-  explodeOnSmash: 0
+  smashOnCollision: 0
+  destroyOnSmash: 0
 --- !u!212 &212816682851023466
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -200,6 +201,7 @@ SpriteRenderer:
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -215,6 +217,7 @@ SpriteRenderer:
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
+  m_StitchLightmapSeams: 0
   m_SelectedEditorRenderState: 0
   m_MinimumChartSize: 4
   m_AutoUVMaxDistance: 0.5
