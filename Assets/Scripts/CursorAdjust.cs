@@ -3,10 +3,12 @@ using System.Collections;
 
 public class CursorAdjust : MonoBehaviour 
 {
+    //public Transform objectiveTarget;
 	GameObject player;
 	GameObject cursorr;
+    //GameObject objectivePointer;
 
-	public enum CursorType
+    public enum CursorType
 	{
 		CircleClamp,
 		Free,
@@ -20,63 +22,23 @@ public class CursorAdjust : MonoBehaviour
 	{
 		player = GameObject.FindObjectOfType<PlayerTag>().gameObject;
 		cursorr = GameObject.FindObjectOfType<CursorTag>().gameObject;
-		UnityEngine.Cursor.visible = false;
+        //objectivePointer = transform.Find("ObjectivePointer").gameObject;
+        UnityEngine.Cursor.visible = false;
 		UnityEngine.Cursor.lockState = CursorLockMode.Confined;
 	}
 
 	Vector3 prevMousePosition;
 	Vector3 virtualPointerPosition;
 	void Update () 
-	{/*
-		if(Input.GetButtonDown("o"))
-		{
-			if(UnityEngine.Cursor.lockState == CursorLockMode.None)
-			{
-				UnityEngine.Cursor.visible = true;
-				UnityEngine.Cursor.lockState = CursorLockMode.Confined;
-			}
-			else if(UnityEngine.Cursor.lockState == CursorLockMode.Confined)
-			{
-				UnityEngine.Cursor.visible = true;
-				UnityEngine.Cursor.lockState = CursorLockMode.Locked;
-			}
-			else
-			{
-				UnityEngine.Cursor.visible = true;
-				UnityEngine.Cursor.lockState = CursorLockMode.None;
-			}
-		}*/
-		/*
-		Plane playerPlane = new Plane(new Vector3(0,0,-1), transform.position);
-		Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
-		float hitdist = 0.0f;
-
-		if (playerPlane.Raycast (ray, out hitdist)) 
-		{
-			Vector3 targetPoint = ray.GetPoint(hitdist);
-
-			Quaternion tempRot = Quaternion.FromToRotation(Vector3.right, (targetPoint - transform.position));
-
-			degreesToRotate = tempRot.eulerAngles.z;
-
-			transform.rotation = Quaternion.AngleAxis(degreesToRotate, Vector3.forward);
-		}
-		*/
-
-		switch(cursorType)
+	{
+        switch (cursorType)
 		{
 		case CursorType.CircleClamp:
 			{
 				Vector3 deltaMousePosition = (Input.mousePosition - prevMousePosition) / 20;
 				virtualPointerPosition += deltaMousePosition;
 				virtualPointerPosition = Vector3.ClampMagnitude(virtualPointerPosition, 5f);
-
 				cursorr.transform.localPosition = virtualPointerPosition;
-
-				//Quaternion tempRot = Quaternion.FromToRotation(Vector3.right, deltaMousePosition);
-				//degreesToRotate = tempRot.eulerAngles.z;
-				//transform.rotation = Quaternion.AngleAxis(degreesToRotate, Vector3.forward);
-
 				transform.position = player.transform.position;
 				prevMousePosition = Input.mousePosition;
 			}
@@ -84,11 +46,9 @@ public class CursorAdjust : MonoBehaviour
 		case CursorType.Free:
 			{
 				transform.position = player.transform.position;
-
 				Plane playerPlane = new Plane(new Vector3(0,0,-1), transform.position);
 				Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
 				float hitdist = 0.0f;
-
 				if (playerPlane.Raycast (ray, out hitdist))
 				{
 					Vector3 targetPoint = ray.GetPoint(hitdist);
@@ -97,7 +57,14 @@ public class CursorAdjust : MonoBehaviour
 			}
 			break;
 		}
-	}
+        
+        /*if (objectiveTarget != null)
+        {
+            float degreesToRotateWeapon = Quaternion.FromToRotation(Vector3.right * Mathf.Sign(transform.localScale.x), objectiveTarget.transform.position - this.transform.position).eulerAngles.z;
+            objectivePointer.transform.rotation = Quaternion.AngleAxis(degreesToRotateWeapon, Vector3.forward);
+        }*/
+    }
+
 
 
     Vector2 Rotate(Vector2 v, float degrees)
@@ -111,7 +78,4 @@ public class CursorAdjust : MonoBehaviour
         v.y = (sin * tx) + (cos * ty);
         return v;
     }
-
-
-
 }

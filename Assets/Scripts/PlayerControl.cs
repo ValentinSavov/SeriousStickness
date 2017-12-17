@@ -38,6 +38,12 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
         groups.Add("players");
         stats.currentHitPoints = stats.totalHitPoints;
         stats.currentArmorPoints = stats.totalArmorPoints;
+
+        /*GameObject startGO = GameObject.Find("StartSpot");
+        if(startGO != null)
+        {
+            this.transform.position = startGO.transform.position;
+        }*/
     }
 
     
@@ -174,11 +180,11 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
         Checkpoint cp = other.GetComponent<Checkpoint>();
         if (cp != null)
         {
-            if(cp.isFirst)
+            //if(cp.isFirst)
             {
-                slevel.StartDecreasing();
+                //slevel.StartDecreasing();
             }
-            else
+            //else
             {
                 slevel.Restart();
             }
@@ -189,7 +195,7 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
 
     public void ReportKill(DamageAcceptor killed)
     {
-        //slevel.IncreaseLevel(Random.Range(10,15));
+        slevel.IncreaseLevel(Random.Range(1,5));
         GameObject popup = Instantiate(Resources.Load("KillPopup", typeof(GameObject)),
                     ((Component)killed).gameObject.transform.position + Vector3.up*2, Quaternion.identity,
                     gpParent.transform)
@@ -251,8 +257,7 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
                     SceneControl sceneControl = GameObject.FindObjectOfType<SceneControl>();
                     if (sceneControl != null)
                     {
-
-                        sceneControl.Invoke("Die", 3f);
+                        sceneControl.Invoke("Die", 1f);
                     }
                 }
             }

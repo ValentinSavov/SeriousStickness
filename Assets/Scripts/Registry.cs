@@ -181,6 +181,7 @@ public class Trigger : MonoBehaviour
         }
         else
         {
+            
             this.Invoke("Start", 0.1f);
         }   
     }
@@ -194,8 +195,8 @@ public class Trigger : MonoBehaviour
 public abstract class Objective : MonoBehaviour
 {
     public string objectiveName;
+    
     public List<Trigger> unresolvedMandatoryTriggers = new List<Trigger>();
-    //public List<Trigger> reslovedOptionalTriggers = new List<Trigger>();
     Registry registry;
     void Start()
     {

@@ -5,22 +5,22 @@ using UnityEngine.SceneManagement;
 public class SceneControl : MonoBehaviour 
 {
     public string startScene = "MainMenu";
-    public string deadScene = "Dead";
-
-	void Start () 
+    public string deadScene = "DeadMenu";
+    public string endScene = "EndMenu";
+    void Start () 
 	{
         SceneManager.sceneLoaded += OnSceneLoaded;
         SceneManager.sceneUnloaded += OnSceneUnloaded;
         SceneManager.LoadSceneAsync(startScene, LoadSceneMode.Additive);
     }
 
-    void Update()
+    /*void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            Time.timeScale = 0;
+            
         }
-    }
+    }*/
 
     void OnSceneUnloaded(Scene scene)
     {
@@ -40,17 +40,16 @@ public class SceneControl : MonoBehaviour
         SceneManager.LoadSceneAsync("Lvl0", LoadSceneMode.Additive);
     }
 
-    public void PlayTutorial()
-    {
-        //RemoveLoadedScenes();
-        //SceneManager.LoadSceneAsync("main", LoadSceneMode.Additive);
-        //SceneManager.LoadSceneAsync("LvlTutorial", LoadSceneMode.Additive);
-    }
-    
     public void Die()
     {
         RemoveLoadedScenes();
-        SceneManager.LoadSceneAsync("Dead", LoadSceneMode.Additive);
+        SceneManager.LoadSceneAsync(deadScene, LoadSceneMode.Additive);
+    }
+
+    public void EndLevel()
+    {
+        RemoveLoadedScenes();
+        SceneManager.LoadSceneAsync(endScene, LoadSceneMode.Additive);
     }
 
     void RemoveLoadedScenes()

@@ -265,7 +265,7 @@ public class BotControl : MonoBehaviour, DamageAcceptor, DamageProvider
     bool IsWhereToJumpUp()
     {
         bool found = false;
-        RaycastHit2D[] hits = Physics2D.RaycastAll(this.transform.position + Vector3.up, Vector3.up, 7f);
+        RaycastHit2D[] hits = Physics2D.RaycastAll(this.transform.position + Vector3.up, Vector3.up, 4f);
         foreach(RaycastHit2D hit in hits)
         {
             if(hit.collider.gameObject.GetComponent<FloorTag>() != null)
@@ -279,7 +279,7 @@ public class BotControl : MonoBehaviour, DamageAcceptor, DamageProvider
     bool IsWhereToJumpDown()
     {
         bool found = false;
-        RaycastHit2D[] hits = Physics2D.RaycastAll(this.transform.position + (2*Vector3.down), Vector3.up, 15f);
+        RaycastHit2D[] hits = Physics2D.RaycastAll(this.transform.position + (2*Vector3.down), Vector3.up, 10f);
         foreach (RaycastHit2D hit in hits)
         {
             if (hit.collider.gameObject.GetComponent<FloorTag>() != null)

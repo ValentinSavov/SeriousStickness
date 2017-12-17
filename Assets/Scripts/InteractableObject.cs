@@ -37,12 +37,14 @@ public class InteractableObject : MonoBehaviour, DamageAcceptor
     {
         if (destroyOnHit && (argInArgs.dmg > 2))
         {
-            Invoke("Explode", 0f);
-            Destroy(this.gameObject);
-            DamageProvider dp = argInArgs.source.GetComponent<DamageProvider>();
-            if (dp != null)
             {
-                dp.ReportKill(this);
+                Invoke("Explode", 0f);
+                Destroy(this.gameObject);
+                DamageProvider dp = argInArgs.source.GetComponent<DamageProvider>();
+                if (dp != null)
+                {
+                    dp.ReportKill(this);
+                }
             }
         }
         else
@@ -60,7 +62,7 @@ public class InteractableObject : MonoBehaviour, DamageAcceptor
     {
         if (effectOnDestroy != null)
         {
-            registry.damageAcceptors.doAreaDamage(this.gameObject, (Vector2)transform.position, explDamageRadius, damage, "normal", knockback);
+            registry.damageAcceptors.doAreaDamage(this.gameObject, (Vector2)transform.position, explDamageRadius, damage, "demolition", knockback);
 
             GameObject effect = Instantiate(effectOnDestroy, gpParent.transform);
             effect.transform.position = this.transform.position;

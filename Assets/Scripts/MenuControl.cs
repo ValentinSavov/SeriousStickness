@@ -23,14 +23,6 @@ public class MenuControl : MonoBehaviour
         }
     }
 
-    public void OnTutorialPlay()
-    {
-        if (sceneControl != null)
-        {
-            sceneControl.PlayTutorial();
-        }
-    }
-
     public void QuitToDesktop()
     {
         Application.Quit();
