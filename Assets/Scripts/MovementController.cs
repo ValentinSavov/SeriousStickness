@@ -39,18 +39,16 @@ public class MovementController : MonoBehaviour
         if (horisontalSpeed != 0)
         {
             Vector2 velocity = rbd.velocity;
-            //if(grounded)
-            {
-                //velocity.x = 0;
-            }
 
             velocity.x = horisontalSpeed * moveSpeed;
-            //velocity.x = Mathf.Clamp(velocity.x, -moveSpeed, moveSpeed);
 
             if(sideTouch == Mathf.Sign(horisontalSpeed))
             {
-                PushColliders();
                 velocity.x = 0;
+            }
+            if(touchesInterractable)
+            {
+                velocity.x /= 2;
             }
             //this.transform.Translate(new Vector3(horisontalSpeed * moveSpeed * Time.fixedDeltaTime, 0,0));
             //rbd.MovePosition(rbd.position + new Vector2(horisontalSpeed * moveSpeed * Time.deltaTime, 0));
@@ -127,11 +125,25 @@ public class MovementController : MonoBehaviour
     }
     */
 
-    Collider2D[] colsR;
-    Collider2D[] colsL;
+    //Collider2D[] colsR;
+    //Collider2D[] colsL;
+    bool touchesInterractable = false;
+
+    struct Senses
+    {
+        bool grounded;
+        int sidetouch;
+        bool isBorder;
+        bool isPushable;
+    };
+
+    Senses senses;
+
     void UpdateSenses()
     {
+        touchesInterractable = false;
         grounded = false;
+        
         Collider2D[] colsG = Physics2D.OverlapPointAll(transform.position - (Vector3.up * GetComponent<CapsuleCollider2D>().size.x / 10), layersToSense);
         foreach(Collider2D col in colsG)
         {
@@ -141,15 +153,20 @@ public class MovementController : MonoBehaviour
             }
         }
 
-        colsR = Physics2D.OverlapCapsuleAll(transform.position + new Vector3(mainCollider.size.x / 2, mainCollider.size.y / 2, 0), new Vector2(mainCollider.size.x, mainCollider.size.y * 0.8f), CapsuleDirection2D.Vertical, 0f, layersToSense);
-        colsL = Physics2D.OverlapCapsuleAll(transform.position + new Vector3(-(mainCollider.size.x / 2), mainCollider.size.y / 2, 0), new Vector2(mainCollider.size.x, mainCollider.size.y * 0.8f), CapsuleDirection2D.Vertical, 0f, layersToSense);
+        Collider2D[] colsR = Physics2D.OverlapCapsuleAll(transform.position + new Vector3(mainCollider.size.x / 2, mainCollider.size.y / 2, 0), new Vector2(mainCollider.size.x, mainCollider.size.y * 0.8f), CapsuleDirection2D.Vertical, 0f, layersToSense);
+        Collider2D[] colsL = Physics2D.OverlapCapsuleAll(transform.position + new Vector3(-(mainCollider.size.x / 2), mainCollider.size.y / 2, 0), new Vector2(mainCollider.size.x, mainCollider.size.y * 0.8f), CapsuleDirection2D.Vertical, 0f, layersToSense);
         sideTouch = 0f;
         foreach (Collider2D col in colsR)
         {
             if(col.isTrigger == false)
             {
-                if (!col.usedByEffector)
+                if(col.GetComponent<InteractableObject>() != null)
                 {
+                    touchesInterractable = true;
+                }
+                if ((!col.usedByEffector) && (col.GetComponent<BorderTag>() != null))
+                {
+                    touchesInterractable = false;
                     sideTouch += 1;
                     break;
                 }
@@ -159,15 +176,20 @@ public class MovementController : MonoBehaviour
         {
             if (col.isTrigger == false)
             {
-                if (!col.usedByEffector)
+                if (col.GetComponent<InteractableObject>() != null)
                 {
+                    touchesInterractable = true;
+                }
+                if ((!col.usedByEffector) && (col.GetComponent<BorderTag>() != null))
+                {
+                    touchesInterractable = false;
                     sideTouch -= 1;
                     break;
                 }
             }
         }
     }
-
+    /*
     void PushColliders()
     {
         if (sideTouch == 1)
@@ -191,7 +213,7 @@ public class MovementController : MonoBehaviour
                 }
             }
         }
-    }
+    }*/
 
     // stuff for jump down
     void OnTriggerExit2D(Collider2D other)

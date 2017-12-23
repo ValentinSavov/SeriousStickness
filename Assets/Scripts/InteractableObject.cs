@@ -5,17 +5,21 @@ using UnityEngine;
 
 public class InteractableObject : MonoBehaviour, DamageAcceptor
 {
-    public bool destroyOnHit = false;
-    public float damage = 100f;
-    [Tooltip("Applicable only if explodes")]
-    public float explDamageRadius = 5f;
-    public float knockback = 10000f;
-
+    [Header("Destruction")]
+    public bool destructible = false;
+    public float hitPoints = 20f;
     [Tooltip("Leave it empty for no effect")]
-    public GameObject effectOnDestroy;
+    public GameObject effectOnDestruct;
 
-    public bool smashOnCollision = false;
-    public bool destroyOnSmash = false;
+    [Header("Explosion")]
+    public bool doAreaDamageOnDestruct = false;
+    public float damage = 50f;
+    public float damageRadius = 5f;
+    public float knockback = 10000f;
+    
+
+    //public bool smashOnCollision = false;
+    //public bool destroyOnSmash = false;
 
     GameObject gpParent;
     Registry registry;
@@ -35,22 +39,30 @@ public class InteractableObject : MonoBehaviour, DamageAcceptor
 
     public void acceptDamage(DamageAcceptorRegistry.DamageArgs argInArgs)
     {
-        if (destroyOnHit && (argInArgs.dmg > 2))
+        if (destructible)
         {
+            float locDamage = argInArgs.dmg;
+
+            if (locDamage > 0)
             {
-                Invoke("Explode", 0f);
-                Destroy(this.gameObject);
-                DamageProvider dp = argInArgs.source.GetComponent<DamageProvider>();
-                if (dp != null)
+                if (hitPoints > locDamage)
                 {
-                    dp.ReportKill(this);
+                    hitPoints -= locDamage;
+                    locDamage = 0;
+                }
+                else
+                {
+                    hitPoints = 0;
+                    Invoke("Destruct", 0.1f);
+                    DamageProvider dp = argInArgs.source.GetComponent<DamageProvider>();
+                    if (dp != null)
+                    {
+                        dp.ReportKill(this);
+                    }
                 }
             }
         }
-        else
-        {
-            Push(argInArgs.knockback);
-        }
+        Push(argInArgs.knockback);
     }
 
     public void Push(Vector2 knockback)
@@ -58,17 +70,20 @@ public class InteractableObject : MonoBehaviour, DamageAcceptor
         rbd.AddForce(knockback, ForceMode2D.Force);
     }
     
-    void Explode()
+    void Destruct()
     {
-        if (effectOnDestroy != null)
+        if(doAreaDamageOnDestruct)
         {
-            registry.damageAcceptors.doAreaDamage(this.gameObject, (Vector2)transform.position, explDamageRadius, damage, "demolition", knockback);
-
-            GameObject effect = Instantiate(effectOnDestroy, gpParent.transform);
+            registry.damageAcceptors.doAreaDamage(this.gameObject, (Vector2)transform.position, damageRadius, damage, "demolition", knockback);
+        }
+        if (effectOnDestruct != null)
+        {
+            GameObject effect = Instantiate(effectOnDestruct, gpParent.transform);
             effect.transform.position = this.transform.position;
-            effect.transform.localScale *= explDamageRadius;
+            effect.transform.localScale *= damageRadius;
             Destroy(effect, 2f);
         }
+        Destroy(this.gameObject);
     }
 
     void OnDestroy()
@@ -76,7 +91,7 @@ public class InteractableObject : MonoBehaviour, DamageAcceptor
         registry.damageAcceptors.RemoveDamageAcceptor(this);
     }
 
-    void OnCollisionEnter2D(Collision2D collision)
+    /*void OnCollisionEnter2D(Collision2D collision)
     {
         if (smashOnCollision)
         {
@@ -99,5 +114,5 @@ public class InteractableObject : MonoBehaviour, DamageAcceptor
                 }
             }
         }
-    }
+    }*/
 }

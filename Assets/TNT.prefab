@@ -67,7 +67,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1130927873838636}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 21.79, y: -4.12, z: 0}
+  m_LocalPosition: {x: 1298, y: 56.424496, z: 0}
   m_LocalScale: {x: 1.6241219, y: 1.6241213, z: 1.6241213}
   m_Children:
   - {fileID: 4655826797644568}
@@ -185,13 +185,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e22b7dd1fb37a794088f87d8d885fc2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  destroyOnHit: 1
-  damage: 30
-  explDamageRadius: 5
+  destructible: 1
+  hitPoints: 5
+  effectOnDestruct: {fileID: 139366, guid: b185c1a9cf067374586d095111b15bd1, type: 2}
+  doAreaDamageOnDestruct: 1
+  damage: 50
+  damageRadius: 5
   knockback: 30000
-  effectOnDestroy: {fileID: 139366, guid: b185c1a9cf067374586d095111b15bd1, type: 2}
-  smashOnCollision: 0
-  destroyOnSmash: 0
 --- !u!212 &212816682851023466
 SpriteRenderer:
   m_ObjectHideFlags: 1

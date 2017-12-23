@@ -351,11 +351,12 @@ public class BotControl : MonoBehaviour, DamageAcceptor, DamageProvider
                     weap.transform.parent = gpParent.transform;
                     Destroy(weap.gameObject, 4f);
                 }
-
+                Vector3 stickBodyPosition = transform.Find("StickBody").position;
                 GameObject ragdoll = Instantiate(Resources.Load("Ragdoll", typeof(GameObject)),
-                this.transform.position, Quaternion.identity, gpParent.transform) as GameObject;
+                stickBodyPosition, Quaternion.identity, gpParent.transform) as GameObject;
                 
                 ragdoll.GetComponent<Ragdoll>().Push(argInArgs.knockback);
+                this.gameObject.SetActive(false);
                 Destroy(this.gameObject, 0.1f);
             }
         }
