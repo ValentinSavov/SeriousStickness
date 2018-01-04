@@ -132,16 +132,18 @@ public class BotControl : MonoBehaviour, DamageAcceptor, DamageProvider
 
                 //move X stuff
                 float deltaX = target.transform.position.x - this.transform.position.x;
-
-                if (Mathf.Abs(deltaX) > weap.range / 2)
+                if (Mathf.Abs(deltaX) > 0.5f)
                 {
-                    direction = Mathf.Sign(deltaX);
-                    MoveSomehowTowards(direction);
-                }
-                else if (Mathf.Abs(deltaX) < weap.range / 3)
-                {
-                    direction = Mathf.Sign(-deltaX);
-                    MoveSomehowTowards(direction);
+                    if (Mathf.Abs(deltaX) > weap.range / 2)
+                    {
+                        direction = Mathf.Sign(deltaX);
+                        MoveSomehowTowards(direction);
+                    }
+                    else if (Mathf.Abs(deltaX) < weap.range / 3)
+                    {
+                        direction = Mathf.Sign(-deltaX);
+                        MoveSomehowTowards(direction);
+                    }
                 }
 
                 //move Y stuff

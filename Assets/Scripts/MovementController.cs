@@ -18,7 +18,8 @@ public class MovementController : MonoBehaviour
     bool wantToJumpDown = false;
 
     public LayerMask layersToSense;
-
+    [HideInInspector]
+    public bool canPushSideTouch = false;
     Rigidbody2D rbd;
     CapsuleCollider2D mainCollider;
     
@@ -124,8 +125,7 @@ public class MovementController : MonoBehaviour
         rbd.AddForce((Vector2)(finalVelocity * rbd.mass));
     }
     */
-
-    public bool canPushSideTouch = false;
+    
     void UpdateSenses()
     {
         canPushSideTouch = false;
