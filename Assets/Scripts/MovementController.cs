@@ -46,7 +46,7 @@ public class MovementController : MonoBehaviour
             {
                 velocity.x = 0;
             }
-            if(touchesInterractable)
+            if(canPushSideTouch)
             {
                 velocity.x /= 2;
             }
@@ -125,23 +125,10 @@ public class MovementController : MonoBehaviour
     }
     */
 
-    //Collider2D[] colsR;
-    //Collider2D[] colsL;
-    bool touchesInterractable = false;
-
-    struct Senses
-    {
-        bool grounded;
-        int sidetouch;
-        bool isBorder;
-        bool isPushable;
-    };
-
-    Senses senses;
-
+    public bool canPushSideTouch = false;
     void UpdateSenses()
     {
-        touchesInterractable = false;
+        canPushSideTouch = false;
         grounded = false;
         
         Collider2D[] colsG = Physics2D.OverlapPointAll(transform.position - (Vector3.up * GetComponent<CapsuleCollider2D>().size.x / 10), layersToSense);
@@ -162,11 +149,11 @@ public class MovementController : MonoBehaviour
             {
                 if(col.GetComponent<InteractableObject>() != null)
                 {
-                    touchesInterractable = true;
+                    canPushSideTouch = true;
                 }
                 if ((!col.usedByEffector) && (col.GetComponent<BorderTag>() != null))
                 {
-                    touchesInterractable = false;
+                    canPushSideTouch = false;
                     sideTouch += 1;
                     break;
                 }
@@ -178,44 +165,19 @@ public class MovementController : MonoBehaviour
             {
                 if (col.GetComponent<InteractableObject>() != null)
                 {
-                    touchesInterractable = true;
+                    canPushSideTouch = true;
                 }
                 if ((!col.usedByEffector) && (col.GetComponent<BorderTag>() != null))
                 {
-                    touchesInterractable = false;
+                    canPushSideTouch = false;
                     sideTouch -= 1;
                     break;
                 }
             }
         }
     }
-    /*
-    void PushColliders()
-    {
-        if (sideTouch == 1)
-        {
-            foreach (Collider2D col in colsR)
-            {
-                if(col)
-                if (col.GetComponent<InteractableObject>())
-                {
-                    col.GetComponent<Rigidbody2D>().velocity += new Vector2(rbd.velocity.x / 4, 0);
-                }
-            }
-        }
-        if(sideTouch == -1)
-        {
-            foreach (Collider2D col in colsL)
-            {
-                if (col.GetComponent<InteractableObject>())
-                {
-                    col.GetComponent<Rigidbody2D>().velocity += new Vector2(rbd.velocity.x / 4, 0);
-                }
-            }
-        }
-    }*/
 
-    // stuff for jump down
+    #region StuffForJumpDown
     void OnTriggerExit2D(Collider2D other)
     {
         if (other.gameObject.GetComponent<FloorTag>() != null)
@@ -230,6 +192,7 @@ public class MovementController : MonoBehaviour
     void OnTriggerStay2D(Collider2D other)
     {
         if (wantToJumpDown)
+        {
             if ((other.gameObject.GetComponent<FloorTag>() != null) && (other.gameObject.GetComponent<PlatformEffector2D>()))
             {
                 if (other.transform.position.y < this.transform.position.y)
@@ -240,8 +203,8 @@ public class MovementController : MonoBehaviour
                     }
                 }
             }
+        }
     }
-
     Collider2D GetCollider()
     {
         Collider2D found = null;
@@ -255,4 +218,5 @@ public class MovementController : MonoBehaviour
         }
         return found;
     }
+    #endregion
 }
