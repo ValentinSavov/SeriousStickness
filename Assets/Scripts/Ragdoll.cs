@@ -36,15 +36,16 @@ public class Ragdoll : MonoBehaviour, DamageAcceptor
 
     void AddForceToRandomBones(Vector2 knockback)
     {
+        Vector2 locKnockback = new Vector2(knockback.x / 2, knockback.y * 2);
         Rigidbody2D[] rbs = this.GetComponentsInChildren<Rigidbody2D>();
         if (rbs.Length > 2)
         {
             int rand1 = Random.Range(0, rbs.Length);
             int rand2 = Random.Range(0, rbs.Length);
             int rand3 = Random.Range(0, rbs.Length);
-            rbs[rand1].AddForce(knockback / 3);
-            rbs[rand2].AddForce(knockback / 4);
-            rbs[rand3].AddForce(knockback / 5);
+            rbs[rand1].AddForce(locKnockback / 3);
+            rbs[rand2].AddForce(locKnockback / 4);
+            rbs[rand3].AddForce(locKnockback / 5);
         }
     }
 }
