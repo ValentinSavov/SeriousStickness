@@ -196,18 +196,18 @@ public class BotControl : MonoBehaviour, DamageAcceptor, DamageProvider
     {
         if ((CanMoveTo(direction)))
         {
-            Debug.Log("Can move to");
+            //Debug.Log("Can move to");
             movement.MoveX(direction);
         }
         else if (CanJumpForward(direction))
         {
-            Debug.Log("Can JUMP F");
+            //Debug.Log("Can JUMP F");
             movement.JumpUp();
             movement.MoveX(direction);
         }
         else if (movement.canPushSideTouch)
         {
-            Debug.Log("Can PUSH");
+            //Debug.Log("Can PUSH");
             movement.MoveX(direction);
         }
         else
