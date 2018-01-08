@@ -7,6 +7,7 @@ public class Checkpoint : MonoBehaviour
         if(other.gameObject.GetComponent<PlayerTag>() != null)
         {
             transform.Find("ToEnable").gameObject.SetActive(true);
+            transform.Find("ToDisable").gameObject.SetActive(false);
             Destroy(this);
         }
     }

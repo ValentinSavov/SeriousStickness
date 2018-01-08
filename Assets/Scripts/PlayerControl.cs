@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
 {
     public List<string> groups { get; set; }
-
+    public bool findStartPoint = false;
     PlayerGear gear;
     Animator anim;
     StickStats stats;
@@ -44,9 +44,24 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
         {
             this.transform.position = startGO.transform.position;
         }*/
+        if (findStartPoint)
+        {
+            this.enabled = false;
+            InvokeRepeating("WaitForStartPoint", 0.1f, 0.1f);
+        }
+    }
+    void WaitForStartPoint()
+    {
+        GameObject startPoint = GameObject.Find("StartPoint");
+        if(startPoint != null)
+        {
+            this.transform.position = startPoint.transform.position;
+            CancelInvoke("WaitForStartPoint");
+            this.enabled = true;
+        }
     }
 
-    
+
     void FixedUpdate()
     {
         anim.SetBool("Jump", false);

@@ -23,6 +23,12 @@ public class Registry : MonoBehaviour
     {
         //effects.updateEffects();
     }
+
+    public void Reset()
+    {
+        damageAcceptors = new DamageAcceptorRegistry();
+        objectives = new ObjectivesRegistry();
+    }
 }
 
 
@@ -195,7 +201,8 @@ public class Trigger : MonoBehaviour
 public abstract class Objective : MonoBehaviour
 {
     public string objectiveName;
-    
+    [Tooltip("Higher value is higher priority")]
+    public int objectivePriority = 5;
     public List<Trigger> unresolvedMandatoryTriggers = new List<Trigger>();
     Registry registry;
     void Start()
@@ -220,7 +227,6 @@ public abstract class Objective : MonoBehaviour
 
 public class ObjectivesRegistry
 {
-
     List<Objective> objectives = new List<Objective>();
 
     public void AddObjective(Objective argInObjective)
