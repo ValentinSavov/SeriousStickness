@@ -148,27 +148,7 @@ public class BotControl : MonoBehaviour, DamageAcceptor, DamageProvider
                         MoveSomehowTowards(direction);
                     }
                 }
-
-                //move Y stuff
-                float deltaY = target.transform.position.y - this.transform.position.y;
-                if (Mathf.Abs(deltaY) > weap.range / 1.5f)
-                {
-                    if (deltaY > 2f)
-                    {
-                        if (IsWhereToJumpUp())
-                        {
-                            movement.JumpUp();
-                        }
-                    }
-                    else if (deltaY < -2f)
-                    {
-                        if (IsWhereToJumpDown())
-                        {
-                            movement.JumpDown();
-                        }
-                    }
-                }
-
+                
                 Attack();
             }
             else
@@ -179,6 +159,26 @@ public class BotControl : MonoBehaviour, DamageAcceptor, DamageProvider
                 float deltaX = target.transform.position.x - this.transform.position.x;
                 direction = Mathf.Sign(deltaX);
                 MoveSomehowTowards(direction);
+            }
+
+            //move Y stuff
+            float deltaY = target.transform.position.y - this.transform.position.y;
+            if (Mathf.Abs(deltaY) > weap.range / 1.5f)
+            {
+                if (deltaY > 2f)
+                {
+                    if (IsWhereToJumpUp())
+                    {
+                        movement.JumpUp();
+                    }
+                }
+                else if (deltaY < -2f)
+                {
+                    if (IsWhereToJumpDown())
+                    {
+                        movement.JumpDown();
+                    }
+                }
             }
         }
 
@@ -266,7 +266,7 @@ public class BotControl : MonoBehaviour, DamageAcceptor, DamageProvider
             //if somewhere far forward - far down is a floor
             for (int i = 2; i < 5; i++)
             {
-                RaycastHit2D hitDown = Physics2D.Raycast(this.transform.position + (i * direction * Vector3.right), Vector3.down, 2f, movement.layersToSense);
+                RaycastHit2D hitDown = Physics2D.Raycast(this.transform.position + (i * direction * Vector3.right), Vector3.down, 3f, movement.layersToSense);
                 if (hitDown.collider != null)
                 {
                     //Debug.Log(hitDown.collider.name);
