@@ -67,7 +67,7 @@ public class BotControl : MonoBehaviour, DamageAcceptor, DamageProvider
     #region AI
     void Update()
     {
-        if (chasing == false)
+        if ( (chasing == false) || (target == null))
         {
             processIdleState();
         }
@@ -78,6 +78,7 @@ public class BotControl : MonoBehaviour, DamageAcceptor, DamageProvider
     }
     void processIdleState()
     {
+        if(target!=null)
         if ((target.transform.position - this.transform.position).magnitude < range)
         {
             chasing = true;

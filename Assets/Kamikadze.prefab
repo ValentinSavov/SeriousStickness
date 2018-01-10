@@ -244,7 +244,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c80af87607b292349a0bfc926d229a97, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  range: 20
+  range: 30
   effectOnExplode: {fileID: 139366, guid: b185c1a9cf067374586d095111b15bd1, type: 2}
   damage: 20
   damageRadius: 2

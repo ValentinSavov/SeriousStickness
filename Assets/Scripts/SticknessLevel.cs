@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 public class SticknessLevel : MonoBehaviour
 {
-    public int level = 50;
+    public float level = 50;
 
     [Tooltip("points per second. 100 points is max level")]
     public int decreaseRate = 5;
@@ -37,21 +37,21 @@ public class SticknessLevel : MonoBehaviour
         }
     }
 
-    public void DecreaseLevel(int amount)
+    public void DecreaseLevel(float amount)
     {
         level -= amount;
-        if (level < 0) level = 0;
+        if (level < 0f) level = 0f;
     }
 
-    public void IncreaseLevel(int amount)
+    public void IncreaseLevel(float amount)
     {
         level += amount;
-        if (level > 100) level = 100;
+        if (level > 100f) level = 100f;
     }
 
     public void Restart()
     {
-        level = 100;
+        level = 100f;
     }
 
     void OnDestroy()

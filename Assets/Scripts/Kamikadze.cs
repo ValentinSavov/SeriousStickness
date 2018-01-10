@@ -52,6 +52,7 @@ public class Kamikadze : MonoBehaviour, DamageAcceptor, DamageProvider
 
     void Update()
     {
+        if(target != null)
         if ((target.transform.position - this.transform.position).magnitude < range)
         {
             float deltaX = target.transform.position.x - this.transform.position.x;

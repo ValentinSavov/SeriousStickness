@@ -61,7 +61,7 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
         }
     }
 
-
+    bool shielded;
     void FixedUpdate()
     {
         anim.SetBool("Jump", false);
@@ -70,11 +70,12 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
 
         UpdateDamageCooldowns();
         SticknessLevelResponse();
-        
+
         if(Input.GetButton("Fire2"))
         {
-            if (slevel.level >= 80)
+            if (slevel.level > 0)
             {
+                slevel.DecreaseLevel(Time.fixedDeltaTime * 10f);
                 Time.timeScale = 0.4f;
             }
         }
@@ -82,8 +83,19 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
         {
             Time.timeScale = 1f;
         }
+        /*if ( (Input.GetButton("Fire2")) && (slevel.level > 0))
+        {
+            transform.Find("Shield").GetComponent<Renderer>().enabled = true;
+            shielded = true;
+        }
+        else
+        {
+            transform.Find("Shield").GetComponent<Renderer>().enabled = false;
+            shielded = false;
+        }*/
+
         //vsa suicide
-        if(Input.GetKeyDown("k"))
+        if (Input.GetKeyDown("k"))
         {
             stats.currentHitPoints = 0;
             stats.isDead = true;
@@ -188,6 +200,11 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
                 health.text = ((int)(stats.currentHitPoints)).ToString();
             }
         }
+
+        if(shielded)
+        {
+            slevel.DecreaseLevel(Time.fixedDeltaTime * 5f);
+        }
     }
 
     void OnTriggerEnter2D(Collider2D other)
@@ -210,7 +227,7 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
 
     public void ReportKill(DamageAcceptor killed)
     {
-        slevel.IncreaseLevel(Random.Range(1,5));
+        slevel.IncreaseLevel(UnityEngine.Random.Range(1,5));
         GameObject popup = Instantiate(Resources.Load("KillPopup", typeof(GameObject)),
                     ((Component)killed).gameObject.transform.position + Vector3.up*2, Quaternion.identity,
                     gpParent.transform)
@@ -222,6 +239,10 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
         if (damageSourcesInCooldown.Find(x => x.source == argInArgs.source) == null)
         {
             if(stats.isDead)
+            {
+                return;
+            }
+            if(shielded)
             {
                 return;
             }
@@ -249,8 +270,7 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
                 as GameObject;
                 popup.GetComponent<Popup>().text = "-" + locDamage.ToString();
                 popup.transform.parent = gpParent.transform;
-
-
+                
                 if (stats.currentHitPoints > locDamage)
                 {
                     stats.currentHitPoints -= locDamage;
@@ -282,9 +302,7 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
                 // vsa do something for knockback
             }
         }
-
         health.text = ((int)(stats.currentHitPoints)).ToString();
-
     }
     
     private class SourcesAndCooldowns

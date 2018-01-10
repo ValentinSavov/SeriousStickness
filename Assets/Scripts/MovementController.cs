@@ -23,7 +23,7 @@ public class MovementController : MonoBehaviour
     Rigidbody2D rbd;
     CapsuleCollider2D mainCollider;
     
-    void Start()
+    void Awake()
     {
         rbd = GetComponent<Rigidbody2D>();
         mainCollider = GetComponent<CapsuleCollider2D>();

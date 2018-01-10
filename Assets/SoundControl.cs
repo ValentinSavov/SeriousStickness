@@ -15,8 +15,6 @@ public class SoundControl : MonoBehaviour
     public void PlayExplosion()
     {
         speaker.Stop();
-        //speaker.clip = explosion;
-        Debug.Log("PlayOneShot");
         speaker.PlayOneShot(explosion);
     }
 }
