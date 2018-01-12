@@ -236,7 +236,7 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
 
     public void acceptDamage(DamageAcceptorRegistry.DamageArgs argInArgs)
     {
-        if (damageSourcesInCooldown.Find(x => x.source == argInArgs.source) == null)
+        //if (damageSourcesInCooldown.Find(x => x.source == argInArgs.source) == null)
         {
             if(stats.isDead)
             {
