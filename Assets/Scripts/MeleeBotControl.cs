@@ -110,7 +110,6 @@ public class MeleeBotControl : MonoBehaviour, DamageAcceptor, DamageProvider
     {
         this.transform.localScale = new Vector3(direction, 1, 1);
         
-
         if ((target.transform.position - this.transform.position).magnitude < range)
         {
             //move X stuff
@@ -184,6 +183,7 @@ public class MeleeBotControl : MonoBehaviour, DamageAcceptor, DamageProvider
     }
     bool MoveSomehowTowards(float direction)
     {
+        bool result = true;
         if ((CanMoveTo(direction)))
         {
             //Debug.Log("Can move to");
@@ -202,9 +202,9 @@ public class MeleeBotControl : MonoBehaviour, DamageAcceptor, DamageProvider
         }
         else
         {
-            return false;
+            result = false;
         }
-        return true;
+        return result;
     }
     bool CanMoveTo(float direction)
     {
@@ -334,17 +334,7 @@ public class MeleeBotControl : MonoBehaviour, DamageAcceptor, DamageProvider
                 {
                     dp.ReportKill(this);
                 }
-                Weapon weap = GetComponentInChildren<Weapon>();
-                if (weap != null)
-                {
-                    weap.transform.parent = gpParent.transform;
-                    Destroy(weap.gameObject, 4f);
-                }
-                Vector3 stickBodyPosition = transform.Find("StickBody").position;
-                GameObject ragdoll = Instantiate(Resources.Load("Ragdoll", typeof(GameObject)),
-                stickBodyPosition, Quaternion.identity, gpParent.transform) as GameObject;
-                
-                ragdoll.GetComponent<Ragdoll>().Push(argInArgs.knockback);
+
                 this.gameObject.SetActive(false);
                 Destroy(this.gameObject, 0.1f);
             }
