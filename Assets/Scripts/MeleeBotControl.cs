@@ -118,14 +118,26 @@ public class MeleeBotControl : MonoBehaviour, DamageAcceptor, DamageProvider
             //if it walks towards the target
             if(Mathf.Sign(direction) == Mathf.Sign(deltaX))
             {
-                MoveSomehowTowards(direction);
+                if ((CanMoveTo(direction)))
+                {
+                    //Debug.Log("Can move towards");
+                    movement.MoveXignoreSideTouch(direction);
+                }
+                else
+                {
+                    direction *= -1;
+                }
             }
             else
             {
-                //if (Mathf.Abs(deltaY) > range / 1.5f)
                 if (Mathf.Abs(deltaX) < range/2)
                 {
-                    if(!MoveSomehowTowards(direction))
+                    if ((CanMoveTo(direction)))
+                    {
+                        //Debug.Log("Can move opposite");
+                        movement.MoveXignoreSideTouch(direction);
+                    }
+                    else
                     {
                         direction *= -1;
                     }
@@ -144,42 +156,20 @@ public class MeleeBotControl : MonoBehaviour, DamageAcceptor, DamageProvider
         if( (this.transform.position - prevPosition).magnitude < (stats.attackSpeed * Time.deltaTime)/4 )
         {
             stuckTime += Time.deltaTime;
-            if(stuckTime > 1f)
+            if(stuckTime > 0.5f)
             {
-                direction *= -1;
+                stuckTime = 0f;
+                //direction *= -1;
             }
         }
         else
         {
             if((target.transform.position - this.transform.position).magnitude < 1f)
             {
-                Attack();
+                //Attack();
             }
             stuckTime = 0f;
         }
-
-        prevPosition = this.transform.position;
-
-        //move Y stuff
-        float deltaY = target.transform.position.y - this.transform.position.y;
-        //if (Mathf.Abs(deltaY) > range / 1.5f)
-        {
-            if (deltaY > 3f)
-            {
-                if (IsWhereToJumpUp())
-                {
-                    movement.JumpUp();
-                }
-            }
-            else if (deltaY < -3f)
-            {
-                if (IsWhereToJumpDown())
-                {
-                    movement.JumpDown();
-                }
-            }
-        }
-
     }
     bool MoveSomehowTowards(float direction)
     {
@@ -209,10 +199,14 @@ public class MeleeBotControl : MonoBehaviour, DamageAcceptor, DamageProvider
     bool CanMoveTo(float direction)
     {
         //if forward is free
-        if(false == Physics2D.Raycast(transform.position + new Vector3(0, 1, 0), new Vector3(Mathf.Sign(direction) * 1, 0, 0), 1f, movement.layersToSense) )
+        //Vector3 start = transform.position + new Vector3(0, 1, 0);
+        //Debug.DrawLine(start, start + new Vector3(Mathf.Sign(direction) * 1, 0, 0), Color.red);
+        if (false == Physics2D.Raycast(transform.position + new Vector3(0, 1, 0), new Vector3(Mathf.Sign(direction) * 1, 0, 0), 1f, movement.layersToSense) )
         {
+            //start = transform.position + new Vector3(Mathf.Sign(direction) * 1, 0.5f, 0);
+            //Debug.DrawLine(start, start + new Vector3(0, -2, 0), Color.red);
             //if forward-down is a floor
-            if (true == Physics2D.Raycast(transform.position + new Vector3(Mathf.Sign(direction) * 1, 0.1f, 0), new Vector3(0, -1, 0), 2f, movement.layersToSense))
+            if (true == Physics2D.Raycast(transform.position + new Vector3(Mathf.Sign(direction) * 1, 0.5f, 0), new Vector3(0, -1, 0), 1f, movement.layersToSense))
             {
                 return true;
             }

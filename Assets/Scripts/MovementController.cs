@@ -57,6 +57,15 @@ public class MovementController : MonoBehaviour
             //rbd.AddForce(velocity - rbd.velocity, ForceMode2D.Impulse);
         }
     }
+    public void MoveXignoreSideTouch(float horisontalSpeed)
+    {
+        if (horisontalSpeed != 0)
+        {
+            Vector2 velocity = rbd.velocity;
+            velocity.x = horisontalSpeed * moveSpeed;
+            rbd.velocity = new Vector2(velocity.x, velocity.y);
+        }
+    }
 
     public bool JumpUp()
     {
