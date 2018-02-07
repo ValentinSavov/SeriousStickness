@@ -6,38 +6,33 @@ public class Spawner : MonoBehaviour
 {
     public GameObject prefab;
     public float spawnRadius = 3f;
-    public float spawnDelay = 5f;
+    public float spawnPeriod = 5f;
     public int maxActiveSpawned = 1;
     public int spawnLimit = 1000;
     public bool spawnImmediately = true;
-    float previousSpawnTime;
+    float spawnCooldown;
     int spawnedCounter = 0;
 
     void Start ()
     {
-
+        spawnCooldown = spawnPeriod;
         if (spawnImmediately)
         {
-            Spawn();
+            spawnCooldown = 0;
         }
-        previousSpawnTime = Time.time;
     }
 
 	void Update()
     {
-        if (transform.childCount >= maxActiveSpawned)
+        if (transform.childCount < maxActiveSpawned)
         {
-            previousSpawnTime = Time.time;
-        }
-        else
-        {
-            if ((Time.time - previousSpawnTime) >= spawnDelay)
+            spawnCooldown -= Time.deltaTime;
+            if (spawnCooldown <= 0)
             {
                 Spawn();
-                previousSpawnTime = Time.time;
+                spawnCooldown = spawnPeriod;
             }
         }
-        
     }
 
     void Spawn()

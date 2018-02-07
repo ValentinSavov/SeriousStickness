@@ -237,8 +237,17 @@ public class BotControl : MonoBehaviour, DamageAcceptor, DamageProvider
     }
     bool CanMoveTo(float direction)
     {
+        bool check = false;
         //if forward is free
-        if(false == Physics2D.Raycast(transform.position + new Vector3(0, 1, 0), new Vector3(Mathf.Sign(direction) * 1, 0, 0), 1f, movement.layersToSense) )
+        if (direction > 0)
+        {
+            check = movement.sideTouchR;
+        }
+        else if (direction < 0)
+        {
+            check = movement.sideTouchL;
+        }
+        if (!check)
         {
             //if forward-down is a floor
             if (true == Physics2D.Raycast(transform.position + new Vector3(Mathf.Sign(direction) * 1, 0.1f, 0), new Vector3(0, -1, 0), 2f, movement.layersToSense))
@@ -265,7 +274,7 @@ public class BotControl : MonoBehaviour, DamageAcceptor, DamageProvider
     bool IsWhereToJumpDown()
     {
         bool found = false;
-        RaycastHit2D[] hits = Physics2D.RaycastAll(this.transform.position + (2*Vector3.down), Vector3.up, 10f);
+        RaycastHit2D[] hits = Physics2D.RaycastAll(this.transform.position + (Vector3.down/2), Vector3.down, 4f);
         foreach (RaycastHit2D hit in hits)
         {
             if (hit.collider.gameObject.GetComponent<FloorTag>() != null)

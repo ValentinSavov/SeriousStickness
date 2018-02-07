@@ -9,7 +9,7 @@ public class SetStuffInChildren : MonoBehaviour
     public int orderInLayer = 0;
     public bool setorderinlayer = false;
     public bool removeChild2DPhysicsStuff = false;
-
+    public bool removeAllChildColliders = false;
 
     void OnDrawGizmos()
     {
@@ -51,6 +51,16 @@ public class SetStuffInChildren : MonoBehaviour
             {
                 DestroyImmediate(col);
             }
+        }
+
+        if(removeAllChildColliders)
+        {
+            Collider[] cols = GetComponentsInChildren<Collider>();
+            foreach (Collider col in cols)
+            {
+                DestroyImmediate(col);
+            }
+            removeAllChildColliders = false;
         }
     }
 }

@@ -18,11 +18,9 @@ public class MeleeBotControl : MonoBehaviour, DamageAcceptor, DamageProvider
     Registry registry;
     GameObject target;
     Animator anim;
-    
+
+    Vector2 startPosition;
     float direction = 1;
-    float changeDirectionCooldown = 5f;
-    float idleTime = 0f;
-    Vector3 prevPosition;
     float stuckTime = 0f;
     float prevAttackTime = 0f;
     bool chasing = false;
@@ -40,7 +38,7 @@ public class MeleeBotControl : MonoBehaviour, DamageAcceptor, DamageProvider
         target = GameObject.FindObjectOfType<PlayerTag>().gameObject;
         stats.currentHitPoints = stats.totalHitPoints;
         stats.currentArmorPoints = stats.totalArmorPoints;
-
+        startPosition = transform.position;
         chasing = false;
 
         if (Random.Range(0,10) > 5)
@@ -51,13 +49,13 @@ public class MeleeBotControl : MonoBehaviour, DamageAcceptor, DamageProvider
         {
             direction = -1;
         }
-        changeDirectionCooldown = Random.Range(2, 10);
-        prevPosition = this.transform.position;
+        changeDirCooldown = 1f;
     }
 
     #region AI
     void Update()
     {
+        changeDirCooldown -= Time.deltaTime;
         if ( (chasing == false) || (target == null))
         {
             processIdleState();
@@ -66,44 +64,45 @@ public class MeleeBotControl : MonoBehaviour, DamageAcceptor, DamageProvider
         {
             processChaseInRangeState();
         }
+        //hit boxes if any
+        RaycastHit2D[] hits = Physics2D.RaycastAll(this.transform.position + new Vector3(0, 1, 0), new Vector3(direction, 0, 0), 1f, movement.layersToSense) ;
+        foreach (RaycastHit2D hit in hits)
+        {
+            DamageAcceptor da = hit.collider.gameObject.GetComponent<DamageAcceptor>();
+            if (da != null)
+            {
+                Attack(da, 5, Vector2.up * 20000);
+            }
+        }
     }
     void processIdleState()
     {
-        if(target!=null)
-        if ((target.transform.position - this.transform.position).magnitude < range)
+        if (target != null)
         {
-            chasing = true;
-            return;
-        }
-        changeDirectionCooldown -= Time.deltaTime;
-        if (changeDirectionCooldown <= 0)
-        {
-            changeDirectionCooldown = Random.Range(4, 10);
-            direction *= -1;
-        }
-        
-        if (false == MoveSomehowTowards(direction))
-        {
-            if(movement.grounded)
+            if ((target.transform.position - this.transform.position).magnitude < range)
             {
-                direction *= -1;
+                chasing = true;
+                return;
             }
-        }
-        this.transform.localScale = new Vector3(direction, 1, 1);
+            float deltaX = this.transform.position.x - startPosition.x;
 
-        idleTime += Time.deltaTime;
-        if (idleTime >= 2f)
-        {
-            if (IsWhereToJumpUp())
+            if(Mathf.Abs(deltaX) > range)
             {
-                movement.JumpUp();
-                idleTime = 0f;
+                direction = -Mathf.Sign(deltaX);
             }
-            else if (IsWhereToJumpDown())
+
+            if ((CanMoveTo(direction)))
             {
-                movement.JumpDown();
-                idleTime = 0f;
+                movement.MoveX(direction);
             }
+            else
+            {
+                //if (movement.grounded)
+                {
+                    ChangeDirection();//direction *= -1;
+                }
+            }
+            this.transform.localScale = new Vector3(direction, 1, 1);
         }
     }
     void processChaseInRangeState()
@@ -118,33 +117,47 @@ public class MeleeBotControl : MonoBehaviour, DamageAcceptor, DamageProvider
             //if it walks towards the target
             if(Mathf.Sign(direction) == Mathf.Sign(deltaX))
             {
-                if ((CanMoveTo(direction)))
+                //if (Mathf.Abs(transform.position.x - startPosition.x) > range)
                 {
-                    //Debug.Log("Can move towards");
-                    movement.MoveXignoreSideTouch(direction);
+                    //went too far, go home
+                    //direction = -Mathf.Sign(transform.position.x - startPosition.x);
+                    //movement.MoveX(direction);
                 }
-                else
+                //else
+                //if (Mathf.Abs(deltaX) < range / 2)
                 {
-                    direction *= -1;
+                    if ((CanMoveTo(direction)))
+                    {
+                        movement.MoveX(direction);
+                    }
+                    else
+                    {
+                        ChangeDirection();//direction *= -1;
+                    }
                 }
             }
             else
             {
-                if (Mathf.Abs(deltaX) < range/2)
+                if(Mathf.Abs(transform.position.x - startPosition.x) > range)
+                {
+                    //went too far, go home
+                    direction = -Mathf.Sign(transform.position.x - startPosition.x);
+                    movement.MoveX(direction);
+                }
+                else if (Mathf.Abs(deltaX) < range/2)
                 {
                     if ((CanMoveTo(direction)))
                     {
-                        //Debug.Log("Can move opposite");
-                        movement.MoveXignoreSideTouch(direction);
+                        movement.MoveX(direction);
                     }
                     else
                     {
-                        direction *= -1;
+                        ChangeDirection();//direction *= -1;
                     }
                 }
                 else
                 {
-                    direction *= -1;
+                    ChangeDirection();//direction *= -1;
                 }
             }
         }
@@ -153,134 +166,66 @@ public class MeleeBotControl : MonoBehaviour, DamageAcceptor, DamageProvider
             chasing = false;
         }
 
-        if( (this.transform.position - prevPosition).magnitude < (stats.attackSpeed * Time.deltaTime)/4 )
+        //stuck check
+        if (Mathf.Abs(movement.velocity.x) < movement.moveSpeed / 4)
         {
             stuckTime += Time.deltaTime;
-            if(stuckTime > 0.5f)
+            if (stuckTime > 0.3f)
             {
+                //Debug.Log("Stucked");
                 stuckTime = 0f;
-                //direction *= -1;
+                direction *= -1;
             }
         }
-        else
+
+        if ((target.transform.position - this.transform.position).magnitude < 1f)
         {
-            if((target.transform.position - this.transform.position).magnitude < 1f)
-            {
-                //Attack();
-            }
-            stuckTime = 0f;
+            Attack(target.GetComponent<DamageAcceptor>(), Random.Range(5,20), (((Component)target.GetComponent<DamageAcceptor>()).transform.position - this.transform.position).normalized * 5000);
         }
     }
-    bool MoveSomehowTowards(float direction)
+
+    float changeDirCooldown = 0f;
+    void ChangeDirection()
     {
-        bool result = true;
-        if ((CanMoveTo(direction)))
+        if(changeDirCooldown <= 0)
         {
-            //Debug.Log("Can move to");
-            movement.MoveX(direction);
+            direction *= -1;
+            changeDirCooldown = 1f;
         }
-        else if (CanJumpForward(direction))
-        {
-            //Debug.Log("Can JUMP F");
-            movement.JumpUp();
-            movement.MoveX(direction);
-        }
-        else if (movement.canPushSideTouch)
-        {
-            //Debug.Log("Can PUSH");
-            movement.MoveX(direction);
-        }
-        else
-        {
-            result = false;
-        }
-        return result;
     }
     bool CanMoveTo(float direction)
     {
+        bool check = false;
         //if forward is free
-        //Vector3 start = transform.position + new Vector3(0, 1, 0);
-        //Debug.DrawLine(start, start + new Vector3(Mathf.Sign(direction) * 1, 0, 0), Color.red);
-        if (false == Physics2D.Raycast(transform.position + new Vector3(0, 1, 0), new Vector3(Mathf.Sign(direction) * 1, 0, 0), 1f, movement.layersToSense) )
+        if (direction > 0)
         {
-            //start = transform.position + new Vector3(Mathf.Sign(direction) * 1, 0.5f, 0);
-            //Debug.DrawLine(start, start + new Vector3(0, -2, 0), Color.red);
+            check = movement.sideTouchR;
+        }
+        else if (direction < 0)
+        {
+            check = movement.sideTouchL;
+        }
+        if (!check)
+        {
             //if forward-down is a floor
-            if (true == Physics2D.Raycast(transform.position + new Vector3(Mathf.Sign(direction) * 1, 0.5f, 0), new Vector3(0, -1, 0), 1f, movement.layersToSense))
+            if (true == Physics2D.Raycast(transform.position + new Vector3(Mathf.Sign(direction) * 2, 0.5f, 0), new Vector3(0, -1, 0), 1f, movement.layersToSense))
             {
                 return true;
             }
         }
         return false;
     }
-    bool IsWhereToJumpUp()
+    void Attack(DamageAcceptor acceptor, float damage, Vector2 knockback)
     {
-        bool found = false;
-        RaycastHit2D[] hits = Physics2D.RaycastAll(this.transform.position + Vector3.up, Vector3.up, 4f);
-        foreach(RaycastHit2D hit in hits)
-        {
-            if(hit.collider.gameObject.GetComponent<FloorTag>() != null)
-            {
-                found = true;
-                break;
-            }
-        }
-        return found;
-    }
-    bool IsWhereToJumpDown()
-    {
-        bool found = false;
-        RaycastHit2D[] hits = Physics2D.RaycastAll(this.transform.position + (2*Vector3.down), Vector3.up, 10f);
-        foreach (RaycastHit2D hit in hits)
-        {
-            if (hit.collider.gameObject.GetComponent<FloorTag>() != null)
-            {
-                found = true;
-                break;
-            }
-        }
-        return found;
-    }
-    bool CanJumpForward(float direction)
-    {
-        //if 3m forward is free
-        RaycastHit2D hitF = Physics2D.Raycast(transform.position + new Vector3(0, 1, 0), new Vector3(Mathf.Sign(direction) * 1, 0, 0), 3f, movement.layersToSense);
-        if (hitF.collider == null)
-        {
-            //if somewhere far forward - far down is a floor
-            for (int i = 2; i < 5; i++)
-            {
-                RaycastHit2D hitDown = Physics2D.Raycast(this.transform.position + (i * direction * Vector3.right), Vector3.down, 3f, movement.layersToSense);
-                if (hitDown.collider != null)
-                {
-                    //Debug.Log(hitDown.collider.name);
-                    return true;
-                }
-            }
-        }
-        else
-        {
-            //if up-forward is free
-            RaycastHit2D hitUpF = Physics2D.Raycast(transform.position + new Vector3(0, 3, 0), new Vector3(Mathf.Sign(direction) * 1, 0, 0), 1f, movement.layersToSense);
-            if (hitUpF.collider == null)
-            {
-                //Debug.Log("up forward is free");
-                return true;
-            }
-        }
-        return false;
-    }
-    void Attack()
-    {
-        if(Time.time - prevAttackTime > 0.3f)
+        if(Time.time - prevAttackTime > 0.5f)
         {
             prevAttackTime = Time.time;
             registry.damageAcceptors.doTargetDamage(
-                        target.GetComponent<DamageAcceptor>(),
+                        acceptor,
                         GetComponentInParent<Tag>().gameObject,
-                        Random.Range(3,10),
+                        damage,
                         "normal",
-                        (target.transform.position - this.transform.position).normalized * 2000f,
+                        knockback,
                         groups);
         }
     }

@@ -125,7 +125,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1623725323783032}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1462.7839, y: 74.00974, z: 0}
+  m_LocalPosition: {x: 1461.1545, y: 74.89818, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 224405544939210158}
@@ -208,7 +208,7 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0.7293167}
-  m_Size: {x: 1.5, y: 1.5}
+  m_Size: {x: 1, y: 1.8}
   m_Direction: 0
 --- !u!95 &95784979140083712
 Animator:
@@ -290,11 +290,13 @@ MonoBehaviour:
   moveSpeed: 14
   jumpSpeed: 23
   grounded: 0
-  sideTouch: 0
+  sideTouchL: 0
+  sideTouchR: 0
+  canPushSideTouch: 0
   layersToSense:
     serializedVersion: 2
     m_Bits: 1
-  canPushSideTouch: 0
+  velocity: {x: 0, y: 0}
 --- !u!114 &114669921777865598
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -333,7 +335,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e951389d31b2094bb4118f8a2efc609, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  range: 20
+  range: 10
 --- !u!114 &114912280467586616
 MonoBehaviour:
   m_ObjectHideFlags: 1
