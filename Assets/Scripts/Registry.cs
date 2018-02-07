@@ -81,6 +81,11 @@ public class DamageAcceptorRegistry
         return damageAcceptors.FindAll(x => (x.groups.Intersect(argInGroups).Any()) );
     }
 
+    public int GetAcceptorsCountInGroup(List<string> argInGroups)
+    {
+        return damageAcceptors.FindAll(x => (x.groups.Intersect(argInGroups).Any())).Count;
+    }
+
     public List<DamageAcceptor> GetAcceptorsInRange(Vector3 point, float radius)
     {
         return damageAcceptors.FindAll(x => ( (((Component)x).gameObject.transform.position - point).magnitude < radius ));

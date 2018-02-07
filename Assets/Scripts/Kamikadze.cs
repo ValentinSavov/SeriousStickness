@@ -10,7 +10,7 @@ public class Kamikadze : MonoBehaviour, DamageAcceptor, DamageProvider
         groups = new List<string>();
     }
     public List<string> groups { get; set; }
-    public float range = 20f;
+    public float sightRange = 20f;
 
     public GameObject effectOnExplode;
     public float damage = 50f;
@@ -23,7 +23,7 @@ public class Kamikadze : MonoBehaviour, DamageAcceptor, DamageProvider
     GameObject target;
     StickStats stats;
     float direction = 1;
-
+    float stuckTime = 0f;
 
     void Start()
     {
@@ -49,43 +49,55 @@ public class Kamikadze : MonoBehaviour, DamageAcceptor, DamageProvider
     }
 
     #region AI
-
+    
     void Update()
     {
-        if(target != null)
-        if ((target.transform.position - this.transform.position).magnitude < range)
+        if (target != null)
         {
-            float deltaX = target.transform.position.x - this.transform.position.x;
-            if(Mathf.Abs(deltaX) > 0.4f)
+            if ((target.transform.position - this.transform.position).magnitude < sightRange)
             {
-                float direction = Mathf.Sign(deltaX);
-                this.transform.localScale = new Vector3(direction, 1, 1);
-                MoveSomehowTowards(direction);
-            }
-
-            //move Y stuff
-            float deltaY = target.transform.position.y - this.transform.position.y;
-            if (Mathf.Abs(deltaY) > 2f)
-            {
-                if (deltaY > 2f)
+                float deltaX = target.transform.position.x - this.transform.position.x;
+                if (Mathf.Abs(deltaX) > 0.4f)
                 {
-                    if (IsWhereToJumpUp())
+                    float direction = Mathf.Sign(deltaX);
+                    this.transform.localScale = new Vector3(direction, 1, 1);
+                    MoveSomehowTowards(direction);
+                    //stuck check
+                    if (Mathf.Abs(movement.velocity.x) < movement.moveSpeed / 4)
                     {
-                        movement.JumpUp();
+                        stuckTime += Time.deltaTime;
+                        if(stuckTime > 0.5f)
+                        {
+                            stuckTime = 0f;
+                            movement.JumpUp();
+                        }
                     }
                 }
-                else if (deltaY < -2f)
+
+                //move Y stuff
+                float deltaY = target.transform.position.y - this.transform.position.y;
+                if (Mathf.Abs(deltaY) > 2f)
                 {
-                    if (IsWhereToJumpDown())
+                    if (deltaY > 2f)
                     {
-                        movement.JumpDown();
+                        if (IsWhereToJumpUp())
+                        {
+                            movement.JumpUp();
+                        }
+                    }
+                    else if (deltaY < -2f)
+                    {
+                        if (IsWhereToJumpDown())
+                        {
+                            movement.JumpDown();
+                        }
                     }
                 }
-            }
 
-            if ((target.transform.position - this.transform.position).magnitude < 1.5f)
-            {
-                Invoke("Explode", 0.1f);
+                if ((target.transform.position - this.transform.position).magnitude < 1.5f)
+                {
+                    Explode();
+                }
             }
         }
     }
@@ -128,8 +140,17 @@ public class Kamikadze : MonoBehaviour, DamageAcceptor, DamageProvider
     }
     bool CanMoveTo(float direction)
     {
+        bool check = false;
         //if forward is free
-        if (false == Physics2D.Raycast(transform.position + new Vector3(0, 1, 0), new Vector3(Mathf.Sign(direction) * 1, 0, 0), 2f, movement.layersToSense))
+        if(direction > 0)
+        {
+            check = movement.sideTouchR;
+        }
+        else if (direction < 0)
+        {
+            check = movement.sideTouchL;
+        }
+        if (!check)
         {
             //if forward-down is a floor
             if (true == Physics2D.Raycast(transform.position + new Vector3(Mathf.Sign(direction) * 1, 0.1f, 0), new Vector3(0, -1, 0), 2f, movement.layersToSense))

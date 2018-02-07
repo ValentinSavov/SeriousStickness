@@ -12,14 +12,22 @@ public class MovementController : MonoBehaviour
     public float jumpSpeed = 80000f; // m/s
     
     public bool grounded = false;
-    [Tooltip("-1 = left, 1 = right, 0 = no touch")]
-    public float sideTouch = 0;
-    
+    //[Tooltip("-1 = left, 1 = right, 0 = no touch")]
+    //public float sideTouch = 0;
+    public bool sideTouchL = false;
+    public bool sideTouchR = false;
+    [HideInInspector]
+    public bool canPushSideTouch = false;
+
     bool wantToJumpDown = false;
 
     public LayerMask layersToSense;
-    [HideInInspector]
-    public bool canPushSideTouch = false;
+
+
+
+    [Tooltip("copy of the rigidbody velocity")]
+    public Vector2 velocity = new Vector2(0, 0);
+
     Rigidbody2D rbd;
     CapsuleCollider2D mainCollider;
     
@@ -37,24 +45,38 @@ public class MovementController : MonoBehaviour
 
     public void MoveX(float horisontalSpeed)
     {
+        //the real value of the rbd velocity from the previous frame
+        velocity = rbd.velocity;
         if (horisontalSpeed != 0)
         {
-            Vector2 velocity = rbd.velocity;
+            Vector2 locvelocity = rbd.velocity;
 
-            velocity.x = horisontalSpeed * moveSpeed;
+            locvelocity.x = horisontalSpeed * moveSpeed;
 
-            if(sideTouch == Mathf.Sign(horisontalSpeed))
+            //if(sideTouch == Mathf.Sign(horisontalSpeed))
+            if ( (sideTouchL && (Mathf.Sign(horisontalSpeed) < 0)) || (sideTouchR && (Mathf.Sign(horisontalSpeed) > 0)) )
             {
-                velocity.x = 0;
+                locvelocity.x = 0;
             }
             if(canPushSideTouch)
             {
-                velocity.x /= 2;
+                locvelocity.x /= 2;
             }
             //this.transform.Translate(new Vector3(horisontalSpeed * moveSpeed * Time.fixedDeltaTime, 0,0));
             //rbd.MovePosition(rbd.position + new Vector2(horisontalSpeed * moveSpeed * Time.deltaTime, 0));
-            rbd.velocity = new Vector2(velocity.x, velocity.y);
+            rbd.velocity = new Vector2(locvelocity.x, locvelocity.y);
             //rbd.AddForce(velocity - rbd.velocity, ForceMode2D.Impulse);
+        }
+    }
+    public void MoveXignoreSideTouch(float horisontalSpeed)
+    {
+        //the real value of the rbd velocity from the previous frame
+        velocity = rbd.velocity;
+        if (horisontalSpeed != 0)
+        {
+            Vector2 locvelocity = rbd.velocity;
+            locvelocity.x = horisontalSpeed * moveSpeed;
+            rbd.velocity = new Vector2(locvelocity.x, locvelocity.y);
         }
     }
 
@@ -62,7 +84,8 @@ public class MovementController : MonoBehaviour
     {
         wantToJumpDown = false;
 
-        if ((sideTouch != 0) && (!grounded))
+        //if ((sideTouch != 0) && (!grounded))
+        if ((sideTouchL || sideTouchR) && (!grounded))
         {
             //side jump
             if (rbd.velocity.y < 0.2f)
@@ -142,7 +165,9 @@ public class MovementController : MonoBehaviour
 
         Collider2D[] colsR = Physics2D.OverlapCapsuleAll(transform.position + new Vector3(mainCollider.size.x / 2, mainCollider.size.y / 2, 0), new Vector2(mainCollider.size.x, mainCollider.size.y * 0.8f), CapsuleDirection2D.Vertical, 0f, layersToSense);
         Collider2D[] colsL = Physics2D.OverlapCapsuleAll(transform.position + new Vector3(-(mainCollider.size.x / 2), mainCollider.size.y / 2, 0), new Vector2(mainCollider.size.x, mainCollider.size.y * 0.8f), CapsuleDirection2D.Vertical, 0f, layersToSense);
-        sideTouch = 0f;
+        //sideTouch = 0f;
+        sideTouchL = false;
+        sideTouchR = false;
         foreach (Collider2D col in colsR)
         {
             if(col.isTrigger == false)
@@ -154,7 +179,8 @@ public class MovementController : MonoBehaviour
                 if ((!col.usedByEffector) && (col.GetComponent<BorderTag>() != null))
                 {
                     canPushSideTouch = false;
-                    sideTouch += 1;
+                    //sideTouch += 1;
+                    sideTouchR = true;
                     break;
                 }
             }
@@ -170,7 +196,8 @@ public class MovementController : MonoBehaviour
                 if ((!col.usedByEffector) && (col.GetComponent<BorderTag>() != null))
                 {
                     canPushSideTouch = false;
-                    sideTouch -= 1;
+                    //sideTouch -= 1;
+                    sideTouchL = true;
                     break;
                 }
             }

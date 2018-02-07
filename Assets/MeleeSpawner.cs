@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BotSpawner : MonoBehaviour
+public class MeleeSpawner : MonoBehaviour
 {
     public GameObject prefab;
-    public string startWeapon = "RocketLauncher";
-    public float spawnRadius = 3f;
+    public float AIRange = 10f;
+
     public float spawnPeriod = 5f;
-    public int maxActiveSpawned = 5;
+    public int maxActiveSpawned = 1;
     public int spawnLimit = 1000;
     public bool spawnImmediately = true;
     float spawnCooldown = 0;
@@ -18,6 +18,11 @@ public class BotSpawner : MonoBehaviour
 
     void Start ()
     {
+        InteractableObject io = GetComponentInParent<InteractableObject>();
+        if(io != null)
+        {
+            io.OnDestruct += DestructionEventHandler;
+        }
         dinamicSpawnerID = Random.Range(0, 9999).ToString();
         registry = GameObject.FindObjectOfType<Registry>().GetComponent<Registry>();
         spawnCooldown = spawnPeriod;
@@ -27,7 +32,7 @@ public class BotSpawner : MonoBehaviour
         }
     }
 
-	void Update()
+    void Update()
     {
         List<string> groups = new List<string>();
         groups.Add(dinamicSpawnerID);
@@ -41,21 +46,23 @@ public class BotSpawner : MonoBehaviour
             }
         }
     }
-
+    
     void Spawn()
     {
-        GameObject spawned = Instantiate(prefab, 
-            this.transform.position + new Vector3(Random.Range(-spawnRadius, spawnRadius), Random.Range(-spawnRadius, spawnRadius), 0),
-            Quaternion.identity
-            ) as GameObject;
-        //Debug.Log("Spawned");
-        spawned.GetComponent<BotControl>().startWeapon = startWeapon;
-        spawned.transform.parent = this.transform;
+        GameObject spawned = Instantiate(prefab, this.transform.position, Quaternion.identity, this.transform) as GameObject;
+        spawned.GetComponent<MeleeBotControl>().range = AIRange;
         spawned.GetComponent<DamageAcceptor>().groups.Add(dinamicSpawnerID);
         spawnedCounter++;
-        if(spawnedCounter >= spawnLimit)
+        if (spawnedCounter >= spawnLimit)
         {
             this.enabled = false;
         }
+    }
+
+    void DestructionEventHandler()
+    {
+        transform.Find("Healthy").gameObject.SetActive(false);
+        transform.Find("Damaged").gameObject.SetActive(true);
+        this.enabled = false;
     }
 }

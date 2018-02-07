@@ -26,7 +26,7 @@ public class BotControl : MonoBehaviour, DamageAcceptor, DamageProvider
     float idleTime = 0f;
     int autoShotsCounter = 0;
     int nextAutoShotsCount = 10;
-
+    float animSpeedCommand = 0f;
     bool chasing = false;
 
     void Start ()
@@ -67,6 +67,9 @@ public class BotControl : MonoBehaviour, DamageAcceptor, DamageProvider
     #region AI
     void Update()
     {
+        animSpeedCommand = 0f;
+        anim.SetBool("Jump", false);
+        anim.SetBool("Fall", false);
         if ( (chasing == false) || (target == null))
         {
             processIdleState();
@@ -75,6 +78,12 @@ public class BotControl : MonoBehaviour, DamageAcceptor, DamageProvider
         {
             processChaseInRangeState();
         }
+        if (!movement.grounded)
+        {
+            animSpeedCommand = 0f;
+            anim.SetBool("Fall", true);
+        }
+        anim.SetFloat("Speed", animSpeedCommand);
     }
     void processIdleState()
     {
@@ -106,11 +115,13 @@ public class BotControl : MonoBehaviour, DamageAcceptor, DamageProvider
             if (IsWhereToJumpUp())
             {
                 movement.JumpUp();
+                anim.SetBool("Jump", true);
                 idleTime = 0f;
             }
             else if (IsWhereToJumpDown())
             {
                 movement.JumpDown();
+                anim.SetBool("Jump", true);
                 idleTime = 0f;
             }
         }
@@ -171,6 +182,7 @@ public class BotControl : MonoBehaviour, DamageAcceptor, DamageProvider
                     if (IsWhereToJumpUp())
                     {
                         movement.JumpUp();
+                        anim.SetBool("Jump", true);
                     }
                 }
                 else if (deltaY < -2f)
@@ -178,6 +190,7 @@ public class BotControl : MonoBehaviour, DamageAcceptor, DamageProvider
                     if (IsWhereToJumpDown())
                     {
                         movement.JumpDown();
+                        anim.SetBool("Jump", true);
                     }
                 }
             }
@@ -195,32 +208,46 @@ public class BotControl : MonoBehaviour, DamageAcceptor, DamageProvider
     }
     bool MoveSomehowTowards(float direction)
     {
+        bool result = true;
         if ((CanMoveTo(direction)))
         {
             //Debug.Log("Can move to");
             movement.MoveX(direction);
+            animSpeedCommand = direction * Mathf.Sign(transform.localScale.x);
         }
         else if (CanJumpForward(direction))
         {
             //Debug.Log("Can JUMP F");
             movement.JumpUp();
+            anim.SetBool("Jump", true);
             movement.MoveX(direction);
+            animSpeedCommand = direction * Mathf.Sign(transform.localScale.x);
         }
         else if (movement.canPushSideTouch)
         {
             //Debug.Log("Can PUSH");
             movement.MoveX(direction);
+            animSpeedCommand = direction * Mathf.Sign(transform.localScale.x);
         }
         else
         {
-            return false;
+            result = false;
         }
-        return true;
+        return result;
     }
     bool CanMoveTo(float direction)
     {
+        bool check = false;
         //if forward is free
-        if(false == Physics2D.Raycast(transform.position + new Vector3(0, 1, 0), new Vector3(Mathf.Sign(direction) * 1, 0, 0), 1f, movement.layersToSense) )
+        if (direction > 0)
+        {
+            check = movement.sideTouchR;
+        }
+        else if (direction < 0)
+        {
+            check = movement.sideTouchL;
+        }
+        if (!check)
         {
             //if forward-down is a floor
             if (true == Physics2D.Raycast(transform.position + new Vector3(Mathf.Sign(direction) * 1, 0.1f, 0), new Vector3(0, -1, 0), 2f, movement.layersToSense))
@@ -247,7 +274,7 @@ public class BotControl : MonoBehaviour, DamageAcceptor, DamageProvider
     bool IsWhereToJumpDown()
     {
         bool found = false;
-        RaycastHit2D[] hits = Physics2D.RaycastAll(this.transform.position + (2*Vector3.down), Vector3.up, 10f);
+        RaycastHit2D[] hits = Physics2D.RaycastAll(this.transform.position + (Vector3.down/2), Vector3.down, 4f);
         foreach (RaycastHit2D hit in hits)
         {
             if (hit.collider.gameObject.GetComponent<FloorTag>() != null)

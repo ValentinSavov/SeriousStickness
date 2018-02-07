@@ -122,6 +122,22 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
         
         if(!movement.grounded)
         {
+            if(movement.sideTouchR)
+            {
+                anim.SetFloat("Slide", 1);
+                this.transform.localScale = new Vector3(-1, 1, 1);
+            }
+            else if(movement.sideTouchL)
+            {
+                anim.SetFloat("Slide", -1);
+                this.transform.localScale = new Vector3(1, 1, 1);
+            }
+            else
+            {
+                anim.SetBool("Fall", true);
+            }
+
+            /*
             if (movement.sideTouch == 0)
             {
                 anim.SetBool("Fall", true);
@@ -130,7 +146,7 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
             {
                 anim.SetFloat("Slide", movement.sideTouch);
                 this.transform.localScale = new Vector3(-movement.sideTouch, 1, 1);
-            }
+            }*/
 
         }
         
@@ -236,7 +252,7 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
 
     public void acceptDamage(DamageAcceptorRegistry.DamageArgs argInArgs)
     {
-        if (damageSourcesInCooldown.Find(x => x.source == argInArgs.source) == null)
+        //if (damageSourcesInCooldown.Find(x => x.source == argInArgs.source) == null)
         {
             if(stats.isDead)
             {

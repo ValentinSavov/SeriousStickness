@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 [RequireComponent(typeof(Collider2D))]
 [RequireComponent(typeof(Rigidbody2D))]
@@ -7,7 +8,12 @@ public class InteractableObject : MonoBehaviour, DamageAcceptor
 {
     [Header("Destruction")]
     public bool destructible = false;
+    public bool destroyObjectOnDestruct = true;
     public float hitPoints = 20f;
+    
+    public delegate void DestructEvent();
+    public event DestructEvent OnDestruct;
+
     [Tooltip("Leave it empty for no effect")]
     public GameObject effectOnDestruct;
 
@@ -53,7 +59,7 @@ public class InteractableObject : MonoBehaviour, DamageAcceptor
                 else
                 {
                     hitPoints = 0;
-                    Invoke("Destruct", 0.1f);
+                    Invoke("Destruct", 0.02f);
                     DamageProvider dp = argInArgs.source.GetComponent<DamageProvider>();
                     if (dp != null)
                     {
@@ -72,6 +78,10 @@ public class InteractableObject : MonoBehaviour, DamageAcceptor
     
     void Destruct()
     {
+        if (OnDestruct != null)
+        {
+            OnDestruct();
+        }
         if(doAreaDamageOnDestruct)
         {
             registry.damageAcceptors.doAreaDamage(this.gameObject, (Vector2)transform.position, damageRadius, damage, "demolition", knockback);
@@ -83,7 +93,14 @@ public class InteractableObject : MonoBehaviour, DamageAcceptor
             effect.transform.localScale *= damageRadius;
             Destroy(effect, 2f);
         }
-        Destroy(this.gameObject);
+        if(destroyObjectOnDestruct)
+        {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            Destroy(this);
+        }
     }
 
     void OnDestroy()
