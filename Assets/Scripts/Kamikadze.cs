@@ -10,7 +10,7 @@ public class Kamikadze : MonoBehaviour, DamageAcceptor, DamageProvider
         groups = new List<string>();
     }
     public List<string> groups { get; set; }
-    public float sightRange = 20f;
+    public float range = 20f;
 
     public GameObject effectOnExplode;
     public float damage = 50f;
@@ -54,7 +54,7 @@ public class Kamikadze : MonoBehaviour, DamageAcceptor, DamageProvider
     {
         if (target != null)
         {
-            if ((target.transform.position - this.transform.position).magnitude < sightRange)
+            if ((target.transform.position - this.transform.position).magnitude < range)
             {
                 float deltaX = target.transform.position.x - this.transform.position.x;
                 if (Mathf.Abs(deltaX) > 0.4f)

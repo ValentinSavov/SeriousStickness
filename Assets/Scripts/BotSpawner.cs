@@ -15,9 +15,10 @@ public class BotSpawner : MonoBehaviour
     int spawnedCounter = 0;
     string dinamicSpawnerID = "";
     Registry registry;
-
+    GameObject gpParent;
     void Start ()
     {
+        gpParent = GameObject.Find("GeneralPurposeParent");
         dinamicSpawnerID = Random.Range(0, 9999).ToString();
         registry = GameObject.FindObjectOfType<Registry>().GetComponent<Registry>();
         spawnCooldown = spawnPeriod;
@@ -46,11 +47,10 @@ public class BotSpawner : MonoBehaviour
     {
         GameObject spawned = Instantiate(prefab, 
             this.transform.position + new Vector3(Random.Range(-spawnRadius, spawnRadius), Random.Range(-spawnRadius, spawnRadius), 0),
-            Quaternion.identity
+            Quaternion.identity, gpParent.transform
             ) as GameObject;
         //Debug.Log("Spawned");
         spawned.GetComponent<BotControl>().startWeapon = startWeapon;
-        spawned.transform.parent = this.transform;
         spawned.GetComponent<DamageAcceptor>().groups.Add(dinamicSpawnerID);
         spawnedCounter++;
         if(spawnedCounter >= spawnLimit)

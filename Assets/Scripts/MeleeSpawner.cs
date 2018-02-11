@@ -5,7 +5,7 @@ using UnityEngine;
 public class MeleeSpawner : MonoBehaviour
 {
     public GameObject prefab;
-    public float AIRange = 10f;
+    //public float AIRange = 10f;
 
     public float spawnPeriod = 5f;
     public int maxActiveSpawned = 1;
@@ -15,14 +15,10 @@ public class MeleeSpawner : MonoBehaviour
     int spawnedCounter = 0;
     string dinamicSpawnerID = "";
     Registry registry;
-
+    GameObject gpParent;
     void Start ()
     {
-        InteractableObject io = GetComponentInParent<InteractableObject>();
-        if(io != null)
-        {
-            io.OnDestruct += DestructionEventHandler;
-        }
+        gpParent = GameObject.Find("GeneralPurposeParent");
         dinamicSpawnerID = Random.Range(0, 9999).ToString();
         registry = GameObject.FindObjectOfType<Registry>().GetComponent<Registry>();
         spawnCooldown = spawnPeriod;
@@ -49,20 +45,13 @@ public class MeleeSpawner : MonoBehaviour
     
     void Spawn()
     {
-        GameObject spawned = Instantiate(prefab, this.transform.position, Quaternion.identity, this.transform) as GameObject;
-        spawned.GetComponent<MeleeBotControl>().range = AIRange;
+        GameObject spawned = Instantiate(prefab, transform.position, Quaternion.identity, gpParent.transform) as GameObject;
+        
         spawned.GetComponent<DamageAcceptor>().groups.Add(dinamicSpawnerID);
         spawnedCounter++;
         if (spawnedCounter >= spawnLimit)
         {
             this.enabled = false;
         }
-    }
-
-    void DestructionEventHandler()
-    {
-        transform.Find("Healthy").gameObject.SetActive(false);
-        transform.Find("Damaged").gameObject.SetActive(true);
-        this.enabled = false;
     }
 }

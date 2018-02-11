@@ -138,13 +138,14 @@ public class MeleeBotControl : MonoBehaviour, DamageAcceptor, DamageProvider
             }
             else
             {
-                if(Mathf.Abs(transform.position.x - startPosition.x) > range)
+                //if(Mathf.Abs(transform.position.x - startPosition.x) > range)
                 {
                     //went too far, go home
-                    direction = -Mathf.Sign(transform.position.x - startPosition.x);
-                    movement.MoveX(direction);
+                    //direction = -Mathf.Sign(transform.position.x - startPosition.x);
+                    //movement.MoveX(direction);
                 }
-                else if (Mathf.Abs(deltaX) < range/2)
+                //else 
+                if (Mathf.Abs(deltaX) < range/2)
                 {
                     if ((CanMoveTo(direction)))
                     {
@@ -239,6 +240,10 @@ public class MeleeBotControl : MonoBehaviour, DamageAcceptor, DamageProvider
 
     public void acceptDamage(DamageAcceptorRegistry.DamageArgs argInArgs)
     {
+        if(this.gameObject == null)
+        {
+            return;
+        }
         if (stats.isDead)
         {
             return;
