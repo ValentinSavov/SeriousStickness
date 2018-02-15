@@ -142,7 +142,6 @@ public class PlayerGear : MonoBehaviour
             if (other.gameObject.GetComponent<Weapon>().GetComponentInParent<WeaponSpot>() == null)
             {
                 //if it is a real weapon, existing in the database
-                //GearItem otherGearItemFromDatabase = gearDatabase.weapons.Find(x => x.gamePref.name == other.gameObject.name);
                 GearItem otherGearItemFromDatabase = gearDatabase.weapons.Find(x => other.gameObject.name.Contains(x.gamePref.name) );
                 if (otherGearItemFromDatabase != null)
                 {
@@ -167,8 +166,14 @@ public class PlayerGear : MonoBehaviour
                         instantiatedWeap.transform.localScale = Vector3.one;
                         instantiatedWeap.SetActive(false);
 
-
+                        //do the same for UI gameobjects
+                        RectTransform guiWeaponSpot = GameObject.Find("UI").transform.Find("ActiveWeapon").GetComponent<RectTransform>();
+                        GameObject instantiatedWeapUI = Instantiate(otherGearItemFromDatabase.guiPref, guiWeaponSpot) as GameObject;
+                        instantiatedWeapUI.GetComponent<RectTransform>().localPosition = Vector3.zero;
+                        instantiatedWeapUI.SetActive(false);
+                        
                         newiw.weaponGO = instantiatedWeap;
+                        newiw.weaponUIGO = instantiatedWeapUI;
                         newiw.bullets = 10f;
                         //newiw.durability = 100f;
                         availableWeapons.Add(newiw);

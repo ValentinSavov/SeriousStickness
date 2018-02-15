@@ -91,7 +91,7 @@ public class InteractableObject : MonoBehaviour, DamageAcceptor
             GameObject effect = Instantiate(effectOnDestruct, gpParent.transform);
             effect.transform.position = this.transform.position;
             effect.transform.localScale *= damageRadius;
-            Destroy(effect, 2f);
+            //Destroy(effect, 2f);
         }
         if(destroyObjectOnDestruct)
         {

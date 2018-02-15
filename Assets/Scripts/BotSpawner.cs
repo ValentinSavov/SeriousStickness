@@ -16,6 +16,7 @@ public class BotSpawner : MonoBehaviour
     string dinamicSpawnerID = "";
     Registry registry;
     GameObject gpParent;
+
     void Start ()
     {
         gpParent = GameObject.Find("GeneralPurposeParent");

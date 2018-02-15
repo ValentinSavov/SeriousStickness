@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class ExplosionEffectControl : MonoBehaviour
 {
+    public float lifeTime = 2f;
     SoundControl soundControl;
 	void Start ()
     {
@@ -17,4 +18,13 @@ public class ExplosionEffectControl : MonoBehaviour
             GetComponentInChildren<AudioSource>().enabled = true;
         }
 	}
+
+    private void Update()
+    {
+        lifeTime -= Time.deltaTime;
+        if(lifeTime <= 0)
+        {
+            Destroy(this.gameObject);
+        }
+    }
 }
