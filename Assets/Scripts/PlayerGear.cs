@@ -14,6 +14,7 @@ public class PlayerGear : MonoBehaviour
         [HideInInspector]
         public GameObject weaponUIGO;
         public float bullets;
+        public bool infiniteBullets;
         //public float durability = 100f; // 0 - 100
     }
     public List<InventoryWeapon> availableWeapons = new List<InventoryWeapon>();
@@ -115,11 +116,14 @@ public class PlayerGear : MonoBehaviour
         Weapon activeWeap = availableWeapons[selectedWeapon].weaponGO.GetComponent<Weapon>();
         if (activeWeap != null)
         {
-            if ((availableWeapons[selectedWeapon].bullets > 0f) /*&& (availableWeapons[selectedWeapon].durability > 0f)*/)
+            if (((availableWeapons[selectedWeapon].bullets > 0f) || (availableWeapons[selectedWeapon].infiniteBullets)) /*&& (availableWeapons[selectedWeapon].durability > 0f)*/)
             {
                 if (activeWeap.Engage(cursor.transform.position) == true)
                 {
-                    availableWeapons[selectedWeapon].bullets--;
+                    if (!availableWeapons[selectedWeapon].infiniteBullets)
+                    {
+                        availableWeapons[selectedWeapon].bullets--;
+                    }
                     //vsa do something for durability
                 }
             }

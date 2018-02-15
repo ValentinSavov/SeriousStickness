@@ -301,7 +301,13 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
                     if (anim) { anim.enabled = false; }
 
                     //vsa ragdoll stuff here...
-                    
+                    GameObject stickBody = transform.Find("StickBody").gameObject;
+                    stickBody.SetActive(false);
+                    Vector3 stickBodyPosition = stickBody.transform.position;
+                    GameObject ragdoll = Instantiate(Resources.Load("Ragdoll", typeof(GameObject)),
+                    stickBodyPosition, Quaternion.identity, gpParent.transform) as GameObject;
+                    ragdoll.GetComponent<Ragdoll>().Push(argInArgs.knockback);
+
                     registry.damageAcceptors.RemoveDamageAcceptor(this);
 
                     //Destroy(this);

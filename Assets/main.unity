@@ -1347,7 +1347,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2137443442}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!124 &523063737
 Behaviour:
@@ -1562,7 +1562,7 @@ Transform:
   - {fileID: 1863713748}
   - {fileID: 2048451480}
   m_Father: {fileID: 2137443442}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &689837381
 GameObject:
@@ -2606,7 +2606,7 @@ MonoBehaviour:
   - gamePref: {fileID: 1476452001309698, guid: fff37b3d2d9ae754399cbf904c688604, type: 2}
     guiPref: {fileID: 1155974373543188, guid: cfd1cea3a41639143a79fddff325aa7d, type: 2}
   - gamePref: {fileID: 1492227962393300, guid: 7bbc2f73a47cc3d4f9b97f8f48be3ee5, type: 2}
-    guiPref: {fileID: 1959642762143152, guid: 740b19f03d063f14db8a844a3803f605, type: 2}
+    guiPref: {fileID: 1155974373543188, guid: 69569fe2907cfab4f8cab342b045a686, type: 2}
 --- !u!114 &1389318606
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4218,14 +4218,22 @@ MonoBehaviour:
     weaponGO: {fileID: 0}
     weaponUIGO: {fileID: 0}
     bullets: 100
+    infiniteBullets: 0
   - name: RailGun
     weaponGO: {fileID: 0}
     weaponUIGO: {fileID: 0}
     bullets: 50
+    infiniteBullets: 0
   - name: MachineGun
     weaponGO: {fileID: 0}
     weaponUIGO: {fileID: 0}
     bullets: 400
+    infiniteBullets: 0
+  - name: MeleeWeapon
+    weaponGO: {fileID: 0}
+    weaponUIGO: {fileID: 0}
+    bullets: 0
+    infiniteBullets: 1
   selectedWeapon: 0
 --- !u!95 &2137443437
 Animator:
@@ -4310,8 +4318,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 387257860}
-  - {fileID: 664896319}
   - {fileID: 523063735}
+  - {fileID: 664896319}
   - {fileID: 346699440}
   m_Father: {fileID: 0}
   m_RootOrder: 2

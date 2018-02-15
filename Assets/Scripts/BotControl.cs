@@ -274,7 +274,7 @@ public class BotControl : MonoBehaviour, DamageAcceptor, DamageProvider
     bool IsWhereToJumpDown()
     {
         bool found = false;
-        RaycastHit2D[] hits = Physics2D.RaycastAll(this.transform.position + (Vector3.down/2), Vector3.down, 4f);
+        RaycastHit2D[] hits = Physics2D.RaycastAll(this.transform.position + (Vector3.down), Vector3.down, 4f, movement.layersToSense);
         foreach (RaycastHit2D hit in hits)
         {
             if (hit.collider.gameObject.GetComponent<FloorTag>() != null)
