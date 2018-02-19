@@ -4,7 +4,7 @@ using UnityEngine;
 
 
 [System.Serializable]
-public class GearItem
+public class GearDatabaseItem
 {
     public GameObject gamePref;
     public GameObject guiPref;
@@ -12,5 +12,5 @@ public class GearItem
 
 public class GearDatabase : MonoBehaviour
 {
-    public List<GearItem> weapons = new List<GearItem>();
+    public List<GearDatabaseItem> weapons = new List<GearDatabaseItem>();
 }

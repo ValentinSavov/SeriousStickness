@@ -52,11 +52,24 @@ public class PlayerGear : MonoBehaviour
                 weapUI.GetComponent<RectTransform>().localPosition = Vector3.zero;
                 availableWeapons[i].weaponUIGO = weapUI;
                 weapUI.SetActive(false);
+
+                //ui weapon slots adjust
+                GameObject weaponSlot = GameObject.Find("UI").transform.Find("Weapons").Find(i.ToString()).gameObject;
+                if(weaponSlot != null)
+                {
+                    weaponSlot.transform.Find(availableWeapons[i].name).gameObject.SetActive(true);
+                }
             }
 
             availableWeapons[selectedWeapon].weaponGO.SetActive(true);
             availableWeapons[selectedWeapon].weaponUIGO.SetActive(true);
+
+            
         }
+
+        
+
+
     }
 
     void Update()
@@ -142,7 +155,7 @@ public class PlayerGear : MonoBehaviour
             if (other.gameObject.GetComponent<Weapon>().GetComponentInParent<WeaponSpot>() == null)
             {
                 //if it is a real weapon, existing in the database
-                GearItem otherGearItemFromDatabase = gearDatabase.weapons.Find(x => other.gameObject.name.Contains(x.gamePref.name) );
+                GearDatabaseItem otherGearItemFromDatabase = gearDatabase.weapons.Find(x => other.gameObject.name.Contains(x.gamePref.name) );
                 if (otherGearItemFromDatabase != null)
                 {
                     Transform weaponSpot = GetComponentInChildren<WeaponSpot>().transform;
@@ -174,9 +187,17 @@ public class PlayerGear : MonoBehaviour
                         
                         newiw.weaponGO = instantiatedWeap;
                         newiw.weaponUIGO = instantiatedWeapUI;
-                        newiw.bullets = 10f;
-                        //newiw.durability = 100f;
+                        newiw.bullets = other.gameObject.GetComponent<Weapon>().bullets;
                         availableWeapons.Add(newiw);
+                        SetSelectedWeapon(availableWeapons.IndexOf(newiw));
+
+                        //ui weapon slots adjust
+                        GameObject weaponSlot = GameObject.Find("UI").transform.Find("Weapons").Find(availableWeapons.IndexOf(newiw).ToString()).gameObject;
+                        if (weaponSlot != null)
+                        {
+                            weaponSlot.transform.Find(otherGearItemFromDatabase.gamePref.name).gameObject.SetActive(true);
+                        }
+
                     }
                     Destroy(other.gameObject);
                 }

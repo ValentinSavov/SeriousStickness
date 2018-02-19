@@ -116,14 +116,4 @@ public class MeleeWeapon : Weapon
 
         return result;
     }
-
-    public override void Arm()
-    {
-        
-    }
-    public override void Disarm()
-    {
-        
-    }
-
 }
