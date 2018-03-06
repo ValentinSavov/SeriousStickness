@@ -5,7 +5,7 @@ using UnityEngine;
 public class BotSpawner : MonoBehaviour
 {
     public GameObject prefab;
-    public string startWeapon = "RocketLauncher";
+    //public string startWeapon = "RocketLauncher";
     public float spawnRadius = 3f;
     public float spawnPeriod = 5f;
     public int maxActiveSpawned = 5;
@@ -17,6 +17,16 @@ public class BotSpawner : MonoBehaviour
     Registry registry;
     GameObject gpParent;
 
+    public enum Weapons
+    {
+        No,
+        MeleeWeapon,
+        RocketLauncher,
+        RailGun,
+        MachineGun
+    }
+
+    public Weapons startWeapon = Weapons.RocketLauncher;
     void Start ()
     {
         gpParent = GameObject.Find("GeneralPurposeParent");
@@ -51,7 +61,7 @@ public class BotSpawner : MonoBehaviour
             Quaternion.identity, gpParent.transform
             ) as GameObject;
         //Debug.Log("Spawned");
-        spawned.GetComponent<BotControl>().startWeapon = startWeapon;
+        spawned.GetComponent<BotControl>().startWeapon = startWeapon.ToString();
         spawned.GetComponent<DamageAcceptor>().groups.Add(dinamicSpawnerID);
         spawnedCounter++;
         if(spawnedCounter >= spawnLimit)

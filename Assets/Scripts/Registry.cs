@@ -108,13 +108,13 @@ public class DamageAcceptorRegistry
         }
     }*/
     
-    public void doTargetDamage(DamageAcceptor damageAcceptor, GameObject argInSource, float argInDmg, string argInDamageType, Vector2 argInKnockBack,  List<string> argInIgnoreGroups)
+    public void doTargetDamage(DamageAcceptor damageAcceptor, GameObject argInSource, float argInDmg, string argInDamageType, Vector2 argInKnockBack/*,  List<string> argInIgnoreGroups*/)
     {
         if (damageAcceptor != null)
         {
             if (((Component)damageAcceptor).gameObject != argInSource)
             {
-                if (!(damageAcceptor.groups.Intersect(argInIgnoreGroups).Any()))
+                //if (!(damageAcceptor.groups.Intersect(argInIgnoreGroups).Any()))
                 {
                     DamageArgs args = new DamageArgs();
                     args.knockback = argInKnockBack;

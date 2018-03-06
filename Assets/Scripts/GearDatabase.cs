@@ -12,5 +12,6 @@ public class GearDatabaseItem
 
 public class GearDatabase : MonoBehaviour
 {
+
     public List<GearDatabaseItem> weapons = new List<GearDatabaseItem>();
 }

@@ -64,8 +64,7 @@ public class MachineGun : Weapon
                         GetComponentInParent<Tag>().gameObject,
                         localdmg,
                         "normal",
-                        (newTarget - this.transform.position).normalized * 2000f,
-                        groups);
+                        (newTarget - this.transform.position).normalized * 2000f);
 
                     if ( (((Component)acceptor).gameObject.GetComponent<StickStats>() != null) || (((Component)acceptor).gameObject.GetComponent<Ragdoll>() != null))
                     {

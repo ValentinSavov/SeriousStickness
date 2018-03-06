@@ -1240,10 +1240,10 @@ MonoBehaviour:
   grounded: 0
   sideTouchL: 0
   sideTouchR: 0
-  canPushSideTouch: 0
+  pushableSideTouch: 0
   layersToSense:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 4097
   velocity: {x: 0, y: 0}
 --- !u!114 &114850963162014048
 MonoBehaviour:

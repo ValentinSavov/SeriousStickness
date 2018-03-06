@@ -84,8 +84,7 @@ public class MeleeWeapon : Weapon
                     {
                         continue;
                     }
-
-
+                    
                     if (acceptor != null)
                     {
                         if (acceptors.Contains(acceptor))
@@ -98,9 +97,8 @@ public class MeleeWeapon : Weapon
                             acceptor,
                             GetComponentInParent<Tag>().gameObject,
                             damage,
-                            "normal",
-                            (newTarget - this.transform.position).normalized * 2000f,
-                            groups);
+                            "melee",
+                            (newTarget - this.transform.position).normalized * 2000f);
 
                         if ((((Component)acceptor).gameObject.GetComponent<StickStats>() != null) || (((Component)acceptor).gameObject.GetComponent<Ragdoll>() != null))
                         {

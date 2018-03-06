@@ -12,7 +12,7 @@ public class MeleeBotControl : MonoBehaviour, DamageAcceptor, DamageProvider
     public List<string> groups { get; set; }
     public float range = 14f;
 
-    GameObject gpParent;
+    //GameObject gpParent;
     StickStats stats;
     MovementController movement;
     Registry registry;
@@ -27,7 +27,7 @@ public class MeleeBotControl : MonoBehaviour, DamageAcceptor, DamageProvider
 
     void Start ()
 	{
-        gpParent = GameObject.Find("GeneralPurposeParent");
+        //gpParent = GameObject.Find("GeneralPurposeParent");
         stats = GetComponent<StickStats>();
         movement = GetComponent<MovementController>();
         anim = GetComponent<Animator>();
@@ -226,8 +226,7 @@ public class MeleeBotControl : MonoBehaviour, DamageAcceptor, DamageProvider
                         GetComponentInParent<Tag>().gameObject,
                         damage,
                         "normal",
-                        knockback,
-                        groups);
+                        knockback);
         }
     }
     #endregion
@@ -249,6 +248,10 @@ public class MeleeBotControl : MonoBehaviour, DamageAcceptor, DamageProvider
             return;
         }
         float locDamage = argInArgs.dmg;
+        if(argInArgs.type == "melee")
+        {
+            locDamage *= 2;
+        }
         if (stats.currentArmorPoints > 0)
         {
             if (stats.currentArmorPoints > locDamage)

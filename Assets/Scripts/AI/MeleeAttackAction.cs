@@ -64,7 +64,7 @@ public class MeleeAttackAction : GoapAction
             registry.damageAcceptors.doTargetDamage(
                 target.GetComponent<DamageAcceptor>(),
                 this.gameObject,
-                100f, "melee", new Vector2(0, 0), GetComponent<DamageAcceptor>().groups);
+                100f, "melee", new Vector2(0, 0));
 
             done = true;
         }

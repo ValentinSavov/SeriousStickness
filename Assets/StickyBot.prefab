@@ -1156,10 +1156,13 @@ MonoBehaviour:
   moveSpeed: 5
   jumpSpeed: 23
   grounded: 0
-  sideTouch: 0
+  sideTouchL: 0
+  sideTouchR: 0
+  pushableSideTouch: 0
   layersToSense:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 4097
+  velocity: {x: 0, y: 0}
 --- !u!114 &114056997814579862
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2126,7 +2129,7 @@ RectTransform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1792259519584050}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 2.6, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.01, y: 0.02, z: 0}
   m_Children:
   - {fileID: 224344030419663314}

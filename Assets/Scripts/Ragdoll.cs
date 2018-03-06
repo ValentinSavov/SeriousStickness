@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class Ragdoll : MonoBehaviour, DamageAcceptor
 {
-    GameObject gpParent;
+    //GameObject gpParent;
     Registry registry;
 
     public List<string> groups { get; set; }
 
     void Start ()
     {
-        gpParent = GameObject.Find("GeneralPurposeParent");
+        //gpParent = GameObject.Find("GeneralPurposeParent");
         registry = GameObject.FindObjectOfType<Registry>().GetComponent<Registry>();
         groups = new List<string>();
         groups.Add("level");

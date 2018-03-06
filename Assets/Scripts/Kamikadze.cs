@@ -24,7 +24,7 @@ public class Kamikadze : MonoBehaviour, DamageAcceptor, DamageProvider
     StickStats stats;
     float direction = 1;
     float stuckTime = 0f;
-
+    
     void Start()
     {
         stats = GetComponent<StickStats>();
@@ -37,15 +37,6 @@ public class Kamikadze : MonoBehaviour, DamageAcceptor, DamageProvider
         target = GameObject.FindObjectOfType<PlayerTag>().gameObject;
         stats.currentHitPoints = stats.totalHitPoints;
         stats.currentArmorPoints = stats.totalArmorPoints;
-
-        if (Random.Range(0, 10) > 5)
-        {
-            direction = 1;
-        }
-        else
-        {
-            direction = -1;
-        }
     }
 
     #region AI
@@ -59,7 +50,7 @@ public class Kamikadze : MonoBehaviour, DamageAcceptor, DamageProvider
                 float deltaX = target.transform.position.x - this.transform.position.x;
                 if (Mathf.Abs(deltaX) > 0.4f)
                 {
-                    float direction = Mathf.Sign(deltaX);
+                    direction = Mathf.Sign(deltaX);
                     this.transform.localScale = new Vector3(direction, 1, 1);
                     MoveSomehowTowards(direction);
                     //stuck check
@@ -127,7 +118,7 @@ public class Kamikadze : MonoBehaviour, DamageAcceptor, DamageProvider
             movement.JumpUp();
             movement.MoveX(direction);
         }
-        else if (movement.canPushSideTouch)
+        else if (movement.pushableSideTouch)
         {
             //Debug.Log("Can PUSH");
             movement.MoveX(direction);

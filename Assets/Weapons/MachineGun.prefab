@@ -191,7 +191,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isAutomatic: 1
-  bullets: 150
+  bullets: 400
   range: 10
   groups: []
   damage: 3

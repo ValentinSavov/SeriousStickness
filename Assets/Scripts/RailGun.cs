@@ -6,12 +6,10 @@ using System.Collections.Generic;
 public class RailGun : Weapon
 {
     public float fireRate = 1f;
-    float previousShotTime = 0f;
-    
-    //private float timepassed = 0f;
+    float cooldown;
     AudioSource audioSource;
     GameObject barrel;
-
+    GameObject loadEffect;
     public RailGun()
     {
         
@@ -24,24 +22,37 @@ public class RailGun : Weapon
         gpParent = GameObject.Find("GeneralPurposeParent");
         fireRate += Random.Range(-(fireRate*0.1f), fireRate*0.1f);
         barrel = transform.Find("barrel").gameObject;
+        loadEffect = barrel.transform.Find("LoadEffect").gameObject;
+
+        cooldown = (1f / fireRate);
+    }
+    
+    void Update()
+    {
+        cooldown -= Time.deltaTime;
+        if (cooldown <= 0f)
+        {
+            cooldown = 0f;
+            //loadEffect.transform.localScale = new Vector3(1, 1, 1);
+        }
+        //else
+        {
+            loadEffect.transform.localScale = new Vector3(1 - (cooldown * fireRate), 1, 1);
+        }
+
     }
 
-    
-
-    
-    
     public override bool Engage(Vector3 newTarget)
     {
         bool result = false;
-        if ((Time.time - previousShotTime) >= (1f / fireRate))
+        if (cooldown <= 0f)
         {
             //LineRenderer lr = GetComponentInChildren<LineRenderer>();
             Vector3[] positions = new Vector3[2];
             positions[0] = this.transform.position;
             positions[1] = this.transform.position + ((newTarget - this.transform.position).normalized * 100);
 
-
-            previousShotTime = Time.time;
+            cooldown = (1f / fireRate);
             audioSource.Play();
             RaycastHit2D[] hits = Physics2D.RaycastAll(positions[0], positions[1] - positions[0], range);
 
@@ -62,8 +73,7 @@ public class RailGun : Weapon
                         GetComponentInParent<Tag>().gameObject,
                         damage,
                         "normal",
-                        new Vector2(0, 0),
-                        groups);
+                        new Vector2(0, 0));
                 }
             }
             result = true;

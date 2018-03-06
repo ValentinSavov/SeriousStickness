@@ -17,7 +17,7 @@ public class MovementController : MonoBehaviour
     public bool sideTouchL = false;
     public bool sideTouchR = false;
     [HideInInspector]
-    public bool canPushSideTouch = false;
+    public bool pushableSideTouch = false;
 
     bool wantToJumpDown = false;
 
@@ -42,6 +42,7 @@ public class MovementController : MonoBehaviour
         UpdateSenses();
     }
 
+    //Vector2 knokcback;
 
     public void MoveX(float horisontalSpeed)
     {
@@ -58,7 +59,7 @@ public class MovementController : MonoBehaviour
             {
                 locvelocity.x = 0;
             }
-            if(canPushSideTouch)
+            if(pushableSideTouch)
             {
                 locvelocity.x /= 2;
             }
@@ -66,17 +67,6 @@ public class MovementController : MonoBehaviour
             //rbd.MovePosition(rbd.position + new Vector2(horisontalSpeed * moveSpeed * Time.deltaTime, 0));
             rbd.velocity = new Vector2(locvelocity.x, locvelocity.y);
             //rbd.AddForce(velocity - rbd.velocity, ForceMode2D.Impulse);
-        }
-    }
-    public void MoveXignoreSideTouch(float horisontalSpeed)
-    {
-        //the real value of the rbd velocity from the previous frame
-        velocity = rbd.velocity;
-        if (horisontalSpeed != 0)
-        {
-            Vector2 locvelocity = rbd.velocity;
-            locvelocity.x = horisontalSpeed * moveSpeed;
-            rbd.velocity = new Vector2(locvelocity.x, locvelocity.y);
         }
     }
 
@@ -151,7 +141,7 @@ public class MovementController : MonoBehaviour
     
     void UpdateSenses()
     {
-        canPushSideTouch = false;
+        pushableSideTouch = false;
         grounded = false;
         
         Collider2D[] colsG = Physics2D.OverlapPointAll(transform.position - (Vector3.up * GetComponent<CapsuleCollider2D>().size.x / 10), layersToSense);
@@ -165,7 +155,7 @@ public class MovementController : MonoBehaviour
 
         Collider2D[] colsR = Physics2D.OverlapCapsuleAll(transform.position + new Vector3(mainCollider.size.x / 2, mainCollider.size.y / 2, 0), new Vector2(mainCollider.size.x, mainCollider.size.y * 0.8f), CapsuleDirection2D.Vertical, 0f, layersToSense);
         Collider2D[] colsL = Physics2D.OverlapCapsuleAll(transform.position + new Vector3(-(mainCollider.size.x / 2), mainCollider.size.y / 2, 0), new Vector2(mainCollider.size.x, mainCollider.size.y * 0.8f), CapsuleDirection2D.Vertical, 0f, layersToSense);
-        //sideTouch = 0f;
+        
         sideTouchL = false;
         sideTouchR = false;
         foreach (Collider2D col in colsR)
@@ -174,12 +164,12 @@ public class MovementController : MonoBehaviour
             {
                 if(col.GetComponent<InteractableObject>() != null)
                 {
-                    canPushSideTouch = true;
+                    pushableSideTouch = true;
                 }
                 if ((!col.usedByEffector) && (col.GetComponent<BorderTag>() != null))
                 {
-                    canPushSideTouch = false;
-                    //sideTouch += 1;
+                    pushableSideTouch = false;
+                    
                     sideTouchR = true;
                     break;
                 }
@@ -191,12 +181,12 @@ public class MovementController : MonoBehaviour
             {
                 if (col.GetComponent<InteractableObject>() != null)
                 {
-                    canPushSideTouch = true;
+                    pushableSideTouch = true;
                 }
                 if ((!col.usedByEffector) && (col.GetComponent<BorderTag>() != null))
                 {
-                    canPushSideTouch = false;
-                    //sideTouch -= 1;
+                    pushableSideTouch = false;
+                    
                     sideTouchL = true;
                     break;
                 }

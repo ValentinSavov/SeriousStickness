@@ -42,7 +42,7 @@ public class Projectile : MonoBehaviour
             || (other.gameObject.GetComponentInParent<DamageAcceptor>() != null))
         {
             registry.damageAcceptors.doTargetDamage(other.gameObject.GetComponentInParent<DamageAcceptor>(), damageSource, damage, "normal",
-                (transform.right + (other.transform.position - transform.position).normalized) * 5000f, new List<string>());
+                (transform.right + (other.transform.position - transform.position).normalized) * 5000f);
             registry.damageAcceptors.doAreaDamage(damageSource, (Vector2)transform.position, explosionArea, damage, "normal", 5000f);
             Explode();
         }

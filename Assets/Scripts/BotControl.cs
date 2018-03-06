@@ -93,6 +93,14 @@ public class BotControl : MonoBehaviour, DamageAcceptor, DamageProvider
             chasing = true;
             return;
         }
+
+        /*Weapon weap = GetComponentInChildren<Weapon>();
+        if (weap != null)
+        {
+            weap.transform.rotation = Quaternion.AngleAxis(-45 * Mathf.Sign(transform.localScale.x), Vector3.forward);
+            anim.SetFloat("LookAngle", -45);
+        }*/
+
         changeDirectionCooldown -= Time.deltaTime;
         if (changeDirectionCooldown <= 0)
         {
@@ -166,8 +174,12 @@ public class BotControl : MonoBehaviour, DamageAcceptor, DamageProvider
             else
             {
                 // out of weapon range but still in bot range
+
                 weap.transform.rotation = Quaternion.identity;
-                anim.SetFloat("LookAngle", 0f);
+                anim.SetFloat("LookAngle", 0);
+                //weap.transform.rotation = Quaternion.AngleAxis(315, Vector3.forward);
+                //anim.SetFloat("LookAngle", -45);
+
                 float deltaX = target.transform.position.x - this.transform.position.x;
                 direction = Mathf.Sign(deltaX);
                 MoveSomehowTowards(direction);
@@ -202,6 +214,9 @@ public class BotControl : MonoBehaviour, DamageAcceptor, DamageProvider
             {
                 weap.transform.rotation = Quaternion.identity;
                 anim.SetFloat("LookAngle", 0f);
+
+                //weap.transform.rotation = Quaternion.AngleAxis(315, Vector3.forward);
+                //anim.SetFloat("LookAngle", -45);
             }
             chasing = false;
         }
@@ -223,7 +238,7 @@ public class BotControl : MonoBehaviour, DamageAcceptor, DamageProvider
             movement.MoveX(direction);
             animSpeedCommand = direction * Mathf.Sign(transform.localScale.x);
         }
-        else if (movement.canPushSideTouch)
+        else if (movement.pushableSideTouch)
         {
             //Debug.Log("Can PUSH");
             movement.MoveX(direction);
@@ -250,7 +265,7 @@ public class BotControl : MonoBehaviour, DamageAcceptor, DamageProvider
         if (!check)
         {
             //if forward-down is a floor
-            if (true == Physics2D.Raycast(transform.position + new Vector3(Mathf.Sign(direction) * 1, 0.1f, 0), new Vector3(0, -1, 0), 2f, movement.layersToSense))
+            if (true == Physics2D.Raycast(transform.position + new Vector3(Mathf.Sign(direction) * 1, 0.1f, 0), new Vector3(0, -1, 0), 3f, movement.layersToSense))
             {
                 return true;
             }

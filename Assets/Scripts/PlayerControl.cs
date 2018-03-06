@@ -16,7 +16,12 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
     SticknessLevel slevel;
     GameObject gpParent;
     Text health;
+    GameObject deadStickyNote;
+    GameObject ui;
     List<SourcesAndCooldowns> damageSourcesInCooldown = new List<SourcesAndCooldowns>();
+
+    float originalMoveSpeed;
+    float originalJumpSpeed;
 
     void Start()
     {
@@ -28,22 +33,23 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
         registry = GameObject.FindObjectOfType<Registry>().GetComponent<Registry>();
         registry.damageAcceptors.AddDamageAcceptor(this);
         slevel = GetComponent<SticknessLevel>();
-
+        ui = GameObject.Find("UI");
+        deadStickyNote = ui.transform.Find("DeadStickyNote").gameObject;
 
         gpParent = GameObject.Find("GeneralPurposeParent");
-        health = GameObject.Find("UI").transform.Find("Health").GetComponent<Text>();
+        health = ui.transform.Find("Health").GetComponent<Text>();
         health.text = ((int)(stats.currentHitPoints)).ToString();
+
+        originalMoveSpeed = movement.moveSpeed;
+        originalJumpSpeed = movement.jumpSpeed;
 
         groups = new List<string>();
         groups.Add("players");
         stats.currentHitPoints = stats.totalHitPoints;
         stats.currentArmorPoints = stats.totalArmorPoints;
 
-        /*GameObject startGO = GameObject.Find("StartSpot");
-        if(startGO != null)
-        {
-            this.transform.position = startGO.transform.position;
-        }*/
+        Time.timeScale = 1f;
+
         if (findStartPoint)
         {
             this.enabled = false;
@@ -61,38 +67,40 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
         }
     }
 
-    bool shielded;
     void FixedUpdate()
     {
         anim.SetBool("Jump", false);
         anim.SetBool("Fall", false);
         anim.SetFloat("Slide", 0);
 
-        UpdateDamageCooldowns();
-        SticknessLevelResponse();
+        //UpdateDamageCooldowns();
+        HealthUpdate();
 
-        if(Input.GetButton("Fire2"))
+        if (Input.GetButton("Fire2") && (slevel.level > 0))
         {
-            if (slevel.level > 0)
-            {
-                slevel.DecreaseLevel(Time.fixedDeltaTime * 10f);
-                Time.timeScale = 0.4f;
-            }
+            slevel.DecreaseLevel(Time.fixedDeltaTime * 10f);
+            Time.timeScale = 0.4f;
+            bonusHealAmount = 10;
         }
         else
         {
+            bonusHealAmount = 0;
             Time.timeScale = 1f;
         }
-        /*if ( (Input.GetButton("Fire2")) && (slevel.level > 0))
+
+        //speed boost
+        if ( (Input.GetKey(KeyCode.LeftShift)) && (slevel.level > 0))
         {
-            transform.Find("Shield").GetComponent<Renderer>().enabled = true;
-            shielded = true;
+            movement.moveSpeed = originalMoveSpeed * 1.5f;
+            movement.jumpSpeed = originalJumpSpeed * 1.2f;
+            slevel.DecreaseLevel(Time.fixedDeltaTime * 10f);
         }
         else
         {
-            transform.Find("Shield").GetComponent<Renderer>().enabled = false;
-            shielded = false;
-        }*/
+            movement.moveSpeed = originalMoveSpeed;
+            movement.jumpSpeed = originalJumpSpeed;
+        }
+
 
         //vsa suicide
         if (Input.GetKeyDown("k"))
@@ -106,9 +114,18 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
             return;
         }
 
-        //actual move
-        movement.MoveX(Input.GetAxis("Horizontal"));
 
+        if (Input.GetButton("Cancel"))
+        {
+            if (ui.transform.Find("Tip"))
+            {
+                ui.transform.Find("Tip").gameObject.SetActive(false);
+            }
+        }
+
+
+        //move
+        movement.MoveX(Input.GetAxis("Horizontal"));
         
         //turn to needed position
         if ((cursor.transform.position.x - this.transform.position.x) > 0)
@@ -136,18 +153,6 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
             {
                 anim.SetBool("Fall", true);
             }
-
-            /*
-            if (movement.sideTouch == 0)
-            {
-                anim.SetBool("Fall", true);
-            }
-            else
-            {
-                anim.SetFloat("Slide", movement.sideTouch);
-                this.transform.localScale = new Vector3(-movement.sideTouch, 1, 1);
-            }*/
-
         }
         
         //look at
@@ -160,11 +165,9 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
         }
         lookAngleForAnimator *= Mathf.Sign(transform.localScale.x);
         anim.SetFloat("LookAngle", lookAngleForAnimator);
-
         
         anim.SetFloat("Speed", Input.GetAxis("Horizontal") * Mathf.Sign(transform.localScale.x));
-
-
+        
         if (Input.GetAxis("Vertical") < -0.5f)
         {
             movement.JumpDown();
@@ -177,65 +180,67 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
             }
         }
     }
-
+    int bonusHealAmount = 0;
     float healTimeCounter = 0;
-    void SticknessLevelResponse()
+    void HealthUpdate()
     {
-        if (slevel.level < 10)
+        healTimeCounter += Time.deltaTime;
+        if (healTimeCounter >= 1)
         {
-            //DamageAcceptorRegistry.DamageArgs args = new DamageAcceptorRegistry.DamageArgs();
-            //args.dmg = Random.Range(2, 7);
-            //args.source = slevel.gameObject;
-            //acceptDamage(args);
-        }
-        else if (slevel.level > 50)
-        {
-            healTimeCounter += Time.deltaTime;
-            if (healTimeCounter >= 0.2)
+            healTimeCounter = 0;
+            int healAmount = 2 + bonusHealAmount;
+            if (slevel.level > 50)
             {
-                healTimeCounter = 0;
-                int healAmount = 0;
-                healAmount += 2;
-                if(slevel.level > 80)
-                {
-                    healAmount += 1;
-                }
-                stats.currentHitPoints += healAmount;
-                if (stats.currentHitPoints > stats.totalHitPoints * 1.2f)
-                {
-                    stats.currentHitPoints = stats.totalHitPoints * 1.2f;
-                }
-                else
-                {
-                    GameObject popup = Instantiate(Resources.Load("HealPopup", typeof(GameObject)),
-                    this.transform.position, Quaternion.identity)
-                    as GameObject;
-                    popup.GetComponent<Popup>().text = "" + healAmount.ToString();
-                    popup.transform.parent = gpParent.transform;
-                }
-                health.text = ((int)(stats.currentHitPoints)).ToString();
+                healAmount += 8;
             }
+            stats.currentHitPoints += healAmount;
+            if (stats.currentHitPoints > stats.totalHitPoints * 1.2f)
+            {
+                stats.currentHitPoints = stats.totalHitPoints * 1.2f;
+            }
+            else
+            {
+                //GameObject popup = Instantiate(Resources.Load("HealPopup", typeof(GameObject)),
+                //this.transform.position, Quaternion.identity)
+                //as GameObject;
+                //popup.GetComponent<Popup>().text = "" + healAmount.ToString();
+                //popup.transform.parent = gpParent.transform;
+            }
+            health.text = ((int)(stats.currentHitPoints)).ToString();
         }
-
-        if(shielded)
+        if(stats.currentHitPoints < 50)
         {
-            slevel.DecreaseLevel(Time.fixedDeltaTime * 5f);
+            GameObject.Find("UI").transform.Find("Blood").gameObject.SetActive(true);
         }
     }
+
+    void Heal(int healAmount)
+    {
+        stats.currentHitPoints += healAmount;
+        if (stats.currentHitPoints > stats.totalHitPoints * 1.2f)
+        {
+            stats.currentHitPoints = stats.totalHitPoints * 1.2f;
+        }
+        health.text = ((int)(stats.currentHitPoints)).ToString();
+    }
+
+    void HealTo(int healthLevel)
+    {
+        if (stats.currentHitPoints < healthLevel)
+        {
+            stats.currentHitPoints = Mathf.Clamp(healthLevel, 0, stats.totalHitPoints);
+            health.text = ((int)(stats.currentHitPoints)).ToString();
+        }
+    }
+
 
     void OnTriggerEnter2D(Collider2D other)
     {
         Checkpoint cp = other.GetComponent<Checkpoint>();
         if (cp != null)
         {
-            //if(cp.isFirst)
-            {
-                //slevel.StartDecreasing();
-            }
-            //else
-            {
-                slevel.Restart();
-            }
+            slevel.Restart();// IncreaseLevel(40);
+            HealTo(100);
         }
     }
 
@@ -258,13 +263,8 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
             {
                 return;
             }
-            if(shielded)
-            {
-                return;
-            }
             float locDamage = argInArgs.dmg;
-
-            damageSourcesInCooldown.Add(new SourcesAndCooldowns(argInArgs.source));
+            //damageSourcesInCooldown.Add(new SourcesAndCooldowns(argInArgs.source));
 
             if (stats.currentArmorPoints > 0)
             {
@@ -286,7 +286,11 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
                 as GameObject;
                 popup.GetComponent<Popup>().text = "-" + locDamage.ToString();
                 popup.transform.parent = gpParent.transform;
+
+                Animator healthBgAnim = GameObject.Find("UI").transform.Find("HealthBackground").GetComponent<Animator>();
+                if (healthBgAnim) healthBgAnim.SetTrigger("decrease");
                 
+
                 if (stats.currentHitPoints > locDamage)
                 {
                     stats.currentHitPoints -= locDamage;
@@ -307,14 +311,18 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
                     GameObject ragdoll = Instantiate(Resources.Load("Ragdoll", typeof(GameObject)),
                     stickBodyPosition, Quaternion.identity, gpParent.transform) as GameObject;
                     ragdoll.GetComponent<Ragdoll>().Push(argInArgs.knockback);
-
+                    GetComponent<CapsuleCollider2D>().enabled = false;
+                    GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
                     registry.damageAcceptors.RemoveDamageAcceptor(this);
 
-                    //Destroy(this);
+                    deadStickyNote.SetActive(true);
+
+                    Time.timeScale = 0.5f;
+
                     SceneControl sceneControl = GameObject.FindObjectOfType<SceneControl>();
                     if (sceneControl != null)
                     {
-                        sceneControl.Invoke("Die", 1f);
+                        sceneControl.Invoke("Die", 2f);
                     }
                 }
             }
