@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class TriggerCheckpoint : Trigger
 {
+    Checkpoint cp;
     void Update()
     {
-        if(GetComponent<Checkpoint>() == null)
-        Set();
+        cp = GetComponent<Checkpoint>();
+        cp.OnCheck += Set;
+        this.enabled = false;
     }
 }
 

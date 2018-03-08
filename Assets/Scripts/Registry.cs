@@ -206,8 +206,6 @@ public class Trigger : MonoBehaviour
 public abstract class Objective : MonoBehaviour
 {
     public string objectiveName;
-    [Tooltip("Higher value is higher priority")]
-    public int objectivePriority = 5;
     public List<Trigger> unresolvedMandatoryTriggers = new List<Trigger>();
     Registry registry;
     void Start()

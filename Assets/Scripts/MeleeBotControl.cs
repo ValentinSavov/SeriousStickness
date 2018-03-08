@@ -250,7 +250,7 @@ public class MeleeBotControl : MonoBehaviour, DamageAcceptor, DamageProvider
         float locDamage = argInArgs.dmg;
         if(argInArgs.type == "melee")
         {
-            locDamage *= 2;
+            locDamage *= 3;
         }
         if (stats.currentArmorPoints > 0)
         {

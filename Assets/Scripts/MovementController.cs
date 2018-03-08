@@ -40,17 +40,24 @@ public class MovementController : MonoBehaviour
     void LateUpdate()
     {
         UpdateSenses();
+
+        speedAd.x *= 0.5f;
+        speedAd.y *= 0.5f;
+        if (speedAd.magnitude < 1f)
+        {
+            speedAd = Vector2.zero;
+        }
+        rbd.velocity += speedAd;
     }
 
-    //Vector2 knokcback;
-
+    Vector2 locvelocity;
     public void MoveX(float horisontalSpeed)
     {
         //the real value of the rbd velocity from the previous frame
         velocity = rbd.velocity;
         if (horisontalSpeed != 0)
         {
-            Vector2 locvelocity = rbd.velocity;
+            locvelocity = rbd.velocity;
 
             locvelocity.x = horisontalSpeed * moveSpeed;
 
@@ -63,11 +70,18 @@ public class MovementController : MonoBehaviour
             {
                 locvelocity.x /= 2;
             }
+            //locvelocity += speedAd;
             //this.transform.Translate(new Vector3(horisontalSpeed * moveSpeed * Time.fixedDeltaTime, 0,0));
             //rbd.MovePosition(rbd.position + new Vector2(horisontalSpeed * moveSpeed * Time.deltaTime, 0));
             rbd.velocity = new Vector2(locvelocity.x, locvelocity.y);
             //rbd.AddForce(velocity - rbd.velocity, ForceMode2D.Impulse);
         }
+    }
+
+    Vector2 speedAd = Vector2.zero;
+    public void KnockBack(Vector2 argInKnockback)
+    {
+        speedAd = argInKnockback / 1000f;
     }
 
     public bool JumpUp()

@@ -451,6 +451,26 @@ Prefab:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114882890501792996, guid: 86517a3003f0597449d3377ca2c4a6fd,
+        type: 2}
+      propertyPath: m_Text
+      value: Esc[x]
+      objectReference: {fileID: 0}
+    - target: {fileID: 114882890501792996, guid: 86517a3003f0597449d3377ca2c4a6fd,
+        type: 2}
+      propertyPath: m_FontData.m_Alignment
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 224498686308405448, guid: 86517a3003f0597449d3377ca2c4a6fd,
+        type: 2}
+      propertyPath: m_AnchoredPosition.x
+      value: 21.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 224498686308405448, guid: 86517a3003f0597449d3377ca2c4a6fd,
+        type: 2}
+      propertyPath: m_SizeDelta.x
+      value: -43.6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 86517a3003f0597449d3377ca2c4a6fd, type: 2}
   m_IsPrefabParent: 0
@@ -1209,7 +1229,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.65
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -2737,7 +2757,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: '- FIND ALL STICKY POINTS AND REACH THE END'
+  m_Text: '- REACH THE END'
 --- !u!222 &738374484
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -6677,6 +6697,12 @@ MonoBehaviour:
     bullets: 0
     infiniteBullets: 1
   selectedWeapon: 0
+  changeWeapSounds:
+  - {fileID: 8300000, guid: a0b067581d4d40041b9bea929adbf676, type: 3}
+  - {fileID: 8300000, guid: 428a2b2b629580548b3342b1ef9c76ba, type: 3}
+  - {fileID: 8300000, guid: 0eca9068b1dd6014d90c4657aff2f513, type: 3}
+  takeAmmoSounds:
+  - {fileID: 8300000, guid: d1a7f5379e4cc2a4eb45d97a2b518c29, type: 3}
 --- !u!95 &2137443437
 Animator:
   serializedVersion: 3
@@ -6756,7 +6782,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2137443433}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2026.43, y: 55.7, z: 0}
+  m_LocalPosition: {x: 2027, y: 56.9, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 387257860}

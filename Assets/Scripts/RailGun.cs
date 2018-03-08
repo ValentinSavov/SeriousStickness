@@ -24,7 +24,7 @@ public class RailGun : Weapon
         barrel = transform.Find("barrel").gameObject;
         loadEffect = barrel.transform.Find("LoadEffect").gameObject;
 
-        cooldown = (1f / fireRate);
+        cooldown = 0;
     }
     
     void Update()
@@ -33,10 +33,6 @@ public class RailGun : Weapon
         if (cooldown <= 0f)
         {
             cooldown = 0f;
-            //loadEffect.transform.localScale = new Vector3(1, 1, 1);
-        }
-        //else
-        {
             loadEffect.transform.localScale = new Vector3(1 - (cooldown * fireRate), 1, 1);
         }
 

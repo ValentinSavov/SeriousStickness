@@ -21,14 +21,18 @@ public class PlayerGear : MonoBehaviour
 
     public int selectedWeapon = 0;
 
+    public List<AudioClip> changeWeapSounds = new List<AudioClip>();
+    public List<AudioClip> takeAmmoSounds = new List<AudioClip>();
+
     GameObject cursor;
     GearDatabase gearDatabase;
     Text ammotext;
-
+    AudioSource audioSource;
     void Start()
     {
         ammotext = GameObject.Find("UI").transform.Find("Ammo").GetComponent<Text>();
         Transform weaponSpot = GetComponentInChildren<WeaponSpot>().transform;
+        audioSource = weaponSpot.gameObject.GetComponent<AudioSource>();
         cursor = GameObject.FindObjectOfType<CursorTag>().gameObject;
         gearDatabase = GameObject.FindObjectOfType<GearDatabase>();
         RectTransform guiWeaponSpot = GameObject.Find("UI").transform.Find("ActiveWeapon").GetComponent<RectTransform>();
@@ -143,6 +147,10 @@ public class PlayerGear : MonoBehaviour
             else
             {
                 //vsa effect for no ammo
+                if (!audioSource.isPlaying)
+                {
+                    PlayAmmoSound();
+                }
             }
         }
     }
@@ -169,6 +177,7 @@ public class PlayerGear : MonoBehaviour
                         //just add some stuff to the existing
                         contained.bullets += Random.Range(5, 50);
                         //contained.durability = 100f;
+                        PlayAmmoSound();
                     }
                     else
                     {
@@ -197,7 +206,7 @@ public class PlayerGear : MonoBehaviour
                         {
                             weaponSlot.transform.Find(otherGearItemFromDatabase.gamePref.name).gameObject.SetActive(true);
                         }
-
+                        PlayChangeWeapSound();
                     }
                     Destroy(other.gameObject);
                 }
@@ -216,6 +225,7 @@ public class PlayerGear : MonoBehaviour
         }
         availableWeapons[selectedWeapon].weaponGO.SetActive(true);
         availableWeapons[selectedWeapon].weaponUIGO.SetActive(true);
+        PlayChangeWeapSound();
     }
     public void PrevWeapon()
     {
@@ -228,6 +238,7 @@ public class PlayerGear : MonoBehaviour
         }
         availableWeapons[selectedWeapon].weaponGO.SetActive(true);
         availableWeapons[selectedWeapon].weaponUIGO.SetActive(true);
+        PlayChangeWeapSound();
     }
     public void SetSelectedWeapon(int selected)
     {
@@ -238,7 +249,20 @@ public class PlayerGear : MonoBehaviour
             selectedWeapon = selected;
             availableWeapons[selectedWeapon].weaponGO.SetActive(true);
             availableWeapons[selectedWeapon].weaponUIGO.SetActive(true);
+            PlayChangeWeapSound();
         }
+    }
+
+    void PlayChangeWeapSound()
+    {
+        audioSource.clip = changeWeapSounds[Random.Range(0, changeWeapSounds.Count)];
+        audioSource.Play();
+    }
+
+    void PlayAmmoSound()
+    {
+        audioSource.clip = takeAmmoSounds[Random.Range(0, takeAmmoSounds.Count)];
+        audioSource.Play();
     }
 
     public GameObject GetSelectedWeapon()

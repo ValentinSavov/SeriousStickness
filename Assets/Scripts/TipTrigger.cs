@@ -18,13 +18,18 @@ public class TipTrigger : MonoBehaviour
     {
         if (col.GetComponentInParent<PlayerTag>())
         {
-            if(ui.transform.Find("Tip"))
-            {
-                GameObject tip = ui.transform.Find("Tip").gameObject;
-                tip.SetActive(true);
-                tip.transform.Find("Text").GetComponent<Text>().text = tipText;
-            }
-            this.gameObject.SetActive(false);
+            Activate();
         }
+    }
+
+    public void Activate()
+    {
+        if (ui.transform.Find("Tip"))
+        {
+            GameObject tip = ui.transform.Find("Tip").gameObject;
+            tip.SetActive(true);
+            tip.transform.Find("Text").GetComponent<Text>().text = tipText;
+        }
+        this.gameObject.SetActive(false);
     }
 }

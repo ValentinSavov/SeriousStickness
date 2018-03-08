@@ -114,6 +114,11 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
             return;
         }
 
+        //if (Input.GetKeyDown("n"))
+        {
+            //movement.KnockBack(new Vector2 (5000f, 5000f) );
+        }
+
 
         if (Input.GetButton("Cancel"))
         {
@@ -172,7 +177,7 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
         {
             movement.JumpDown();
         }
-        else if ( (Input.GetButton("Jump") == true) || (Input.GetAxis("Vertical") > 0.5f) )
+        else if ( (Input.GetButton("Jump") == true) /*|| (Input.GetAxis("Vertical") > 0.5f)*/ )
         {
             if (movement.JumpUp())
             {
@@ -290,11 +295,14 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
                 Animator healthBgAnim = GameObject.Find("UI").transform.Find("HealthBackground").GetComponent<Animator>();
                 if (healthBgAnim) healthBgAnim.SetTrigger("decrease");
                 
-
                 if (stats.currentHitPoints > locDamage)
                 {
                     stats.currentHitPoints -= locDamage;
                     locDamage = 0;
+                    if (argInArgs.knockback != new Vector2(0, 0))
+                    {
+                        movement.KnockBack(argInArgs.knockback);
+                    }
                 }
                 else
                 {
@@ -325,11 +333,6 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
                         sceneControl.Invoke("Die", 2f);
                     }
                 }
-            }
-
-            if (argInArgs.knockback != new Vector2(0, 0))
-            {
-                // vsa do something for knockback
             }
         }
         health.text = ((int)(stats.currentHitPoints)).ToString();

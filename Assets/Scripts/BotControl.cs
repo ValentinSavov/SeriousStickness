@@ -65,7 +65,7 @@ public class BotControl : MonoBehaviour, DamageAcceptor, DamageProvider
     }
 
     #region AI
-    void Update()
+    void FixedUpdate()
     {
         animSpeedCommand = 0f;
         anim.SetBool("Jump", false);
@@ -93,13 +93,6 @@ public class BotControl : MonoBehaviour, DamageAcceptor, DamageProvider
             chasing = true;
             return;
         }
-
-        /*Weapon weap = GetComponentInChildren<Weapon>();
-        if (weap != null)
-        {
-            weap.transform.rotation = Quaternion.AngleAxis(-45 * Mathf.Sign(transform.localScale.x), Vector3.forward);
-            anim.SetFloat("LookAngle", -45);
-        }*/
 
         changeDirectionCooldown -= Time.deltaTime;
         if (changeDirectionCooldown <= 0)
@@ -168,7 +161,6 @@ public class BotControl : MonoBehaviour, DamageAcceptor, DamageProvider
                         MoveSomehowTowards(direction);
                     }
                 }
-                
                 Attack();
             }
             else

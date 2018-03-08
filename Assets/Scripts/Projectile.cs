@@ -33,18 +33,19 @@ public class Projectile : MonoBehaviour
 
 	void OnTriggerEnter2D(Collider2D other)
 	{
-        if(damageSource)
-        if( (other.gameObject == damageSource.gameObject) || (other.transform.IsChildOf(damageSource.transform)) )
+        if ((damageSource != null) && (registry != null))
         {
-            return;
-        }
-        else if ( (other.gameObject.GetComponent<BorderTag>() != null) 
-            || (other.gameObject.GetComponentInParent<DamageAcceptor>() != null))
-        {
-            registry.damageAcceptors.doTargetDamage(other.gameObject.GetComponentInParent<DamageAcceptor>(), damageSource, damage, "normal",
-                (transform.right + (other.transform.position - transform.position).normalized) * 5000f);
-            registry.damageAcceptors.doAreaDamage(damageSource, (Vector2)transform.position, explosionArea, damage, "normal", 5000f);
-            Explode();
+            if ((other.gameObject == damageSource.gameObject) || (other.transform.IsChildOf(damageSource.transform)))
+            {
+                return;
+            }
+            else if ((other.gameObject.GetComponent<BorderTag>() != null) || (other.gameObject.GetComponentInParent<DamageAcceptor>() != null))
+            {
+                registry.damageAcceptors.doTargetDamage(other.gameObject.GetComponentInParent<DamageAcceptor>(), damageSource, damage/3, "normal",
+                    (transform.right + (other.transform.position - transform.position).normalized) * 3000f);
+                registry.damageAcceptors.doAreaDamage(damageSource, (Vector2)transform.position, explosionArea, damage, "normal", 5000f);
+                Explode();
+            }
         }
     }
 
@@ -53,6 +54,7 @@ public class Projectile : MonoBehaviour
         GameObject explosion = Instantiate(Resources.Load("Explosion", typeof(GameObject)), this.transform.position, Quaternion.identity) as GameObject;
         explosion.transform.parent = this.transform.parent;
         explosion.transform.localScale *= explosionArea;
+        this.gameObject.SetActive(false);
         Destroy(this.gameObject);
         Destroy(explosion, 2f);
     }
