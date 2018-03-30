@@ -12,6 +12,7 @@ public class SceneControl : MonoBehaviour
         SceneManager.sceneLoaded += OnSceneLoaded;
         SceneManager.sceneUnloaded += OnSceneUnloaded;
         SceneManager.LoadSceneAsync(startScene, LoadSceneMode.Additive);
+        //Screen.SetResolution(630, 500, false);
     }
 
     /*void Update()
