@@ -23,7 +23,8 @@ public class BotSpawner : MonoBehaviour
         MeleeWeapon,
         RocketLauncher,
         RailGun,
-        MachineGun
+        MachineGun,
+        GrenadeLauncher
     }
 
     public Weapons startWeapon = Weapons.RocketLauncher;

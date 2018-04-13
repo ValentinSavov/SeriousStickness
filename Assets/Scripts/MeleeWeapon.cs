@@ -78,7 +78,7 @@ public class MeleeWeapon : Weapon
                 {
                     DamageAcceptor acceptor = cols[i].gameObject.GetComponent<DamageAcceptor>();
 
-                    if ((cols[i].isTrigger) ||
+                    if (/*(cols[i].isTrigger) ||*/
                         ((acceptor != null) && (acceptor == this.GetComponentInParent<DamageAcceptor>())) ||
                         (cols[i].usedByEffector))
                     {

@@ -40,7 +40,7 @@ GameObject:
   - component: {fileID: 82582248325066946}
   - component: {fileID: 61471259893891332}
   m_Layer: 10
-  m_Name: RocketLauncher
+  m_Name: GrenadeLauncher
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -81,7 +81,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1492227962393300}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2187.197, y: 41.30883, z: 0}
+  m_LocalPosition: {x: 2028.648, y: 57.505726, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4361487556189312}
@@ -222,9 +222,9 @@ MonoBehaviour:
   bullets: 60
   range: 12
   groups: []
-  damage: 9
-  projectileResourceName: Rocket
-  fireRate: 2
+  damage: 15
+  projectileResourceName: Grenade
+  fireRate: 3
 --- !u!212 &212210428304464984
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -260,7 +260,7 @@ SpriteRenderer:
   m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: e2d7805119a326f498693ece21d25728, type: 3}
-  m_Color: {r: 1, g: 0, b: 0, a: 1}
+  m_Color: {r: 1, g: 0.5586207, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0

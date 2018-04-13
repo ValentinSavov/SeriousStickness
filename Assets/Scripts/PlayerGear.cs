@@ -120,6 +120,10 @@ public class PlayerGear : MonoBehaviour
         {
             SetSelectedWeapon(3);
         }
+        if (Input.GetKeyDown(KeyCode.Alpha5))
+        {
+            SetSelectedWeapon(4);
+        }
 
         //vsa javar takuv, mahni tva ot tuka
         if (ammotext != null)

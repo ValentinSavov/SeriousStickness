@@ -41,7 +41,7 @@ public class MachineGun : Weapon
             {
                 DamageAcceptor acceptor = hit.collider.gameObject.GetComponent<DamageAcceptor>();
 
-                if ( (hit.collider.isTrigger) || 
+                if ( /*(hit.collider.isTrigger) ||*/ 
                     ((acceptor != null) && (acceptor == this.GetComponentInParent<DamageAcceptor>())) ||
                     (hit.collider.usedByEffector))
                 {
@@ -72,7 +72,10 @@ public class MachineGun : Weapon
                         bulletHitEffect.GetComponent<ParticleSystem>().startSize *= 2;
                     }
                 }
-                localdmg *= 0.8f;
+                if(!hit.collider.isTrigger)
+                {
+                    localdmg *= 0.8f;
+                }
                 if(localdmg <= damage / 10)
                 {
                     break;
