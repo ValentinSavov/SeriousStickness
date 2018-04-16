@@ -41,13 +41,14 @@ public class MovementController : MonoBehaviour
     {
         UpdateSenses();
 
-        speedAd.x *= 0.5f;
-        speedAd.y *= 0.5f;
+        speedAd.x *= 0.7f;
+        speedAd.y *= 0.7f;
         if (speedAd.magnitude < 1f)
         {
             speedAd = Vector2.zero;
         }
         rbd.velocity += speedAd;
+        rbd.velocity.Set(Mathf.Clamp(rbd.velocity.x, -20, 20), Mathf.Clamp(rbd.velocity.y, -20, 20));
     }
 
     Vector2 locvelocity;
@@ -75,6 +76,7 @@ public class MovementController : MonoBehaviour
             //rbd.MovePosition(rbd.position + new Vector2(horisontalSpeed * moveSpeed * Time.deltaTime, 0));
             rbd.velocity = new Vector2(locvelocity.x, locvelocity.y);
             //rbd.AddForce(velocity - rbd.velocity, ForceMode2D.Impulse);
+            rbd.velocity += speedAd;
         }
     }
 

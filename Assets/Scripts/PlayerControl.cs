@@ -301,7 +301,9 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
                     locDamage = 0;
                     if (argInArgs.knockback != new Vector2(0, 0))
                     {
-                        movement.KnockBack(argInArgs.knockback);
+                        //add vertical knockback effect
+                        Vector2 knb = (argInArgs.knockback.normalized + Vector2.up) * argInArgs.knockback.magnitude;
+                        movement.KnockBack(knb);
                     }
                 }
                 else

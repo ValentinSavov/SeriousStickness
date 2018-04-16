@@ -181,7 +181,7 @@ public class MeleeBotControl : MonoBehaviour, DamageAcceptor, DamageProvider
 
         if ((target.transform.position - this.transform.position).magnitude < 1f)
         {
-            Attack(target.GetComponent<DamageAcceptor>(), Random.Range(5,20), (((Component)target.GetComponent<DamageAcceptor>()).transform.position - this.transform.position).normalized * 5000);
+            Attack(target.GetComponent<DamageAcceptor>(), Random.Range(5,20), ((((Component)target.GetComponent<DamageAcceptor>()).transform.position - this.transform.position).normalized) * 5000);
         }
     }
 

@@ -186,12 +186,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   destructible: 1
+  destroyObjectOnDestruct: 1
   hitPoints: 5
   effectOnDestruct: {fileID: 139366, guid: b185c1a9cf067374586d095111b15bd1, type: 2}
   doAreaDamageOnDestruct: 1
   damage: 50
   damageRadius: 5
-  knockback: 30000
+  knockback: 8000
 --- !u!212 &212816682851023466
 SpriteRenderer:
   m_ObjectHideFlags: 1

@@ -43,7 +43,8 @@ public class MachineGun : Weapon
 
                 if ( /*(hit.collider.isTrigger) ||*/ 
                     ((acceptor != null) && (acceptor == this.GetComponentInParent<DamageAcceptor>())) ||
-                    (hit.collider.usedByEffector))
+                    (hit.collider.usedByEffector)
+                    || (hit.collider.gameObject == this.gameObject))
                 {
                     continue;
                 }
@@ -64,7 +65,7 @@ public class MachineGun : Weapon
                         GetComponentInParent<Tag>().gameObject,
                         localdmg,
                         "normal",
-                        (newTarget - this.transform.position).normalized * 2000f);
+                        (newTarget - this.transform.position).normalized * 500f);
 
                     if ( (((Component)acceptor).gameObject.GetComponent<StickStats>() != null) || (((Component)acceptor).gameObject.GetComponent<Ragdoll>() != null))
                     {

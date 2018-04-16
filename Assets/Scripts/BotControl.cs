@@ -382,6 +382,10 @@ public class BotControl : MonoBehaviour, DamageAcceptor, DamageProvider
             {
                 stats.currentHitPoints -= locDamage;
                 locDamage = 0;
+
+                Vector2 knb = (argInArgs.knockback.normalized + Vector2.up) * argInArgs.knockback.magnitude;
+                movement.KnockBack(knb);
+
             }
             else
             {

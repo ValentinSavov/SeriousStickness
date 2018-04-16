@@ -4,6 +4,7 @@ using System.Collections.Generic;
 public abstract class Projectile : MonoBehaviour 
 {
 	public float damage = 100;
+    public float knockback = 5000f;
     public float explosionArea = 5f;
 	public float speed = 5f;
 	public float distance = 100f;
@@ -13,7 +14,7 @@ public abstract class Projectile : MonoBehaviour
 
     protected void Explode()
     {
-        registry.damageAcceptors.doAreaDamage(damageSource, (Vector2)transform.position, explosionArea, damage, "normal", 5000f);
+        registry.damageAcceptors.doAreaDamage(damageSource, (Vector2)transform.position, explosionArea, damage, "normal", knockback);
 
         GameObject explosion = Instantiate(Resources.Load("Explosion", typeof(GameObject)), this.transform.position, Quaternion.identity) as GameObject;
         explosion.transform.parent = this.transform.parent;
