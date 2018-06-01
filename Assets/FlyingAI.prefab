@@ -97,7 +97,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4417909208294028
 Transform:
   m_ObjectHideFlags: 1
@@ -106,7 +106,7 @@ Transform:
   m_GameObject: {fileID: 1504950965134516}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 3.813005, y: 3.8130026, z: 3.8130026}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4691407718452782}
   m_RootOrder: 1
@@ -118,7 +118,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1496794670121168}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2122.3, y: 46.3, z: 0}
+  m_LocalPosition: {x: 2103.27, y: 58.09, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 224931691941083110}
@@ -140,7 +140,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.73
+  m_Radius: 0.7
 --- !u!114 &114149692825676992
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -189,6 +189,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 805cb3dbe56d5d549976a81e5d29d3b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  randomizePeriods: 1
   Xamplitude: 5
   Xperiod: 0.8
   Yamplitude: 5
@@ -310,8 +311,8 @@ SpriteRenderer:
   m_SortingLayerID: -1883948283
   m_SortingLayer: 4
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: 601ab9b830c17684387896e53a83db9a, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Sprite: {fileID: 21300000, guid: b58d71ec1b556044b8f1297c0a6af767, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.541}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0

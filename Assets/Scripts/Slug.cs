@@ -3,96 +3,76 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 
-public class FlyingAI : MonoBehaviour, DamageAcceptor, DamageProvider
+public class Slug : MonoBehaviour, DamageAcceptor, DamageProvider
 {
-    FlyingAI()
+    Slug()
     {
         groups = new List<string>();
     }
     public List<string> groups { get; set; }
-
+    
     StickStats stats;
     Registry registry;
     GameObject target;
     Animator anim;
-
-    Vector3 flyAroundPos;
-    public bool randomizePeriods = true;
-    public float Xamplitude = 5f;
-    public float Xperiod = 0.4f;
-    public float Yamplitude = 5f;
-    public float Yperiod = 0.4f;
-
-    public float damage = 5f;
+    GameObject gpParent;
     float attackCooldown = 0f;
-    float lookAtDirection = 1;
+
+    public float speed = 4f;
 
     void Start ()
 	{
         stats = GetComponent<StickStats>();
         anim = GetComponent<Animator>();
+        gpParent = GameObject.Find("GeneralPurposeParent");
         registry = GameObject.FindObjectOfType<Registry>().GetComponent<Registry>();
         registry.damageAcceptors.AddDamageAcceptor(this);
-        groups.Add("flies");
+        groups.Add("level");
         target = GameObject.FindObjectOfType<PlayerTag>().gameObject;
         stats.currentHitPoints = stats.totalHitPoints;
         stats.currentArmorPoints = stats.totalArmorPoints;
-        flyAroundPos = transform.position;
-
-        if (randomizePeriods)
-        {
-            Xperiod = Random.Range(Xperiod * 0.9f, Xperiod * 1.1f);
-            Yperiod = Xperiod / 2;
-        }
     }
     
     #region AI
     void Update()
     {
-        float theta = Time.timeSinceLevelLoad / Xperiod;
-        float Xoffset = Xamplitude * Mathf.Sin(theta);
-        theta = Time.timeSinceLevelLoad / Yperiod;
-        float Yoffset = Yamplitude * Mathf.Sin(theta);
-
-        if((target.transform.position - transform.position).magnitude < 20f)
-        {
-            flyAroundPos = Vector3.Lerp(flyAroundPos, target.transform.position, Time.deltaTime);
-        }
-
-        transform.position = flyAroundPos + new Vector3(Xoffset, Yoffset, 0f);
-
-        lookAtDirection = Mathf.Sign(target.transform.position.x - transform.position.x);
-        this.transform.localScale = new Vector3(lookAtDirection, 1, 1);
-
         attackCooldown -= Time.deltaTime;
         if (attackCooldown < 0f)
         {
             attackCooldown = 0f;
         }
 
-        if ((target.transform.position - transform.position).magnitude < 1f)
+        if (((target.transform.position - transform.position).magnitude) <= 20f)
+        {
+            if (Mathf.Abs(target.transform.position.x - transform.position.x) <= 3f)
+            {
+            }
+        }
+
+
+
+        /*if ((target.transform.position - transform.position).magnitude < 20f)
         {
             if ((attackCooldown <= 0f))
             {
-                Attack(target.GetComponent<DamageAcceptor>(), damage, Vector2.zero);
+                GameObject proj = Instantiate(Resources.Load("SpiderProjectile", typeof(GameObject)),
+                transform.position + (target.transform.position - transform.position).normalized, Quaternion.FromToRotation(Vector3.right,
+                target.transform.position - transform.position))
+                as GameObject;
+                proj.transform.parent = gpParent.transform;
+
                 attackCooldown = 1f;
             }
-        }
+        }*/
     }
 
-    void Attack(DamageAcceptor acceptor, float argInDamage, Vector2 knockback)
-    {
-        registry.damageAcceptors.doTargetDamage(
-                    acceptor,
-                    GetComponentInParent<Tag>().gameObject,
-                    argInDamage,
-                    "normal",
-                    knockback);
-    }
     #endregion
     #region  DamageAcceptor
 
-    public void ReportKill(DamageAcceptor killed) { }
+    public void ReportKill(DamageAcceptor killed)
+    {
+
+    }
 
     public void acceptDamage(DamageAcceptorRegistry.DamageArgs argInArgs)
     {

@@ -196,7 +196,7 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
             int healAmount = 2 + bonusHealAmount;
             if (slevel.level > 50)
             {
-                healAmount += 8;
+                //healAmount += 8;
             }
             stats.currentHitPoints += healAmount;
             if (stats.currentHitPoints > stats.totalHitPoints * 1.2f)

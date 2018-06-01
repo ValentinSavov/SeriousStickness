@@ -63,7 +63,7 @@ public class MachineGun : Weapon
                     registry.damageAcceptors.doTargetDamage(
                         acceptor,
                         GetComponentInParent<Tag>().gameObject,
-                        localdmg,
+                        (int)localdmg,
                         "normal",
                         (newTarget - this.transform.position).normalized * 500f);
 

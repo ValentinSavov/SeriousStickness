@@ -5,17 +5,28 @@ using UnityEngine;
 
 public class Enabler : MonoBehaviour
 {
-    public GameObject whatToEnableOnTrigger;
-    public bool disableColliderAftertrigger = true;
+    public MonoBehaviour whatToEnableOnTrigger;
+    [Tooltip("enable all diabled components on this gameobject")]
+    public bool findDisbled = true;
+
     void OnTriggerEnter2D(Collider2D col)
     {
-        if(col.GetComponentInParent<PlayerTag>())
+        if (col.GetComponentInParent<PlayerTag>())
         {
-            if(disableColliderAftertrigger)
+            if (findDisbled)
             {
-                this.GetComponent<Collider2D>().enabled = false;
+                MonoBehaviour[] components;
+                components = this.gameObject.GetComponents<MonoBehaviour>();
+                foreach (MonoBehaviour comp in components)
+                {
+                    comp.enabled = true;
+                }
             }
-            whatToEnableOnTrigger.SetActive(true);
+            else
+            {
+                whatToEnableOnTrigger.enabled = true;
+            }
+            this.GetComponent<Collider2D>().enabled = false;
         }
     }
 }

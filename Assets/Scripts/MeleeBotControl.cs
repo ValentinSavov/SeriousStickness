@@ -208,8 +208,11 @@ public class MeleeBotControl : MonoBehaviour, DamageAcceptor, DamageProvider
         }
         if (!check)
         {
+            CapsuleCollider2D caps = GetComponent<CapsuleCollider2D>();
+
+            Debug.DrawRay(transform.position + new Vector3(direction * caps.size.x * 0.6f, 0.5f, 0), new Vector3(0, -1, 0), Color.red);
             //if forward-down is a floor
-            if (true == Physics2D.Raycast(transform.position + new Vector3(Mathf.Sign(direction) * 2, 0.5f, 0), new Vector3(0, -1, 0), 1f, movement.layersToSense))
+            if (true == Physics2D.Raycast(transform.position + new Vector3(direction * caps.size.x*0.6f, 0.5f, 0), new Vector3(0, -1, 0), 1f, movement.layersToSense))
             {
                 return true;
             }
