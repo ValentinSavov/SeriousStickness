@@ -77,6 +77,7 @@ public class MovementController : MonoBehaviour
             rbd.velocity = new Vector2(locvelocity.x, locvelocity.y);
             //rbd.AddForce(velocity - rbd.velocity, ForceMode2D.Impulse);
             rbd.velocity += speedAd;
+            rbd.velocity.Set(Mathf.Clamp(rbd.velocity.x, -20, 20), Mathf.Clamp(rbd.velocity.y, -20, 20));
         }
     }
 
@@ -180,7 +181,7 @@ public class MovementController : MonoBehaviour
         sideTouchR = false;
         foreach (Collider2D col in colsR)
         {
-            Debug.Log(col.gameObject);
+            //Debug.Log(col.gameObject);
             if(col.isTrigger == false)
             {
                 if(col.GetComponent<InteractableObject>() != null)
