@@ -3,39 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 
-public class Spider : MonoBehaviour, DamageAcceptor, DamageProvider
-{
-    Spider()
-    {
-        groups = new List<string>();
-    }
-    public List<string> groups { get; set; }
-
-    
-    StickStats stats;
-    Registry registry;
-    GameObject target;
-    Animator anim;
-    GameObject gpParent;
+public class Spider : AIControl
+{    
     float attackCooldown = 0f;
-
     public float speed = 4f;
-    //public float Yamplitude = 1f;
-    //public float Yperiod = 1f;
 
-    void Start ()
-	{
-        stats = GetComponent<StickStats>();
-        anim = GetComponent<Animator>();
-        gpParent = GameObject.Find("GeneralPurposeParent");
-        registry = GameObject.FindObjectOfType<Registry>().GetComponent<Registry>();
-        registry.damageAcceptors.AddDamageAcceptor(this);
-        groups.Add("flies");
-        target = GameObject.FindObjectOfType<PlayerTag>().gameObject;
-        stats.currentHitPoints = stats.totalHitPoints;
-        stats.currentArmorPoints = stats.totalArmorPoints;
-    }
-    
     #region AI
     void Update()
     {
@@ -77,71 +49,16 @@ public class Spider : MonoBehaviour, DamageAcceptor, DamageProvider
     }
 
     #endregion
-    #region  DamageAcceptor
 
-    public void ReportKill(DamageAcceptor killed)
+    #region DamageAcceptor
+    public override void acceptDamage(DamageAcceptorRegistry.DamageArgs argInArgs)
     {
-
-    }
-
-    public void acceptDamage(DamageAcceptorRegistry.DamageArgs argInArgs)
-    {
-        if(this.gameObject == null)
+        //Debug.Log("MeleeAcceptDmg" + argInArgs.dmg);
+        if (argInArgs.type == "melee")
         {
-            return;
+            argInArgs.dmg *= 3;
         }
-        if (stats.isDead)
-        {
-            return;
-        }
-        float locDamage = argInArgs.dmg;
-        if(argInArgs.type == "melee")
-        {
-            locDamage *= 3;
-        }
-        if (stats.currentArmorPoints > 0)
-        {
-            if (stats.currentArmorPoints > locDamage)
-            {
-                stats.currentArmorPoints -= locDamage;
-                locDamage = 0;
-            }
-            else
-            {
-                stats.currentArmorPoints = 0;
-                locDamage -= stats.currentArmorPoints;
-            }
-        }
-        if (locDamage > 0)
-        {
-            if (stats.currentHitPoints > locDamage)
-            {
-                stats.currentHitPoints -= locDamage;
-                locDamage = 0;
-            }
-            else
-            {
-                stats.currentHitPoints = 0;
-                stats.isDead = true;
-                DamageProvider dp = argInArgs.source.GetComponent<DamageProvider>();
-                if (dp != null)
-                {
-                    dp.ReportKill(this);
-                }
-
-                this.gameObject.SetActive(false);
-                Destroy(this.gameObject, 0.1f);
-            }
-        }
-        GameObject healthbar = transform.Find("HealthBar").gameObject;
-        if (healthbar != null)
-        {
-            healthbar.transform.Find("Level").GetComponent<Image>().fillAmount = stats.currentHitPoints / stats.totalHitPoints;
-        }
-    }
-    void OnDestroy()
-    {
-        registry.damageAcceptors.RemoveDamageAcceptor(this);
+        base.acceptDamage(argInArgs);
     }
     #endregion
 }

@@ -3,21 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 
-public class BotControl : MonoBehaviour, DamageAcceptor, DamageProvider
+public class BotControl : AIControl
 {
-    BotControl()
-    {
-        groups = new List<string>();
-    }
-    public List<string> groups { get; set; }
     public float range = 14f;
     public string startWeapon = "RocketLauncher";
 
-    GameObject gpParent;
-    StickStats stats;
     MovementController movement;
-    Registry registry;
-    GameObject target;
     Animator anim;
     
     float direction = 1;
@@ -29,30 +20,19 @@ public class BotControl : MonoBehaviour, DamageAcceptor, DamageProvider
     float animSpeedCommand = 0f;
     bool chasing = false;
 
-    void Start ()
+    new void Start ()
 	{
-        gpParent = GameObject.Find("GeneralPurposeParent");
-        stats = GetComponent<StickStats>();
+        base.Start();
         movement = GetComponent<MovementController>();
         anim = GetComponent<Animator>();
-        registry = GameObject.FindObjectOfType<Registry>().GetComponent<Registry>();
         movement.moveSpeed += Random.Range(-(movement.moveSpeed *0.2f), movement.moveSpeed *0.2f);
-        registry.damageAcceptors.AddDamageAcceptor(this);
-        groups.Add("bots");
-        target = GameObject.FindObjectOfType<PlayerTag>().gameObject;
-        stats.currentHitPoints = stats.totalHitPoints;
-        stats.currentArmorPoints = stats.totalArmorPoints;
-
         chasing = false;
-
         Transform weaponSpot = GetComponentInChildren<WeaponSpot>().transform;
         GearDatabase gearDatabase = GameObject.FindObjectOfType<GearDatabase>();
-
         GameObject weap = Instantiate(gearDatabase.weapons.Find(x => x.gamePref.name == startWeapon).gamePref, weaponSpot) as GameObject;
         weap.transform.localPosition = Vector3.zero;
         weap.transform.localRotation = Quaternion.identity;
         weap.transform.localScale = Vector3.one;
-
         if (Random.Range(0,10) > 5)
         {
             direction = 1;
@@ -321,6 +301,7 @@ public class BotControl : MonoBehaviour, DamageAcceptor, DamageProvider
         }
         return false;
     }
+
     void Attack()
     {
         Weapon weap = GetComponentInChildren<Weapon>();
@@ -350,76 +331,25 @@ public class BotControl : MonoBehaviour, DamageAcceptor, DamageProvider
     }
     #endregion
     #region  DamageAcceptor
-
-    public void ReportKill(DamageAcceptor killed)
+    protected override void Knockback(Vector2 knockback)
     {
-
+        Vector2 knb = (knockback.normalized + Vector2.up) * knockback.magnitude;
+        movement.KnockBack(knb);
     }
-
-    public void acceptDamage(DamageAcceptorRegistry.DamageArgs argInArgs)
+    protected override void Die(DamageAcceptorRegistry.DamageArgs argInArgs)
     {
-        if (stats.isDead)
+        Weapon weap = GetComponentInChildren<Weapon>();
+        if (weap != null)
         {
-            return;
+            weap.transform.parent = gpParent.transform;
+            Destroy(weap.gameObject, 4f);
         }
-        float locDamage = argInArgs.dmg;
-        if (stats.currentArmorPoints > 0)
-        {
-            if (stats.currentArmorPoints > locDamage)
-            {
-                stats.currentArmorPoints -= locDamage;
-                locDamage = 0;
-            }
-            else
-            {
-                stats.currentArmorPoints = 0;
-                locDamage -= stats.currentArmorPoints;
-            }
-        }
-        if (locDamage > 0)
-        {
-            if (stats.currentHitPoints > locDamage)
-            {
-                stats.currentHitPoints -= locDamage;
-                locDamage = 0;
+        Vector3 stickBodyPosition = transform.Find("StickBody").position;
+        GameObject ragdoll = Instantiate(Resources.Load("Ragdoll", typeof(GameObject)),
+        stickBodyPosition, Quaternion.identity, gpParent.transform) as GameObject;
 
-                Vector2 knb = (argInArgs.knockback.normalized + Vector2.up) * argInArgs.knockback.magnitude;
-                movement.KnockBack(knb);
-
-            }
-            else
-            {
-                stats.currentHitPoints = 0;
-                stats.isDead = true;
-                DamageProvider dp = argInArgs.source.GetComponent<DamageProvider>();
-                if (dp != null)
-                {
-                    dp.ReportKill(this);
-                }
-                Weapon weap = GetComponentInChildren<Weapon>();
-                if (weap != null)
-                {
-                    weap.transform.parent = gpParent.transform;
-                    Destroy(weap.gameObject, 4f);
-                }
-                Vector3 stickBodyPosition = transform.Find("StickBody").position;
-                GameObject ragdoll = Instantiate(Resources.Load("Ragdoll", typeof(GameObject)),
-                stickBodyPosition, Quaternion.identity, gpParent.transform) as GameObject;
-                
-                ragdoll.GetComponent<Ragdoll>().Push(argInArgs.knockback);
-                this.gameObject.SetActive(false);
-                Destroy(this.gameObject, 0.1f);
-            }
-        }
-        GameObject healthbar = transform.Find("HealthBar").gameObject;
-        if (healthbar != null)
-        {
-            healthbar.transform.Find("Level").GetComponent<Image>().fillAmount = stats.currentHitPoints / stats.totalHitPoints;
-        }
-    }
-    void OnDestroy()
-    {
-        registry.damageAcceptors.RemoveDamageAcceptor(this);
+        ragdoll.GetComponent<Ragdoll>().Push(argInArgs.knockback);
+        base.Die(argInArgs);
     }
     #endregion
 }

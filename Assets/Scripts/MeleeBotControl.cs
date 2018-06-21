@@ -3,44 +3,26 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 
-public class MeleeBotControl : MonoBehaviour, DamageAcceptor, DamageProvider
+public class MeleeBotControl : AIControl
 {
-    MeleeBotControl()
-    {
-        groups = new List<string>();
-    }
-    public List<string> groups { get; set; }
     public float range = 14f;
-
-    //GameObject gpParent;
-    StickStats stats;
     MovementController movement;
-    Registry registry;
-    GameObject target;
-    Animator anim;
-
     Vector2 startPosition;
     float direction = 1;
     float stuckTime = 0f;
     float prevAttackTime = 0f;
     bool chasing = false;
 
-    void Start ()
+    new void Start ()
 	{
-        //gpParent = GameObject.Find("GeneralPurposeParent");
-        stats = GetComponent<StickStats>();
+        //Debug.Log("Melee Start");
+        base.Start();
+        //Debug.Log("Melee Continue Start");
         movement = GetComponent<MovementController>();
-        anim = GetComponent<Animator>();
-        registry = GameObject.FindObjectOfType<Registry>().GetComponent<Registry>();
         movement.moveSpeed += Random.Range(-(movement.moveSpeed *0.2f), movement.moveSpeed *0.2f);
-        registry.damageAcceptors.AddDamageAcceptor(this);
-        groups.Add("bots");
-        target = GameObject.FindObjectOfType<PlayerTag>().gameObject;
-        stats.currentHitPoints = stats.totalHitPoints;
-        stats.currentArmorPoints = stats.totalArmorPoints;
         startPosition = transform.position;
-        chasing = false;
 
+        chasing = false;
         if (Random.Range(0,10) > 5)
         {
             direction = 1;
@@ -51,6 +33,7 @@ public class MeleeBotControl : MonoBehaviour, DamageAcceptor, DamageProvider
         }
         changeDirCooldown = 1f;
     }
+
 
     #region AI
     void Update()
@@ -71,7 +54,11 @@ public class MeleeBotControl : MonoBehaviour, DamageAcceptor, DamageProvider
             DamageAcceptor da = hit.collider.gameObject.GetComponent<DamageAcceptor>();
             if (da != null)
             {
-                Attack(da, 5, Vector2.up * 20000);
+                if (Time.time - prevAttackTime > 0.5f)
+                {
+                    prevAttackTime = Time.time;
+                    DoDamage(da, 5, Vector2.up * 20000);
+                }
             }
         }
     }
@@ -181,7 +168,11 @@ public class MeleeBotControl : MonoBehaviour, DamageAcceptor, DamageProvider
 
         if ((target.transform.position - this.transform.position).magnitude < 1f)
         {
-            Attack(target.GetComponent<DamageAcceptor>(), Random.Range(5,20), ((((Component)target.GetComponent<DamageAcceptor>()).transform.position - this.transform.position).normalized) * 5000);
+            if (Time.time - prevAttackTime > 0.5f)
+            {
+                prevAttackTime = Time.time;
+                DoDamage(target.GetComponent<DamageAcceptor>(), Random.Range(5, 20), ((((Component)target.GetComponent<DamageAcceptor>()).transform.position - this.transform.position).normalized) * 5000);
+            }
         }
     }
 
@@ -219,85 +210,17 @@ public class MeleeBotControl : MonoBehaviour, DamageAcceptor, DamageProvider
         }
         return false;
     }
-    void Attack(DamageAcceptor acceptor, float damage, Vector2 knockback)
-    {
-        if(Time.time - prevAttackTime > 0.5f)
-        {
-            prevAttackTime = Time.time;
-            registry.damageAcceptors.doTargetDamage(
-                        acceptor,
-                        GetComponentInParent<Tag>().gameObject,
-                        damage,
-                        "normal",
-                        knockback);
-        }
-    }
     #endregion
-    #region  DamageAcceptor
 
-    public void ReportKill(DamageAcceptor killed)
+    #region DamageAcceptor
+    public override void acceptDamage(DamageAcceptorRegistry.DamageArgs argInArgs)
     {
-
-    }
-
-    public void acceptDamage(DamageAcceptorRegistry.DamageArgs argInArgs)
-    {
-        if(this.gameObject == null)
+        //Debug.Log("MeleeAcceptDmg" + argInArgs.dmg);
+        if (argInArgs.type == "melee")
         {
-            return;
+            argInArgs.dmg *= 3;
         }
-        if (stats.isDead)
-        {
-            return;
-        }
-        float locDamage = argInArgs.dmg;
-        if(argInArgs.type == "melee")
-        {
-            locDamage *= 3;
-        }
-        if (stats.currentArmorPoints > 0)
-        {
-            if (stats.currentArmorPoints > locDamage)
-            {
-                stats.currentArmorPoints -= locDamage;
-                locDamage = 0;
-            }
-            else
-            {
-                stats.currentArmorPoints = 0;
-                locDamage -= stats.currentArmorPoints;
-            }
-        }
-        if (locDamage > 0)
-        {
-            if (stats.currentHitPoints > locDamage)
-            {
-                stats.currentHitPoints -= locDamage;
-                locDamage = 0;
-            }
-            else
-            {
-                stats.currentHitPoints = 0;
-                stats.isDead = true;
-                DamageProvider dp = argInArgs.source.GetComponent<DamageProvider>();
-                if (dp != null)
-                {
-                    dp.ReportKill(this);
-                }
-
-                this.gameObject.SetActive(false);
-                Destroy(this.gameObject, 0.1f);
-            }
-        }
-        GameObject healthbar = transform.Find("HealthBar").gameObject;
-        if (healthbar != null)
-        {
-            healthbar.transform.Find("Level").GetComponent<Image>().fillAmount = stats.currentHitPoints / stats.totalHitPoints;
-        }
-    }
-    void OnDestroy()
-    {
-        registry.damageAcceptors.RemoveDamageAcceptor(this);
+        base.acceptDamage(argInArgs);
     }
     #endregion
 }

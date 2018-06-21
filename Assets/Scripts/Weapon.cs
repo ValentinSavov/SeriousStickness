@@ -9,10 +9,7 @@ public abstract class Weapon : MonoBehaviour
     public bool isAutomatic = false;
     public int bullets = 20;
     public float range = 5f;
-    public List<string> groups = new List<string>();
     public float damage = 100f;
-
     public Weapon(){}
-
     public abstract bool Engage(Vector3 newTarget);
 }

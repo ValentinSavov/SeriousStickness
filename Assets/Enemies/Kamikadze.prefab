@@ -274,11 +274,13 @@ MonoBehaviour:
   moveSpeed: 7
   jumpSpeed: 23
   grounded: 0
-  sideTouch: 0
+  sideTouchL: 0
+  sideTouchR: 0
+  pushableSideTouch: 0
   layersToSense:
     serializedVersion: 2
     m_Bits: 1
-  canPushSideTouch: 0
+  velocity: {x: 0, y: 0}
 --- !u!212 &212082196757526828
 SpriteRenderer:
   m_ObjectHideFlags: 1

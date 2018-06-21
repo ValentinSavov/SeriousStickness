@@ -3,41 +3,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 
-public class Buba : MonoBehaviour, DamageAcceptor
+public class Buba : AIControl
 {
-    Buba()
-    {
-        groups = new List<string>();
-    }
     public float moveSpeed = 2f;
     public float damage = 5f;
-    public List<string> groups { get; set; }
     public LayerMask layersToSense;
     public bool sideTouch = false;
-
-    GameObject gpParent;
-    Registry registry;
-    Animator anim;
-    Collider2D mainCollider;
     Rigidbody2D rbd;
-    //GameObject target;
     float direction = 1;
     float hitCooldown = 0f;
-    float previousEngageTime = 0f;
-    float idleTime = 0f;
-    float animSpeedCommand = 0f;
+    float prevAttackTime = 0f;
     GameObject head;
-    void Start ()
+
+    new void Start ()
 	{
-        gpParent = GameObject.Find("GeneralPurposeParent");
-        anim = GetComponent<Animator>();
-        registry = GameObject.FindObjectOfType<Registry>().GetComponent<Registry>();
-        mainCollider = GetComponent<Collider2D>();
+        base.Start();
         rbd = GetComponent<Rigidbody2D>();
-        //target = GameObject.FindObjectOfType<PlayerTag>().gameObject;
         head = transform.Find("Head").gameObject;
-        registry.damageAcceptors.AddDamageAcceptor(this);
-        groups.Add("bots");
         moveSpeed += Random.Range(-(moveSpeed * 0.2f), moveSpeed * 0.2f);
         this.transform.localScale = new Vector3(direction, 1, 1);
     }
@@ -65,8 +47,6 @@ public class Buba : MonoBehaviour, DamageAcceptor
             Vector2 locvelocity = rbd.velocity;
             locvelocity.x = direction * moveSpeed;
             rbd.velocity = new Vector2(locvelocity.x, locvelocity.y);
-
-            animSpeedCommand = direction * Mathf.Sign(transform.localScale.x);
         }
         else
         {
@@ -75,8 +55,6 @@ public class Buba : MonoBehaviour, DamageAcceptor
         return result;
     }
 
-    bool canMove = true;
-    bool targetIsNear = false;
     bool CanMoveTo(float direction)
     {
         sideTouch = false;
@@ -91,7 +69,11 @@ public class Buba : MonoBehaviour, DamageAcceptor
                     DamageAcceptor da = hit.collider.GetComponent<DamageAcceptor>();
                     if ((da != null))
                     {
-                        Attack(da, damage, direction * 3000 * Vector2.right);
+                        if (Time.time - prevAttackTime > 2f)
+                        {
+                            prevAttackTime = Time.time;
+                            DoDamage(da, damage, direction * 3000 * Vector2.right);
+                        }
                     }
                 }
             }
@@ -111,25 +93,12 @@ public class Buba : MonoBehaviour, DamageAcceptor
         return false;
     }
 
-    float prevAttackTime = 0f;
-    void Attack(DamageAcceptor arginAcceptor, float argInDamage, Vector2 argInKnockback)
-    {
-        if (Time.time - prevAttackTime > 2f)
-        {
-            prevAttackTime = Time.time;
-            registry.damageAcceptors.doTargetDamage(
-                        arginAcceptor,
-                        GetComponentInParent<Tag>().gameObject,
-                        argInDamage,
-                        "normal",
-                        argInKnockback);
-        }
-    }
+    
 
     #endregion
     #region  DamageAcceptor
 
-    public void acceptDamage(DamageAcceptorRegistry.DamageArgs argInArgs)
+    public override void acceptDamage(DamageAcceptorRegistry.DamageArgs argInArgs)
     {
         float locDamage = argInArgs.dmg;
 
@@ -139,9 +108,6 @@ public class Buba : MonoBehaviour, DamageAcceptor
             hitCooldown = 3f;
         }
     }
-    void OnDestroy()
-    {
-        registry.damageAcceptors.RemoveDamageAcceptor(this);
-    }
+
     #endregion
 }

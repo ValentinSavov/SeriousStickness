@@ -3,40 +3,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 
-public class Kamikadze : MonoBehaviour, DamageAcceptor, DamageProvider
+public class Kamikadze : AIControl
 {
-    Kamikadze()
-    {
-        groups = new List<string>();
-    }
-    public List<string> groups { get; set; }
     public float range = 20f;
-
     public GameObject effectOnExplode;
     public float damage = 50f;
     public float damageRadius = 2f;
     public float knockback = 5000f;
-    
-    GameObject gpParent;
     MovementController movement;
-    Registry registry;
-    GameObject target;
-    StickStats stats;
     float direction = 1;
     float stuckTime = 0f;
     
-    void Start()
+    new void Start()
     {
-        stats = GetComponent<StickStats>();
-        gpParent = GameObject.Find("GeneralPurposeParent");
+        base.Start();
         movement = GetComponent<MovementController>();
-        registry = GameObject.FindObjectOfType<Registry>().GetComponent<Registry>();
         movement.moveSpeed += Random.Range(-(movement.moveSpeed * 0.2f), movement.moveSpeed * 0.2f);
-        registry.damageAcceptors.AddDamageAcceptor(this);
-        groups.Add("bots");
-        target = GameObject.FindObjectOfType<PlayerTag>().gameObject;
-        stats.currentHitPoints = stats.totalHitPoints;
-        stats.currentArmorPoints = stats.totalArmorPoints;
     }
 
     #region AI
@@ -92,19 +74,7 @@ public class Kamikadze : MonoBehaviour, DamageAcceptor, DamageProvider
             }
         }
     }
-    void Explode()
-    {
-        registry.damageAcceptors.doAreaDamage(this.gameObject, (Vector2)transform.position, damageRadius, damage, "demolition", knockback);
-
-        if (effectOnExplode != null)
-        {
-            GameObject effect = Instantiate(effectOnExplode, gpParent.transform);
-            effect.transform.position = this.transform.position;
-            effect.transform.localScale *= damageRadius;
-            Destroy(effect, 2f);
-        }
-        Destroy(this.gameObject);
-    }
+    
     bool MoveSomehowTowards(float direction)
     {
         if ((CanMoveTo(direction)))
@@ -208,58 +178,25 @@ public class Kamikadze : MonoBehaviour, DamageAcceptor, DamageProvider
         }
         return found;
     }
-    #endregion
-    #region  DamageAcceptor
-
-    public void ReportKill(DamageAcceptor killed)
+    
+    void Explode()
     {
+        registry.damageAcceptors.doAreaDamage(this.gameObject, (Vector2)transform.position, damageRadius, damage, "demolition", knockback);
 
-    }
-
-    public void acceptDamage(DamageAcceptorRegistry.DamageArgs argInArgs)
-    {
-        if (stats.isDead)
+        if (effectOnExplode != null)
         {
-            return;
+            GameObject effect = Instantiate(effectOnExplode, gpParent.transform);
+            effect.transform.position = this.transform.position;
+            effect.transform.localScale *= damageRadius;
+            Destroy(effect, 2f);
         }
-        float locDamage = argInArgs.dmg;
-        if (stats.currentArmorPoints > 0)
-        {
-            if (stats.currentArmorPoints > locDamage)
-            {
-                stats.currentArmorPoints -= locDamage;
-                locDamage = 0;
-            }
-            else
-            {
-                stats.currentArmorPoints = 0;
-                locDamage -= stats.currentArmorPoints;
-            }
-        }
-        if (locDamage > 0)
-        {
-            if (stats.currentHitPoints > locDamage)
-            {
-                stats.currentHitPoints -= locDamage;
-                locDamage = 0;
-            }
-            else
-            {
-                stats.currentHitPoints = 0;
-                stats.isDead = true;
-                DamageProvider dp = argInArgs.source.GetComponent<DamageProvider>();
-                if (dp != null)
-                {
-                    dp.ReportKill(this);
-                }
-                Invoke("Explode", 0.1f);
-                this.gameObject.SetActive(false);
-            }
-        }
-    }
-    void OnDestroy()
-    {
-        registry.damageAcceptors.RemoveDamageAcceptor(this);
+        Destroy(this.gameObject);
     }
     #endregion
+
+    protected override void Die(DamageAcceptorRegistry.DamageArgs argInArgs)
+    {
+        Invoke("Explode", 0.1f);
+        this.gameObject.SetActive(false);
+    }
 }
