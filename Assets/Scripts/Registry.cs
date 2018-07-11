@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 public class Registry : MonoBehaviour 
 {
+    public static Registry instance;
     public DamageAcceptorRegistry damageAcceptors;
     public ObjectivesRegistry objectives;
 
@@ -12,13 +13,9 @@ public class Registry : MonoBehaviour
     {
         damageAcceptors = new DamageAcceptorRegistry();
         objectives = new ObjectivesRegistry();
+        instance = this;
     }
-    void Awake () 
-    {
-        //damageAcceptors = new DamageAcceptorRegistry();
-        //objectives = new ObjectivesRegistry();
-    }
-	
+
 	void Update ()
     {
         //effects.updateEffects();

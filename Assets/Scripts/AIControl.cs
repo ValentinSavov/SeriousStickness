@@ -7,7 +7,6 @@ public abstract class AIControl : MonoBehaviour, DamageAcceptor
 {
     protected StickStats stats;
     public List<string> groups { get; set; }
-    protected Registry registry;
     protected GameObject target;
     protected GameObject gpParent;
 
@@ -19,8 +18,7 @@ public abstract class AIControl : MonoBehaviour, DamageAcceptor
     protected void Start()
     {
         //Debug.Log("AIControl Start");
-        registry = GameObject.FindObjectOfType<Registry>().GetComponent<Registry>();
-        registry.damageAcceptors.AddDamageAcceptor(this);
+        Registry.instance.damageAcceptors.AddDamageAcceptor(this);
         groups.Add("AI");
         target = GameObject.FindObjectOfType<PlayerTag>().gameObject;
         stats = GetComponent<StickStats>();
@@ -97,12 +95,12 @@ public abstract class AIControl : MonoBehaviour, DamageAcceptor
     protected void OnDestroy()
     {
         //Debug.Log("AIDestroy");
-        registry.damageAcceptors.RemoveDamageAcceptor(this);
+        Registry.instance.damageAcceptors.RemoveDamageAcceptor(this);
     }
 
     protected virtual void DoDamage(DamageAcceptor acceptor, float damage, Vector2 knockback)
     {
-        registry.damageAcceptors.doTargetDamage(
+        Registry.instance.damageAcceptors.doTargetDamage(
                     acceptor,
                     GetComponentInParent<Tag>().gameObject,
                     damage,

@@ -22,8 +22,7 @@ public class Launcher : Weapon
         if ((Time.time - previousShotTime) >= (1f / fireRate))
         {
             GameObject proj = Instantiate(Resources.Load(projectileResourceName, typeof(GameObject)),
-                barrel.transform.position, Quaternion.FromToRotation(Vector3.right,
-                newTarget - this.transform.position)) 
+                barrel.transform.position, Quaternion.FromToRotation(Vector3.right, newTarget - this.transform.position)) 
                 as GameObject;
             previousShotTime = Time.time;
             

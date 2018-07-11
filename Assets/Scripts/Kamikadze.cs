@@ -181,7 +181,7 @@ public class Kamikadze : AIControl
     
     void Explode()
     {
-        registry.damageAcceptors.doAreaDamage(this.gameObject, (Vector2)transform.position, damageRadius, damage, "demolition", knockback);
+        Registry.instance.damageAcceptors.doAreaDamage(this.gameObject, (Vector2)transform.position, damageRadius, damage, "demolition", knockback);
 
         if (effectOnExplode != null)
         {

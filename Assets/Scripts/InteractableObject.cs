@@ -22,21 +22,19 @@ public class InteractableObject : MonoBehaviour, DamageAcceptor
     public float damage = 50f;
     public float damageRadius = 5f;
     public float knockback = 10000f;
-    
+
 
     //public bool smashOnCollision = false;
     //public bool destroyOnSmash = false;
 
-    GameObject gpParent;
-    Registry registry;
-    Rigidbody2D rbd;
+    protected GameObject gpParent;
+    protected Rigidbody2D rbd;
 
     public List<string> groups { get; set; }
 
     void Start ()
     {
-        registry = GameObject.FindObjectOfType<Registry>().GetComponent<Registry>();
-        registry.damageAcceptors.AddDamageAcceptor(this);
+        Registry.instance.damageAcceptors.AddDamageAcceptor(this);
         groups = new List<string>();
         groups.Add("level");
         gpParent = GameObject.Find("GeneralPurposeParent");
@@ -75,7 +73,7 @@ public class InteractableObject : MonoBehaviour, DamageAcceptor
     {
         rbd.AddForce(knockback, ForceMode2D.Force);
     }
-    
+
     void Destruct()
     {
         if (OnDestruct != null)
@@ -84,7 +82,7 @@ public class InteractableObject : MonoBehaviour, DamageAcceptor
         }
         if(doAreaDamageOnDestruct)
         {
-            registry.damageAcceptors.doAreaDamage(this.gameObject, (Vector2)transform.position, damageRadius, damage, "demolition", knockback);
+            Registry.instance.damageAcceptors.doAreaDamage(this.gameObject, (Vector2)transform.position, damageRadius, damage, "demolition", knockback);
         }
         if (effectOnDestruct != null)
         {
@@ -105,7 +103,7 @@ public class InteractableObject : MonoBehaviour, DamageAcceptor
 
     void OnDestroy()
     {
-        registry.damageAcceptors.RemoveDamageAcceptor(this);
+        Registry.instance.damageAcceptors.RemoveDamageAcceptor(this);
     }
 
     /*void OnCollisionEnter2D(Collision2D collision)

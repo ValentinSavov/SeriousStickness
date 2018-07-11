@@ -57,7 +57,7 @@ public class TrollFace : AIControl
         {
             List<string> checkGroups = new List<string>();
             checkGroups.Add("TrollFaceMinions");
-            if (registry.damageAcceptors.GetAcceptorsCountInGroup(checkGroups) < minionsCount)
+            if (Registry.instance.damageAcceptors.GetAcceptorsCountInGroup(checkGroups) < minionsCount)
             { 
                 spawnCooldown -= Time.deltaTime;
                 if (spawnCooldown <= 0)
@@ -86,7 +86,7 @@ public class TrollFace : AIControl
     void OnTriggerEnter2D(Collider2D other)
     {
         //Debug.Log(other.gameObject);
-        if (registry != null)
+        if (Registry.instance != null)
         {
             if (other.gameObject.GetComponent<PlayerTag>() != null)
             {
