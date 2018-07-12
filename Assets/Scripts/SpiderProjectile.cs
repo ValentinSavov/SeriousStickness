@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 public class SpiderProjectile : Projectile 
 {
-	void Start () 
+	new void Start () 
 	{
-        registry = GameObject.FindObjectOfType<Registry>();
+        base.Start();
         startPosition = transform.position;
 	}
 	void Update()
@@ -19,11 +19,11 @@ public class SpiderProjectile : Projectile
 	}
 	void OnTriggerEnter2D(Collider2D other)
 	{
-        if ((registry != null))
+        if ((Registry.instance != null))
         {
             if (/*(other.gameObject.GetComponent<BorderTag>() != null) ||*/ (other.gameObject.GetComponent<DamageAcceptor>() != null))
             {
-                registry.damageAcceptors.doTargetDamage(other.gameObject.GetComponentInParent<DamageAcceptor>(), this.gameObject, damage, "normal",
+                Registry.instance.damageAcceptors.doTargetDamage(other.gameObject.GetComponentInParent<DamageAcceptor>(), this.gameObject, damage, "normal",
                     (transform.right + (other.transform.position - transform.position).normalized) * 3000f);
 
                 this.gameObject.SetActive(false);

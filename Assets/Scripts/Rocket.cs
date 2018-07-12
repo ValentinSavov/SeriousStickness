@@ -3,10 +3,9 @@ using System.Collections.Generic;
 
 public class Rocket : Projectile
 {
-    void Start()
+    new void Start()
     {
-        registry = GameObject.FindObjectOfType<Registry>();
-        startPosition = transform.position;
+        base.Start();
     }
     void Update()
     {
@@ -23,7 +22,7 @@ public class Rocket : Projectile
     }
     void OnTriggerEnter2D(Collider2D other)
     {
-        if ((damageSource != null) && (registry != null))
+        if ((damageSource != null) && (Registry.instance != null))
         {
             if ((other.gameObject == damageSource.gameObject) || (other.transform.IsChildOf(damageSource.transform)))
             {
@@ -31,7 +30,7 @@ public class Rocket : Projectile
             }
             else if ((other.gameObject.GetComponent<BorderTag>() != null) || (other.gameObject.GetComponentInParent<DamageAcceptor>() != null))
             {
-                registry.damageAcceptors.doTargetDamage(other.gameObject.GetComponentInParent<DamageAcceptor>(), damageSource, (int)(damage / 3), "normal",
+                Registry.instance.damageAcceptors.doTargetDamage(other.gameObject.GetComponentInParent<DamageAcceptor>(), damageSource, (int)(damage / 3), "normal",
                     (transform.right + (other.transform.position - transform.position).normalized) * 3000f);
                 Explode();
             }

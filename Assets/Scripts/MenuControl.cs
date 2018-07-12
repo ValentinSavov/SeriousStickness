@@ -23,6 +23,14 @@ public class MenuControl : MonoBehaviour
         }
     }
 
+    public void OnTestplay(string sceneName)
+    {
+        if (sceneControl != null)
+        {
+            sceneControl.Play(sceneName);
+        }
+    }
+
     public void QuitToDesktop()
     {
         Application.Quit();

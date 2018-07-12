@@ -41,6 +41,13 @@ public class SceneControl : MonoBehaviour
         SceneManager.LoadSceneAsync("Lvl0", LoadSceneMode.Additive);
     }
 
+    public void Play(string sceneName)
+    {
+        RemoveLoadedScenes();
+        SceneManager.LoadSceneAsync("main", LoadSceneMode.Additive);
+        SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
+    }
+
     public void Die()
     {
         RemoveLoadedScenes();

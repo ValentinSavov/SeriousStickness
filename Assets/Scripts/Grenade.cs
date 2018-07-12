@@ -6,12 +6,16 @@ public class Grenade : Projectile, DamageAcceptor
     public float timeToExplode = 2f;
     public List<string> groups { get; set; }
 
-    void Start()
+    new void Start()
     {
-        registry = GameObject.FindObjectOfType<Registry>();
+        base.Start();
         GetComponent<Rigidbody2D>().AddForce(transform.right * speed, ForceMode2D.Impulse);
         groups = new List<string>();
         groups.Add("level");
+    }
+
+    void OnDestroy()
+    {
     }
 
     void Update()
@@ -50,7 +54,7 @@ public class Grenade : Projectile, DamageAcceptor
 
     void ProcessCollision(GameObject other)
     {
-        if ((damageSource != null) && (registry != null))
+        if ((damageSource != null) && (Registry.instance != null))
         {
             if ((other.gameObject == damageSource.gameObject) || (other.gameObject.transform.IsChildOf(damageSource.transform)))
             {

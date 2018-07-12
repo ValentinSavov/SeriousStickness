@@ -9,12 +9,16 @@ public abstract class Projectile : MonoBehaviour
 	public float speed = 5f;
 	public float distance = 100f;
     public GameObject damageSource;
-    protected Registry registry;
     protected Vector3 startPosition;
+
+    protected void Start()
+    {
+        startPosition = transform.position;
+    }
 
     protected void Explode()
     {
-        registry.damageAcceptors.doAreaDamage(damageSource, (Vector2)transform.position, explosionArea, damage, "normal", knockback);
+        Registry.instance.damageAcceptors.doAreaDamage(damageSource, (Vector2)transform.position, explosionArea, damage, "normal", knockback);
 
         GameObject explosion = Instantiate(Resources.Load("Explosion", typeof(GameObject)), this.transform.position, Quaternion.identity) as GameObject;
         explosion.transform.parent = this.transform.parent;

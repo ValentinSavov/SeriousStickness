@@ -25,7 +25,10 @@ public class DamageZone : MonoBehaviour, DamageAcceptor, DamageProvider
     {
         Registry.instance.damageAcceptors.RemoveDamageAcceptor(this);
     }
-
+    void OnDisable()
+    {
+        acceptorsInZone.Clear();
+    }
     class AcceptorAndCooldown
     {
         public DamageAcceptor da;
@@ -46,6 +49,11 @@ public class DamageZone : MonoBehaviour, DamageAcceptor, DamageProvider
     {
         foreach(AcceptorAndCooldown anc in acceptorsInZone)
         {
+            if(anc.da == null)
+            {
+                acceptorsInZone.Remove(anc);
+                break;
+            }
             anc.cooldown -= Time.deltaTime;
             if(anc.cooldown <= 0)
             {
