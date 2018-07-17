@@ -62,7 +62,7 @@ public class BotSpawner : MonoBehaviour
             Quaternion.identity, gpParent.transform
             ) as GameObject;
         //Debug.Log("Spawned");
-        spawned.GetComponent<BotControl>().startWeapon = startWeapon.ToString();
+        spawned.GetComponent<StickyBotControl>().startWeapon = startWeapon.ToString();
         spawned.GetComponent<DamageAcceptor>().groups.Add(dinamicSpawnerID);
         spawnedCounter++;
         if(spawnedCounter >= spawnLimit)

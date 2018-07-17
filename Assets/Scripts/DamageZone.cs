@@ -7,7 +7,7 @@ using UnityEngine;
 public class DamageZone : MonoBehaviour, DamageAcceptor, DamageProvider
 {
     public float damage = 30f;
-    //public float knockback = 2000;
+    public Vector2 knockback = Vector2.zero;
     GameObject gpParent;
     public List<string> groups { get; set; }
 
@@ -69,7 +69,7 @@ public class DamageZone : MonoBehaviour, DamageAcceptor, DamageProvider
         if (otherDA != null)
         {
             acceptorsInZone.Add(new AcceptorAndCooldown(otherDA));
-            DoDamage(otherDA, damage, new Vector2(0, 0));
+            DoDamage(otherDA, damage, new Vector2((other.transform.position - transform.position).normalized.x * knockback.x, knockback.y));
         }
     }
     void OnTriggerExit2D(Collider2D other)

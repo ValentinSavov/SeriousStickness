@@ -6,16 +6,20 @@ using UnityEngine.UI;
 public class GrenadeDropper : AIControl
 {
     public float moveSpeed = 5f;
+    public float attackSpeed = 1f;
     public LayerMask layersToSense;
     public bool sideTouch = false;
     public float damage = 5f;
     float direction = 1;
     float prevAttackTime = 0f;
+    public Animator clawsAnim;
+    Transform spawnPoint;
     new void Start ()
 	{
         base.Start();
         moveSpeed += Random.Range(-(moveSpeed * 0.2f), moveSpeed * 0.2f);
-        this.transform.localScale = new Vector3(direction, 1, 1);
+        spawnPoint = transform.Find("SpawnPoint");
+        //this.transform.localScale = new Vector3(direction, 1, 1);
     }
 
     #region AI
@@ -28,18 +32,15 @@ public class GrenadeDropper : AIControl
         if (false == MoveSomehowTowards(direction))
         {
             direction *= -1;
-            this.transform.localScale = new Vector3(direction, 1, 1);
+            //this.transform.localScale = new Vector3(direction, 1, 1);
         }
-        if (Mathf.Abs(target.transform.position.x - transform.position.x) < 2f)
+        if (Mathf.Abs(target.transform.position.x - transform.position.x) < 1f)
         {
             if(cooldown == 0)
             {
-                cooldown = 1f;
-                GameObject proj = Instantiate(Resources.Load("Grenade", typeof(GameObject)),
-                    this.transform.position - Vector3.up, transform.rotation)
-                    as GameObject;
-                proj.GetComponent<Grenade>().speed = 0f;
-                proj.GetComponent<Grenade>().damage = 30f;
+                if(clawsAnim != null) clawsAnim.SetTrigger("Open");
+                cooldown = 1/attackSpeed;
+                DropGrenade();
             }
         }
     }
@@ -85,14 +86,19 @@ public class GrenadeDropper : AIControl
 
     public override void acceptDamage(DamageAcceptorRegistry.DamageArgs argInArgs)
     {
-        GameObject proj = Instantiate(Resources.Load("Grenade", typeof(GameObject)),
-            this.transform.position - Vector3.up, transform.rotation)
-            as GameObject;
-        proj.GetComponent<Grenade>().speed = moveSpeed;
-        proj.GetComponent<Grenade>().damage = 30f;
-        Die(argInArgs);
+        //DropGrenade();
+        //Die(argInArgs);
     }
 
     #endregion
 
+
+    void DropGrenade()
+    {
+        GameObject proj = Instantiate(Resources.Load("Grenade", typeof(GameObject)),
+                    spawnPoint.position, transform.rotation)
+                    as GameObject;
+        proj.GetComponent<Grenade>().speed = 0f;
+        proj.GetComponent<Grenade>().damage = damage;
+    }
 }

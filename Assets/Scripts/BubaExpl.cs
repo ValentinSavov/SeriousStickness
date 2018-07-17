@@ -23,6 +23,9 @@ public class BubaExpl : AIControl
     #region AI
     void FixedUpdate()
     {
+        cooldown -= Time.fixedDeltaTime;
+        if (cooldown <= 0f) cooldown = 0f;
+
         if (false == MoveSomehowTowards(direction))
         {
             direction *= -1;
@@ -87,14 +90,20 @@ public class BubaExpl : AIControl
 
     #region  DamageAcceptor
 
+    float cooldown = 0f;
     public override void acceptDamage(DamageAcceptorRegistry.DamageArgs argInArgs)
     {
-        GameObject proj = Instantiate(Resources.Load("Grenade", typeof(GameObject)),
-            this.transform.position + Vector3.up, transform.rotation)
-            as GameObject;
-        proj.GetComponent<Grenade>().speed = moveSpeed;
-        proj.GetComponent<Grenade>().damage = 30f;
-        Die(argInArgs);
+        Debug.Log("BubaExpl_acceptDamage");
+        if (cooldown == 0f)
+        {
+            cooldown = 1f;
+            GameObject proj = Instantiate(Resources.Load("Grenade", typeof(GameObject)),
+                this.transform.position + Vector3.up, transform.rotation)
+                as GameObject;
+            proj.GetComponent<Grenade>().speed = moveSpeed;
+            proj.GetComponent<Grenade>().damage = 30f;
+            Die(argInArgs);
+        }
     }
 
     #endregion

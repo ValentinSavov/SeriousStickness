@@ -3,10 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 
-public class BotControl : AIControl
+public class StickyFlyBotControl : AIControl
 {
     public float range = 14f;
-    public string startWeapon = "RocketLauncher";
 
     MovementController movement;
     Animator anim;
@@ -27,12 +26,7 @@ public class BotControl : AIControl
         anim = GetComponent<Animator>();
         movement.moveSpeed += Random.Range(-(movement.moveSpeed *0.2f), movement.moveSpeed *0.2f);
         chasing = false;
-        Transform weaponSpot = GetComponentInChildren<WeaponSpot>().transform;
-        GearDatabase gearDatabase = GameObject.FindObjectOfType<GearDatabase>();
-        GameObject weap = Instantiate(gearDatabase.weapons.Find(x => x.gamePref.name == startWeapon).gamePref, weaponSpot) as GameObject;
-        weap.transform.localPosition = Vector3.zero;
-        weap.transform.localRotation = Quaternion.identity;
-        weap.transform.localScale = Vector3.one;
+
         if (Random.Range(0,10) > 5)
         {
             direction = 1;

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 
-public class MeleeBotControl : AIControl
+public class RK1BotControl : AIControl
 {
     public float range = 14f;
     MovementController movement;

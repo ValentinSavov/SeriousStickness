@@ -5,13 +5,16 @@ public class Grenade : Projectile, DamageAcceptor
 {
     public float timeToExplode = 2f;
     public List<string> groups { get; set; }
-
+    public float pulseAnimSpeed = 2f;
+    Animator anim;
     new void Start()
     {
         base.Start();
         GetComponent<Rigidbody2D>().AddForce(transform.right * speed, ForceMode2D.Impulse);
         groups = new List<string>();
         groups.Add("level");
+        anim = GetComponentInChildren<Animator>();
+        anim.speed = pulseAnimSpeed;
     }
 
     void OnDestroy()
@@ -34,17 +37,6 @@ public class Grenade : Projectile, DamageAcceptor
     void OnCollisionEnter2D(Collision2D coll)
     {
         ProcessCollision(coll.gameObject);
-        /*if ((damageSource != null) && (registry != null))
-        {
-            if ((coll.gameObject == damageSource.gameObject) || (coll.gameObject.transform.IsChildOf(damageSource.transform)))
-            {
-                return;
-            }
-            else if ((coll.gameObject.GetComponentInParent<DamageAcceptor>() != null))
-            {
-                Explode();
-            }
-        }*/
     }
 
     void OnTriggerEnter2D(Collider2D other)
