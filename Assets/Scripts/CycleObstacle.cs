@@ -6,6 +6,7 @@ public class CycleObstacle : AIControl
 {
     public float period = 1f;
     public float amplitude = 5f;
+    public float rotationSpeed = 1f;
     public enum MovementType
     {
         sin,
@@ -19,10 +20,12 @@ public class CycleObstacle : AIControl
     float lerpDir = 1f;
     float cooldown = 0f;
 
+    Vector3 up;
     new void Start ()
     {
         //base.Start();
         startPos = transform.position;
+        up = transform.up;
     }
     
 	void Update ()
@@ -34,7 +37,7 @@ public class CycleObstacle : AIControl
         {
             float theta = Time.timeSinceLevelLoad / period;
             float distance = amplitude * Mathf.Sin(theta);
-            transform.position = startPos + transform.up * distance;
+            transform.position = startPos + up * distance;
         }
         if (movementType == MovementType.lin)
         {
@@ -54,8 +57,10 @@ public class CycleObstacle : AIControl
                     lerpDir = 1f;
                 }
             }
-            transform.position = Vector3.Lerp(startPos - transform.up * amplitude/2, startPos + transform.up * amplitude/2, lerpTime);
+            transform.position = Vector3.Lerp(startPos - up * amplitude/2, startPos + up * amplitude/2, lerpTime);
         }
+
+        transform.RotateAround(transform.position, Vector3.forward, 360 * rotationSpeed * Time.deltaTime);
     }
 
     public override void acceptDamage(DamageAcceptorRegistry.DamageArgs argInArgs)

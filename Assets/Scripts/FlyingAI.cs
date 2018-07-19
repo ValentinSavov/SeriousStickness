@@ -13,7 +13,6 @@ public class FlyingAI : AIControl
     public float Yperiod = 0.4f;
 
     public float damage = 5f;
-    public bool flyAroundStartPoint = false;
 
     float attackCooldown = 0f;
     float lookAtDirection = 1;
