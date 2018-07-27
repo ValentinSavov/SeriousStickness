@@ -70,7 +70,7 @@ GameObject:
   - component: {fileID: 212547408294244218}
   - component: {fileID: 95876007576381358}
   m_Layer: 9
-  m_Name: Pulse
+  m_Name: Red
   m_TagString: Untagged
   m_Icon: {fileID: -3114416830163030229, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
@@ -241,7 +241,7 @@ Animator:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1439011732926362}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 452e2df00f2713449bccfdf1ee06627f, type: 2}
   m_CullingMode: 0

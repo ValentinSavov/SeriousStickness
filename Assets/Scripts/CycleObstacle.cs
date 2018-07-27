@@ -70,12 +70,12 @@ public class CycleObstacle : AIControl
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if(other.gameObject.GetComponent<PlayerTag>() != null)
+        if(other.gameObject.GetComponent<DamageAcceptor>() != null)
         {
             if (cooldown == 0)
             {
                 Debug.Log("trigger " + other.gameObject.name);
-                DoDamage(other.GetComponent<DamageAcceptor>(), damage, Vector2.zero);
+                DoDamage(other.gameObject.GetComponent<DamageAcceptor>(), damage, Vector2.zero);
                 cooldown = 1f;
             }
         }

@@ -22,4 +22,11 @@ public static class RotateAroundPivotExtensions
     {
         Me.position = Me.position.RotateAroundPivot(Pivot, Quaternion.Euler(Euler));
     }
+
+    //Lerps Rotation of the Transform's position using Euler
+    //not ready
+    /*public static void LerpRotateAroundPivot(this Transform Me, Vector3 Pivot, Vector3 Euler, float t)
+    {
+        Me.position = Vector3.Lerp(Me.position.RotateAroundPivot(Pivot, Quaternion.Euler(Euler)), Me.position, t);
+    }*/
 }

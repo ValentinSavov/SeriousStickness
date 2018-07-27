@@ -73,7 +73,7 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
         anim.SetBool("Fall", false);
         anim.SetFloat("Slide", 0);
 
-        //UpdateDamageCooldowns();
+        UpdateDamageCooldowns();
         HealthUpdate();
 
         if (Input.GetButton("Fire2") && (slevel.level > 0))
@@ -262,14 +262,14 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
 
     public void acceptDamage(DamageAcceptorRegistry.DamageArgs argInArgs)
     {
-        //if (damageSourcesInCooldown.Find(x => x.source == argInArgs.source) == null)
+        if (damageSourcesInCooldown.Find(x => x.source == argInArgs.source) == null)
         {
             if(stats.isDead)
             {
                 return;
             }
             float locDamage = argInArgs.dmg;
-            //damageSourcesInCooldown.Add(new SourcesAndCooldowns(argInArgs.source));
+            damageSourcesInCooldown.Add(new SourcesAndCooldowns(argInArgs.source));
 
             if (stats.currentArmorPoints > 0)
             {
