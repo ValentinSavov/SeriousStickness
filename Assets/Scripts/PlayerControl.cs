@@ -286,11 +286,19 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
             }
             if (locDamage > 0)
             {
+                //dmg popup
                 GameObject popup = Instantiate(Resources.Load("DmgPopup", typeof(GameObject)),
                 this.transform.position, Quaternion.identity)
                 as GameObject;
                 popup.GetComponent<Popup>().text = "-" + locDamage.ToString();
                 popup.transform.parent = gpParent.transform;
+
+                //blood particle
+                GameObject bloodParticle = 
+                    Instantiate(Resources.Load("BloodParticle",
+                    typeof(GameObject)),
+                    transform.position + Vector3.up,
+                    Quaternion.FromToRotation(Vector3.right, (transform.position - argInArgs.source.transform.position).normalized)) as GameObject;
 
                 Animator healthBgAnim = GameObject.Find("UI").transform.Find("HealthBackground").GetComponent<Animator>();
                 if (healthBgAnim) healthBgAnim.SetTrigger("decrease");
@@ -327,6 +335,8 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
 
                     deadStickyNote.SetActive(true);
 
+                    GameObject bloodEffect = 
+                        Instantiate(Resources.Load("RandomBloodEffect", typeof(GameObject)), this.transform.position + Vector3.up, Quaternion.identity) as GameObject;
                     Time.timeScale = 0.5f;
 
                     SceneControl sceneControl = GameObject.FindObjectOfType<SceneControl>();
@@ -339,7 +349,7 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
         }
         health.text = ((int)(stats.currentHitPoints)).ToString();
     }
-    
+
     private class SourcesAndCooldowns
     {
         public GameObject source;

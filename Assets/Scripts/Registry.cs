@@ -54,11 +54,10 @@ public class DamageAcceptorRegistry
     {
         public float dmg = 0;
         public string type = "";
-        public GameObject affectedPart;
+        //public GameObject affectedPart;
         public Vector2 knockback = new Vector2(0,0);
         public GameObject source;
-        public List<string> affectedGroups;
-
+        //public List<string> affectedGroups;
     }
 
     private List<DamageAcceptor> damageAcceptors = new List<DamageAcceptor>();
@@ -141,7 +140,7 @@ public class DamageAcceptorRegistry
                     args.dmg = argInDmg;
                     args.source = argInSource;
                     args.type = argInDamageType;
-
+                    
                     damageAcceptor.acceptDamage(args);
                 }
             }
