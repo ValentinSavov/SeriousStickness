@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 4760643487855432}
   - component: {fileID: 199292854235784324}
   - component: {fileID: 198178590441332552}
+  - component: {fileID: 114199345841825908}
   m_Layer: 0
   m_Name: BloodParticle
   m_TagString: Untagged
@@ -35,12 +36,24 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1473862561131740}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2128.2185, y: 51.700806, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_LocalPosition: {x: 2062.4014, y: 59.0916, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &114199345841825908
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1473862561131740}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0242f645f33d65345998969ef557db6f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  destroyAfterFinnish: 1
 --- !u!198 &198178590441332552
 ParticleSystem:
   m_ObjectHideFlags: 1
@@ -101,7 +114,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 0
-  randomSeed: -589541777
+  randomSeed: -873007697
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -229,8 +242,8 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 0.11
-      minScalar: 0.04
+      scalar: 0.22
+      minScalar: 0.08
       maxCurve:
         serializedVersion: 2
         m_Curve:

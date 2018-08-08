@@ -15,15 +15,14 @@ public class InteractableObject : MonoBehaviour, DamageAcceptor
     public event DestructEvent OnDestruct;
 
     [Tooltip("Leave it empty for no effect")]
-    public GameObject effectOnDestruct;
+    public List<GameObject> effectsOnDestruct;
 
     [Header("Explosion")]
     public bool doAreaDamageOnDestruct = false;
     public float damage = 50f;
     public float damageRadius = 5f;
     public float knockback = 10000f;
-
-
+    
     //public bool smashOnCollision = false;
     //public bool destroyOnSmash = false;
 
@@ -84,7 +83,7 @@ public class InteractableObject : MonoBehaviour, DamageAcceptor
         {
             Registry.instance.damageAcceptors.doAreaDamage(this.gameObject, (Vector2)transform.position, damageRadius, damage, "demolition", knockback);
         }
-        if (effectOnDestruct != null)
+        foreach(GameObject effectOnDestruct in effectsOnDestruct)
         {
             GameObject effect = Instantiate(effectOnDestruct, gpParent.transform);
             effect.transform.position = this.transform.position;

@@ -188,7 +188,9 @@ MonoBehaviour:
   destructible: 1
   destroyObjectOnDestruct: 1
   hitPoints: 5
-  effectOnDestruct: {fileID: 139366, guid: b185c1a9cf067374586d095111b15bd1, type: 2}
+  effectsOnDestruct:
+  - {fileID: 139366, guid: b185c1a9cf067374586d095111b15bd1, type: 2}
+  - {fileID: 1267198843813748, guid: 82d826ac6bd4852418de69c4846bc762, type: 2}
   doAreaDamageOnDestruct: 1
   damage: 50
   damageRadius: 5

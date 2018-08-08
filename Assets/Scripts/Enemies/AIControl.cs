@@ -75,7 +75,7 @@ public abstract class AIControl : MonoBehaviour, DamageAcceptor
                 Die(argInArgs);
             }
         }
-        GameObject healthbar = transform.Find("HealthBar").gameObject;
+        Transform healthbar = transform.Find("HealthBar");
         if (healthbar != null)
         {
             healthbar.transform.Find("Level").GetComponent<Image>().fillAmount = stats.currentHitPoints / stats.totalHitPoints;
@@ -110,12 +110,11 @@ public abstract class AIControl : MonoBehaviour, DamageAcceptor
 
     protected virtual void Bloodify(Vector3 point)
     {
-        GameObject effect = Instantiate(Resources.Load("RandomBloodEffect", typeof(GameObject)), point, Quaternion.identity) as GameObject;
+        GameObject effect = Instantiate(Resources.Load("RandomBloodEffect", typeof(GameObject)), point, Quaternion.identity, gpParent.transform) as GameObject;
     }
 
     protected virtual void SpitBloodParticle(Vector3 direction, Vector3 point)
     {
-        Quaternion rotation = Quaternion.FromToRotation(Vector3.right, direction);
-        GameObject effect = Instantiate(Resources.Load("BloodParticle", typeof(GameObject)), point, rotation) as GameObject;
+        GameObject effect = Instantiate(Resources.Load("BloodParticle", typeof(GameObject)), point, Quaternion.FromToRotation(Vector3.right, direction), gpParent.transform) as GameObject;
     }
 }

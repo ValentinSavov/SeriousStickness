@@ -37,7 +37,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1889387343977980}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -10.45, y: 12.05, z: 0}
+  m_LocalPosition: {x: -66.11719, y: 46.262108, z: 0.15625}
   m_LocalScale: {x: 1.67096, y: 1.67096, z: 1.67096}
   m_Children: []
   m_Father: {fileID: 0}
@@ -100,8 +100,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   destructible: 1
+  destroyObjectOnDestruct: 1
   hitPoints: 20
-  effectOnDestruct: {fileID: 139366, guid: b185c1a9cf067374586d095111b15bd1, type: 2}
+  effectsOnDestruct:
+  - {fileID: 139366, guid: b185c1a9cf067374586d095111b15bd1, type: 2}
+  - {fileID: 1267198843813748, guid: 82d826ac6bd4852418de69c4846bc762, type: 2}
   doAreaDamageOnDestruct: 0
   damage: 100
   damageRadius: 1
@@ -137,7 +140,7 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: -229376991
+  m_SortingLayerID: 1386738947
   m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 3b555dff614e1f047a2598d102157c5e, type: 3}

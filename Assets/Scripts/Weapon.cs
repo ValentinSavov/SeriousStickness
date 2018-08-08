@@ -12,4 +12,10 @@ public abstract class Weapon : MonoBehaviour
     public float damage = 100f;
     public Weapon(){}
     public abstract bool Engage(Vector3 newTarget);
+    public void Drop()
+    {
+        Rigidbody2D rbd = this.gameObject.AddComponent<Rigidbody2D>();
+        rbd.gravityScale *= 2;
+        GetComponent<Collider2D>().isTrigger = false;
+    }
 }

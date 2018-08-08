@@ -17,7 +17,8 @@ public class ExplosionEffectControl : MonoBehaviour
         {
             GetComponentInChildren<AudioSource>().enabled = true;
         }
-	}
+        GameObject postExplosionEffect = Instantiate(Resources.Load("RandomBlastEffect", typeof(GameObject)), transform.position, Quaternion.identity, transform.parent) as GameObject;
+    }
 
     private void Update()
     {

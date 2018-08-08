@@ -100,10 +100,10 @@ public class MeleeWeapon : Weapon
                             "melee",
                             (newTarget - this.transform.position).normalized * 2000f);
 
-                        if ((((Component)acceptor).gameObject.GetComponent<StickStats>() != null) || (((Component)acceptor).gameObject.GetComponent<Ragdoll>() != null))
+                        //if ((((Component)acceptor).gameObject.GetComponent<StickStats>() != null) || (((Component)acceptor).gameObject.GetComponent<Ragdoll>() != null))
                         {
-                            bulletHitEffect.GetComponent<ParticleSystem>().startColor = Color.red;
-                            bulletHitEffect.GetComponent<ParticleSystem>().startSize *= 2;
+                            //bulletHitEffect.GetComponent<ParticleSystem>().startColor = Color.red;
+                            //bulletHitEffect.GetComponent<ParticleSystem>().startSize *= 2;
                         }
                     }
                 }

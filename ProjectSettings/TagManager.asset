@@ -44,11 +44,11 @@ TagManager:
   - name: Papers
     uniqueID: 2716070963
     locked: 0
-  - name: LevelItems
-    uniqueID: 4065590305
-    locked: 0
   - name: Characters
     uniqueID: 1386738947
+    locked: 0
+  - name: OverCharacters
+    uniqueID: 796705387
     locked: 0
   - name: Effects
     uniqueID: 2411019013

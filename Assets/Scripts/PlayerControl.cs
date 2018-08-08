@@ -288,17 +288,16 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
             {
                 //dmg popup
                 GameObject popup = Instantiate(Resources.Load("DmgPopup", typeof(GameObject)),
-                this.transform.position, Quaternion.identity)
+                this.transform.position, Quaternion.identity, gpParent.transform)
                 as GameObject;
                 popup.GetComponent<Popup>().text = "-" + locDamage.ToString();
-                popup.transform.parent = gpParent.transform;
 
                 //blood particle
                 GameObject bloodParticle = 
                     Instantiate(Resources.Load("BloodParticle",
                     typeof(GameObject)),
                     transform.position + Vector3.up,
-                    Quaternion.FromToRotation(Vector3.right, (transform.position - argInArgs.source.transform.position).normalized)) as GameObject;
+                    Quaternion.FromToRotation(Vector3.right, (transform.position - argInArgs.source.transform.position).normalized), gpParent.transform) as GameObject;
 
                 Animator healthBgAnim = GameObject.Find("UI").transform.Find("HealthBackground").GetComponent<Animator>();
                 if (healthBgAnim) healthBgAnim.SetTrigger("decrease");

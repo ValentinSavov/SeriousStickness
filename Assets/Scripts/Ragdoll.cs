@@ -26,6 +26,14 @@ public class Ragdoll : MonoBehaviour, DamageAcceptor
 
     public void acceptDamage(DamageAcceptorRegistry.DamageArgs argInArgs)
     {
+        Vector3 direction = (transform.position - argInArgs.source.transform.position).normalized;
+        GameObject effect = 
+            Instantiate(Resources.Load("BloodParticle", 
+            typeof(GameObject)),
+            transform.position, 
+            Quaternion.FromToRotation(Vector3.right, direction), 
+            transform.parent) 
+            as GameObject;
         Push(argInArgs.knockback);
     }
 

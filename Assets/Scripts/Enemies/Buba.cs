@@ -93,11 +93,12 @@ public class Buba : AIControl
         return false;
     }
 
-    
+
 
     #endregion
     #region  DamageAcceptor
 
+    float lastBloodifyTime = 0f;
     public override void acceptDamage(DamageAcceptorRegistry.DamageArgs argInArgs)
     {
         float locDamage = argInArgs.dmg;
@@ -107,7 +108,11 @@ public class Buba : AIControl
             head.SetActive(false);
             hitCooldown = 3f;
             SpitBloodParticle((transform.position - argInArgs.source.transform.position).normalized, transform.position + Vector3.up/2);
-            Bloodify(this.transform.position + Vector3.up);
+            if (Time.time - lastBloodifyTime > 3f)
+            {
+                lastBloodifyTime = Time.time;
+                Bloodify(this.transform.position + Vector3.up);
+            }
         }
     }
     #endregion

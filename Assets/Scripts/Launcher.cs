@@ -27,7 +27,15 @@ public class Launcher : Weapon
             previousShotTime = Time.time;
             
             proj.transform.parent = gpParent.transform;
-            proj.GetComponent<Projectile>().damageSource = ((Component)GetComponentInParent<DamageProvider>()).gameObject;
+            DamageProvider dp = GetComponentInParent<DamageProvider>();
+            if (dp != null)
+            {
+                proj.GetComponent<Projectile>().damageSource = ((Component)dp).gameObject;
+            }
+            else
+            {
+                proj.GetComponent<Projectile>().damageSource = this.gameObject;
+            }
             proj.GetComponent<Projectile>().damage = damage;
             audioSource.Play();
 
