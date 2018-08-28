@@ -1855,7 +1855,6 @@ Transform:
   m_LocalPosition: {x: 2063.4, y: 58.2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 523063735}
   - {fileID: 1046634457}
   m_Father: {fileID: 0}
   m_RootOrder: 3
@@ -1901,7 +1900,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!81 &454038365
 AudioListener:
@@ -2179,6 +2178,7 @@ GameObject:
   - component: {fileID: 523063739}
   - component: {fileID: 523063738}
   - component: {fileID: 523063737}
+  - component: {fileID: 523063736}
   m_Layer: 8
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -2193,12 +2193,43 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 523063734}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -32.2}
+  m_LocalPosition: {x: 2063.4, y: 58.2, z: -32.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 445823789}
-  m_RootOrder: 0
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &523063736
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 523063734}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7d3e0b65f19aaa428c1e67c7e0e8546, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  T: 0.05
+  shakeCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 1
+      inSlope: 0.018622339
+      outSlope: 0.018622339
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 1
+      value: 0
+      inSlope: -0.023447901
+      outSlope: -0.023447901
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+  cursorFollowStrength: 0.25
 --- !u!124 &523063737
 Behaviour:
   m_ObjectHideFlags: 0
@@ -4243,7 +4274,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 445823789}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1046634458
 MonoBehaviour:
@@ -5040,7 +5071,7 @@ RectTransform:
   - {fileID: 952344622}
   - {fileID: 221181625}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -5114,6 +5145,7 @@ GameObject:
   - component: {fileID: 1389318607}
   - component: {fileID: 1389318606}
   - component: {fileID: 1389318605}
+  - component: {fileID: 1389318608}
   m_Layer: 0
   m_Name: Registry
   m_TagString: Untagged
@@ -5169,6 +5201,17 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1389318608
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1389318604}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7793522cd3263934a9eb0cf0cf23ede0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1405084973
 GameObject:
   m_ObjectHideFlags: 0
@@ -7259,7 +7302,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1946893520
 GameObject:
@@ -8086,21 +8129,21 @@ MonoBehaviour:
     weaponUIGO: {fileID: 0}
     bullets: 0
     infiniteBullets: 1
-  - name: RocketLauncher
+  - name: MachineGun
     weaponGO: {fileID: 0}
     weaponUIGO: {fileID: 0}
-    bullets: 30
-    infiniteBullets: 0
+    bullets: 600
+    infiniteBullets: 1
   - name: RailGun
     weaponGO: {fileID: 0}
     weaponUIGO: {fileID: 0}
     bullets: 10
-    infiniteBullets: 0
-  - name: MachineGun
+    infiniteBullets: 1
+  - name: RocketLauncher
     weaponGO: {fileID: 0}
     weaponUIGO: {fileID: 0}
-    bullets: 100
-    infiniteBullets: 0
+    bullets: 5
+    infiniteBullets: 1
   - name: GrenadeLauncher
     weaponGO: {fileID: 0}
     weaponUIGO: {fileID: 0}
@@ -8192,7 +8235,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2137443433}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2040.3, y: 55, z: 0}
+  m_LocalPosition: {x: 2118.7, y: 51.8, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 387257860}

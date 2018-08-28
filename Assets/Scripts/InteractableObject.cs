@@ -79,6 +79,8 @@ public class InteractableObject : MonoBehaviour, DamageAcceptor
         {
             OnDestruct();
         }
+        PlayerEventsControl.instance.TriggerEvent_OnExplosion();
+
         if(doAreaDamageOnDestruct)
         {
             Registry.instance.damageAcceptors.doAreaDamage(this.gameObject, (Vector2)transform.position, damageRadius, damage, "demolition", knockback);

@@ -5,7 +5,7 @@ public class CursorAdjust : MonoBehaviour
 {
     //public Transform objectiveTarget;
 	GameObject player;
-	GameObject cursorr;
+	GameObject cursorObj;
     //GameObject objectivePointer;
 
     public enum CursorType
@@ -21,7 +21,7 @@ public class CursorAdjust : MonoBehaviour
 	void Start()
 	{
 		player = GameObject.FindObjectOfType<PlayerTag>().gameObject;
-		cursorr = GameObject.FindObjectOfType<CursorTag>().gameObject;
+        cursorObj = GameObject.FindObjectOfType<CursorTag>().gameObject;
         //objectivePointer = transform.Find("ObjectivePointer").gameObject;
         UnityEngine.Cursor.visible = false;
 		UnityEngine.Cursor.lockState = CursorLockMode.Confined;
@@ -38,7 +38,7 @@ public class CursorAdjust : MonoBehaviour
 				Vector3 deltaMousePosition = (Input.mousePosition - prevMousePosition) / 20;
 				virtualPointerPosition += deltaMousePosition;
 				virtualPointerPosition = Vector3.ClampMagnitude(virtualPointerPosition, 5f);
-				cursorr.transform.localPosition = virtualPointerPosition;
+                cursorObj.transform.localPosition = virtualPointerPosition;
 				transform.position = player.transform.position;
 				prevMousePosition = Input.mousePosition;
 			}
@@ -52,7 +52,7 @@ public class CursorAdjust : MonoBehaviour
 				if (playerPlane.Raycast (ray, out hitdist))
 				{
 					Vector3 targetPoint = ray.GetPoint(hitdist);
-					cursorr.transform.position = targetPoint;
+                    cursorObj.transform.position = targetPoint;
 				}
 			}
 			break;

@@ -26,7 +26,7 @@ public class Wiggle
         return time == 0f;
     }
 
-    public Quaternion GetRotation(AnimationCurve strengthOverLifetime = null)
+    public Quaternion GetRotation(AnimationCurve strengthOverLifetime)
     {
         time = Mathf.MoveTowards(time, 0f, Time.deltaTime);
         pi += Time.deltaTime * frequency;
@@ -62,8 +62,7 @@ public class Wiggle
         }
     }
 
-
-    public Vector3 GetPosition(AnimationCurve strengthOverLifetime = null)
+    public Vector3 GetPosition(AnimationCurve strengthOverLifetime)
     {
         time = Mathf.MoveTowards(time, 0f, Time.deltaTime);
         pi += Time.deltaTime * frequency;
@@ -103,7 +102,7 @@ public class Wiggle
             Vector2 toDir = Quaternion.AngleAxis(secondaryRandomAngle, Vector3.forward) * Vector2.up;
             float offset = strength * sin;
             if (strengthOverLifetime != null) offset *= strengthOverLifetime.Evaluate(1f - (time / startTime));
-            return Vector3.Lerp(fromDir * strength, toDir * strength, Mathf.InverseLerp(-1f, 1f, sin));
+            return Vector3.Lerp(fromDir * offset, toDir * offset, Mathf.InverseLerp(-1f, 1f, sin));
         }
     }
 
@@ -111,5 +110,4 @@ public class Wiggle
     {
         startTime = time = t;
     }
-
 }

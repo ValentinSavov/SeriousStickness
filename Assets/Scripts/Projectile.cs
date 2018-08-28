@@ -26,5 +26,6 @@ public abstract class Projectile : MonoBehaviour
         this.gameObject.SetActive(false);
         Destroy(this.gameObject);
         Destroy(explosion, 2f);
+        PlayerEventsControl.instance.TriggerEvent_OnExplosion();
     }
 }

@@ -33,6 +33,7 @@ public class Rocket : Projectile
                 Registry.instance.damageAcceptors.doTargetDamage(other.gameObject.GetComponentInParent<DamageAcceptor>(), damageSource, (int)(damage / 3), "normal",
                     (transform.right + (other.transform.position - transform.position).normalized) * 3000f);
                 Explode();
+                
             }
         }
     }

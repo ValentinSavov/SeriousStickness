@@ -206,6 +206,7 @@ public class StickyFlyBotControl : AIControl
         GameObject explosion = Instantiate(Resources.Load("Explosion", typeof(GameObject)), this.transform.position, Quaternion.identity) as GameObject;
         explosion.transform.parent = this.transform.parent;
         explosion.transform.localScale *= 5;
+        PlayerEventsControl.instance.TriggerEvent_OnExplosion();
         this.gameObject.SetActive(false);
         Destroy(this.gameObject);
         Destroy(explosion, 2f);
