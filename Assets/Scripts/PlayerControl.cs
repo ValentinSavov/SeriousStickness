@@ -93,7 +93,7 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
         {
             movement.moveSpeed = originalMoveSpeed * 1.5f;
             movement.jumpSpeed = originalJumpSpeed * 1.2f;
-            slevel.DecreaseLevel(Time.fixedDeltaTime * 10f);
+            slevel.DecreaseLevel(Time.fixedDeltaTime * 40f);
         }
         else
         {
@@ -215,7 +215,7 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
         }
         if(stats.currentHitPoints < 50)
         {
-            GameObject.Find("UI").transform.Find("Blood").gameObject.SetActive(true);
+            ui.transform.Find("Blood").gameObject.SetActive(true);
         }
     }
 
@@ -253,7 +253,7 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
 
     public void ReportKill(DamageAcceptor killed)
     {
-        slevel.IncreaseLevel(UnityEngine.Random.Range(1,5));
+        //slevel.IncreaseLevel(UnityEngine.Random.Range(1,5));
         GameObject popup = Instantiate(Resources.Load("KillPopup", typeof(GameObject)),
                     ((Component)killed).gameObject.transform.position + Vector3.up*2, Quaternion.identity,
                     gpParent.transform)
@@ -299,7 +299,7 @@ public class PlayerControl : MonoBehaviour, DamageAcceptor, DamageProvider
                     transform.position + Vector3.up,
                     Quaternion.FromToRotation(Vector3.right, (transform.position - argInArgs.source.transform.position).normalized), gpParent.transform) as GameObject;
 
-                Animator healthBgAnim = GameObject.Find("UI").transform.Find("HealthBackground").GetComponent<Animator>();
+                Animator healthBgAnim = ui.transform.Find("HealthBackground").GetComponent<Animator>();
                 if (healthBgAnim) healthBgAnim.SetTrigger("decrease");
                 
                 if (stats.currentHitPoints > locDamage)

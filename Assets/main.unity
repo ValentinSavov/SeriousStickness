@@ -8199,7 +8199,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a63c48c96e847ac4c8cadc6121072a43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  findStartPoint: 0
+  findStartPoint: 1
 --- !u!114 &2137443440
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8276,7 +8276,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   level: 40
-  decreaseRate: 0
+  decreaseRate: 5
+  increaseRate: 7
 --- !u!70 &2137443445
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

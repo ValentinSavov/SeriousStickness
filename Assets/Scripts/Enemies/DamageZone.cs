@@ -40,10 +40,10 @@ public class DamageZone : MonoBehaviour, DamageAcceptor, DamageProvider
         }
     }
     List<AcceptorAndCooldown> acceptorsInZone = new List<AcceptorAndCooldown>();
-
+    /*
     void Update()
     {
-        UpdateCooldowns();
+        //UpdateCooldowns();
     }
     void UpdateCooldowns()
     {
@@ -62,17 +62,17 @@ public class DamageZone : MonoBehaviour, DamageAcceptor, DamageProvider
                 break;
             }
         }
-    }
-    void OnTriggerEnter2D(Collider2D other)
+    }*/
+    void OnTriggerStay2D(Collider2D other)
     {
         DamageAcceptor otherDA = other.gameObject.GetComponent<DamageAcceptor>();
         if (otherDA != null)
         {
-            acceptorsInZone.Add(new AcceptorAndCooldown(otherDA));
+            //acceptorsInZone.Add(new AcceptorAndCooldown(otherDA));
             DoDamage(otherDA, damage, new Vector2((other.transform.position - transform.position).normalized.x * knockback.x, knockback.y));
         }
     }
-    void OnTriggerExit2D(Collider2D other)
+    /*void OnTriggerExit2Dbcp(Collider2D other)
     {
         DamageAcceptor otherDA = other.gameObject.GetComponent<DamageAcceptor>();
         if (otherDA != null)
@@ -83,7 +83,7 @@ public class DamageZone : MonoBehaviour, DamageAcceptor, DamageProvider
                 acceptorsInZone.Remove(anc);
             }
         }
-    }
+    }*/
     void DoDamage(DamageAcceptor acceptor, float damage, Vector2 knockback)
     {
         Registry.instance.damageAcceptors.doTargetDamage(
@@ -96,10 +96,10 @@ public class DamageZone : MonoBehaviour, DamageAcceptor, DamageProvider
 
     public void ReportKill(DamageAcceptor killed)
     {
-        AcceptorAndCooldown anc = acceptorsInZone.Find(x => x.da == killed);
-        if (anc != null)
+        //AcceptorAndCooldown anc = acceptorsInZone.Find(x => x.da == killed);
+        //if (anc != null)
         {
-            acceptorsInZone.Remove(anc);
+            //acceptorsInZone.Remove(anc);
         }
     }
 }
